@@ -1,0 +1,1230 @@
+/* Public Page Total Redesign - Responsive & Admin Theme Harmonization */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --pub-bg: #fcf8f2; /* Admin Theme Cream BG */
+  --pub-card-bg: #ffffff;
+  --pub-brown-dark: #6e4727;
+  --pub-brown-main: #8b5e3c;
+  --pub-gold-main: #c59b27;
+  --pub-gold-light: #d4af37;
+  --pub-border-color: #e8decb;
+  --pub-text-dark: #2d241e;
+  --pub-text-muted: #7c6857;
+  --pub-cream-subtle: #f8f2e6;
+}
+
+body {
+  background-color: var(--pub-bg);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--pub-text-dark);
+  overflow-y: auto;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+body.public-kiosk-mode {
+  min-height: 100vh;
+}
+
+@media (min-width: 993px) {
+  body.public-kiosk-mode {
+    height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+  }
+}
+
+/* Container */
+.public-dashboard-container {
+  max-width: 1600px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
+}
+
+@media (min-width: 993px) {
+  .public-dashboard-container {
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+  }
+}
+
+/* Header Bar */
+.public-header-bar {
+  background: #ffffff;
+  border: 1px solid var(--pub-border-color);
+  border-radius: 14px;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 14px rgba(139, 94, 60, 0.06);
+  flex-shrink: 0;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-admin-logo {
+  height: 44px;
+  width: 44px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--pub-border-color);
+  box-shadow: 0 2px 6px rgba(139, 94, 60, 0.15);
+}
+
+.header-title-box .header-main-title {
+  font-family: 'Georgia', 'Garamond', serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--pub-brown-dark);
+  margin: 0;
+  line-height: 1.1;
+}
+
+.header-title-box .header-sub-title {
+  font-size: 0.775rem;
+  font-weight: 800;
+  color: var(--pub-gold-main);
+  margin: 2px 0 0 0;
+  letter-spacing: 0.5px;
+}
+
+.header-center {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.clock-icon-wrapper {
+  color: var(--pub-brown-main);
+}
+
+.time-display-box {
+  text-align: center;
+}
+
+.time-display-box .live-time {
+  font-size: 1.9rem;
+  font-weight: 900;
+  color: var(--pub-brown-dark);
+  line-height: 1;
+  letter-spacing: 1px;
+}
+
+.time-display-box .live-date {
+  font-size: 0.775rem;
+  color: var(--pub-text-muted);
+  font-weight: 600;
+  margin-top: 1px;
+}
+
+.header-right {
+  text-align: right;
+}
+
+.header-right .quote-text {
+  font-style: italic;
+  font-weight: 600;
+  color: var(--pub-brown-main);
+  font-size: 0.875rem;
+}
+
+.header-right .quote-source {
+  font-size: 0.75rem;
+  color: var(--pub-text-muted);
+  font-weight: 500;
+  margin-top: 1px;
+}
+
+/* Responsive Main Grid Layout */
+.public-main-grid {
+  display: grid;
+  grid-template-columns: 460px 1fr;
+  gap: 14px;
+  flex: 1;
+  min-height: 0;
+}
+
+@media (max-width: 1200px) {
+  .public-main-grid {
+    grid-template-columns: 400px 1fr;
+  }
+}
+
+@media (max-width: 992px) {
+  .public-main-grid {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+  html, body.public-kiosk-mode {
+    height: auto !important;
+    max-height: none !important;
+    overflow: auto !important;
+  }
+}
+
+.public-left-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+}
+
+.public-right-col {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Card General */
+.pub-card {
+  background: #ffffff;
+  border: 1px solid var(--pub-border-color);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(139, 94, 60, 0.05);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.peminjam-card, .pengunjung-card, .info-card {
+  flex: 0 0 auto;
+  height: auto;
+}
+
+.koleksi-card {
+  height: 100%;
+}
+
+/* Card Header - Harmonized Cream, Brown & Gold Theme */
+.pub-card-header {
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #ffffff;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.pub-card-header.blue-header {
+  background: linear-gradient(135deg, #6e4727 0%, #8b5e3c 60%, #c59b27 100%);
+}
+
+.pub-card-header.green-header {
+  background: linear-gradient(135deg, #8b5e3c 0%, #a67c52 50%, #c59b27 100%);
+}
+
+.pub-card-header.gold-header {
+  background: linear-gradient(135deg, #a67c52 0%, #c59b27 60%, #d4af37 100%);
+}
+
+.info-card-body {
+  padding: 0;
+  background: linear-gradient(135deg, #ffffff 0%, #faf6f0 100%);
+  border-radius: 0 !important;
+}
+
+.tv-poster-container {
+  border-radius: 0 !important;
+  background: #ffffff;
+  position: relative;
+}
+
+.tv-banner-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain !important;
+  background: #ffffff;
+  border-radius: 0 !important;
+  opacity: 0;
+  transform: scale(1.02);
+  transition: opacity 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+  pointer-events: none;
+}
+
+.tv-banner-layer.active-layer {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+/* Non-Kiosk Pages (e.g. /book, /buku-tamu) Scroll Override */
+body:not(.public-kiosk-mode),
+html:not(:has(body.public-kiosk-mode)) {
+  overflow-y: auto !important;
+  height: auto !important;
+  max-height: none !important;
+}
+
+body:not(.public-kiosk-mode) #main-wrapper,
+body:not(.public-kiosk-mode) .body-wrapper,
+body:not(.public-kiosk-mode) .page-wrapper {
+  overflow: visible !important;
+  height: auto !important;
+  min-height: 100vh;
+}
+
+.info-item-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.info-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--pub-border-color);
+  box-shadow: 0 2px 6px rgba(139, 94, 60, 0.04);
+}
+
+.info-icon-box {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.info-icon-box.icon-clock {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.info-icon-box.icon-rules {
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.info-label {
+  font-size: 0.675rem;
+  font-weight: 800;
+  color: #8b5e3c;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.info-val {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--pub-brown-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-icon-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+}
+
+.pub-header-badge {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  font-size: 0.725rem;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 20px;
+  color: #ffffff;
+}
+
+.pub-header-badge.gold-badge {
+  background: rgba(197, 155, 39, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.slide-indicator-text {
+  font-size: 0.75rem;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 3px 10px;
+  border-radius: 10px;
+  color: #ffffff;
+}
+
+.pub-btn-see-all {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 20px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.pub-btn-see-all:hover {
+  background: #ffffff;
+  color: var(--pub-brown-dark);
+}
+
+/* Table Style (Fully Harmonized with Admin & Responsive) */
+.pub-table-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.pub-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  table-layout: fixed;
+  height: 100%;
+}
+
+.pub-table th {
+  background-color: var(--pub-cream-subtle);
+  color: var(--pub-brown-dark);
+  font-weight: 800;
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--pub-border-color);
+  font-size: 0.725rem;
+  letter-spacing: 0.5px;
+}
+
+.pub-table td {
+  padding: 6px 12px;
+  border-bottom: 1px solid #f3ebd9;
+  color: #2d241e;
+  vertical-align: middle;
+}
+
+.pub-table tr:last-child td {
+  border-bottom: none;
+}
+
+.col-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+}
+
+.user-avatar-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #8b5e3c 0%, #c59b27 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+}
+
+.user-avatar-circle.gold-avatar {
+  background: linear-gradient(135deg, #c59b27 0%, #d4af37 100%);
+  color: #ffffff;
+}
+
+/* Single-Row Rotating Ticker Container */
+.single-row-ticker-container {
+  flex: 1;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #ffffff 0%, #faf6f0 100%);
+}
+
+.single-row-ticker-box {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+}
+
+.single-row-ticker-box.ticker-animating {
+  transform: translateY(-12px);
+  opacity: 0.2;
+}
+
+.ticker-row-1 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.ticker-row-2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 1px;
+  margin-bottom: 1px;
+}
+
+.ticker-row-3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--pub-cream-subtle);
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--pub-border-color);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ticker-user-name {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--pub-brown-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ticker-date-pill {
+  font-size: 0.725rem;
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+}
+
+.pill-borrow {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.pill-due {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.pill-time {
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.ticker-bottom-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--pub-cream-subtle);
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--pub-border-color);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ticker-book-badge {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #8b5e3c;
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+}
+
+.ticker-book-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #2d241e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.visitor-cat-badge {
+  font-size: 0.725rem;
+  font-weight: 700;
+  color: #a16207;
+}
+
+.col-book {
+  font-weight: 600;
+  color: #5c4838;
+}
+
+.col-date {
+  color: #7c6857;
+  font-size: 0.775rem;
+}
+
+.col-due {
+  font-size: 0.775rem;
+  font-weight: 700;
+}
+
+.text-danger-head {
+  color: #b91c1c !important;
+}
+
+.text-danger-cell {
+  color: #b91c1c;
+  font-weight: 800;
+}
+
+.font-bold {
+  font-weight: 800;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Card Footer */
+.pub-card-footer {
+  padding: 8px 16px;
+  background: var(--pub-cream-subtle);
+  border-top: 1px solid var(--pub-border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.visitor-total-pill {
+  background: #ffffff;
+  color: var(--pub-brown-dark);
+  border: 1px solid var(--pub-border-color);
+  padding: 4px 16px;
+  border-radius: 20px;
+  font-size: 0.775rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(139, 94, 60, 0.08);
+}
+
+.visitor-total-pill strong {
+  color: var(--pub-gold-main);
+}
+
+/* Koleksi Slider & Flexible Card Grid */
+.koleksi-slider-viewport {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  flex: 1;
+}
+
+.koleksi-slider-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.koleksi-slide-page {
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  height: 100%;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Hero Spotlight + Queue Cards Showcase */
+.hero-queue-showcase {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  height: 100%;
+  padding: 12px;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: opacity 0.3s ease, transform 0.4s ease;
+}
+
+.hero-queue-showcase.queue-rotating .hero-book-slot {
+  transform: scale(0.96);
+  opacity: 0.7;
+}
+
+.hero-queue-showcase.queue-rotating .queue-card-slot {
+  transform: translateY(-8px);
+  opacity: 0.7;
+}
+
+/* Left Hero Slot (Kartu 1 Utama) */
+.hero-book-slot {
+  flex: 1.4;
+  height: 100%;
+  background: linear-gradient(135deg, #ffffff 0%, #fcf8f2 100%);
+  border: 1.5px solid #ebd9bc;
+  border-radius: 14px;
+  padding: 14px;
+  box-sizing: border-box;
+  display: flex;
+  box-shadow: 0 8px 20px rgba(110, 71, 39, 0.12);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-card-inner {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  gap: 14px;
+  align-items: center;
+}
+
+.hero-cover-container {
+  height: 100%;
+  aspect-ratio: 2/3;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.hero-book-img {
+  height: 100%;
+  max-height: 100%;
+  aspect-ratio: 2/3;
+  width: auto;
+  object-fit: cover;
+  border-radius: 10px;
+  filter: drop-shadow(4px 8px 16px rgba(110, 71, 39, 0.4));
+  transition: transform 0.3s ease;
+}
+
+.hero-book-slot:hover .hero-book-img {
+  transform: scale(1.04);
+}
+
+.hero-mock-cover {
+  height: 100%;
+  aspect-ratio: 2/3;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  color: #fff;
+  text-align: center;
+  box-shadow: 4px 8px 16px rgba(110, 71, 39, 0.35);
+}
+
+.hero-mock-title {
+  font-weight: 800;
+  font-size: 0.9rem;
+  margin-top: 8px;
+  line-height: 1.25;
+}
+
+.hero-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-badge-top {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, #d4af37, #b8860b);
+  color: #ffffff;
+  font-size: 0.675rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 6px;
+  width: fit-content;
+  letter-spacing: 0.5px;
+}
+
+.hero-book-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--pub-brown-dark);
+  margin: 0 0 6px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.25;
+}
+
+.hero-cat-tag {
+  background: #fefce8;
+  color: #a16207;
+  border: 1px solid #fef08a;
+  padding: 3px 12px;
+  border-radius: 12px;
+  font-size: 0.775rem;
+  font-weight: 700;
+}
+
+.hero-stock-badge {
+  font-size: 0.8rem;
+  color: var(--pub-text-muted);
+}
+
+/* Right Column (Kartu 2 & 3 Stacked) */
+.queue-books-stack {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+}
+
+.queue-card-slot {
+  flex: 1;
+  height: 50%;
+  background: #ffffff;
+  border: 1.5px solid #f0e6d6;
+  border-radius: 12px;
+  padding: 8px 12px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  transition: all 0.35s ease;
+  box-shadow: 0 4px 10px rgba(110, 71, 39, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.queue-card-slot:hover {
+  border-color: #d4af37;
+  box-shadow: 0 6px 14px rgba(110, 71, 39, 0.12);
+  transform: translateX(-3px);
+}
+
+.queue-card-inner {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  gap: 10px;
+  align-items: center;
+}
+
+.queue-cover-container {
+  height: 100%;
+  aspect-ratio: 2/3;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.queue-book-img {
+  height: 100%;
+  aspect-ratio: 2/3;
+  width: auto;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 2px 4px 8px rgba(110, 71, 39, 0.25);
+}
+
+.queue-mock-cover {
+  height: 100%;
+  aspect-ratio: 2/3;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  color: #fff;
+  text-align: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.queue-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.queue-label {
+  font-size: 0.625rem;
+  font-weight: 800;
+  color: #b8860b;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.queue-book-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--pub-brown-dark);
+  margin: 0 0 3px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.queue-sub {
+  font-size: 0.725rem;
+  color: var(--pub-text-muted);
+}
+
+/* Bottom Bar */
+.public-bottom-bar {
+  background: #ffffff;
+  border: 1px solid var(--pub-border-color);
+  border-radius: 14px;
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 12px rgba(139, 94, 60, 0.05);
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.bottom-left-msg {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--pub-brown-dark);
+  font-weight: 700;
+}
+
+.bottom-book-icon {
+  background: var(--pub-cream-subtle);
+  color: var(--pub-brown-main);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-msg-sub {
+  font-size: 0.725rem;
+  font-weight: 500;
+  color: var(--pub-text-muted);
+}
+
+.bottom-right-wifi {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--pub-text-dark);
+  font-size: 0.8rem;
+}
+
+.wifi-sep {
+  color: var(--pub-border-color);
+  margin: 0 4px;
+}
+
+/* Catalog Book Card Hover Lift & 3D Book Effect */
+.catalog-book-card {
+  transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.35s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.35s ease !important;
+}
+
+.catalog-book-card:hover {
+  transform: translateY(-6px);
+  border-color: #c59b27 !important;
+  box-shadow: 0 12px 28px rgba(110, 71, 39, 0.14) !important;
+}
+
+.catalog-book-card:hover .catalog-book-cover img {
+  transform: scale(1.04);
+}
+
+/* =======================================================
+   RESPONSIVE — PUBLIC PAGES (Mobile & Tablet)
+   ======================================================= */
+
+/* ------- Tablet Portrait (≤ 768px) ------- */
+@media (max-width: 768px) {
+  /* Public header bar: stack logo+jam+quote vertically */
+  .public-header-bar {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    padding: 12px 16px !important;
+    border-radius: 12px !important;
+  }
+
+  .header-left {
+    width: 100%;
+  }
+
+  .header-center {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .header-right {
+    width: 100%;
+    text-align: left !important;
+  }
+
+  /* Clock size: slightly smaller */
+  .time-display-box .live-time {
+    font-size: 1.5rem !important;
+  }
+
+  /* Bottom bar: stack vertically */
+  .public-bottom-bar {
+    flex-direction: column !important;
+    gap: 8px !important;
+    align-items: flex-start !important;
+    padding: 10px 16px !important;
+    border-radius: 12px !important;
+  }
+
+  /* Main container padding */
+  .public-dashboard-container {
+    padding: 8px 12px !important;
+    gap: 8px !important;
+  }
+
+  /* Card header font */
+  .pub-card-header {
+    padding: 8px 12px !important;
+    font-size: 0.875rem !important;
+  }
+
+  .header-icon-title {
+    font-size: 0.85rem !important;
+  }
+
+  /* Koleksi hero slot: stack vertically on tablet */
+  .hero-queue-showcase {
+    flex-direction: column !important;
+    overflow-y: auto !important;
+  }
+
+  .hero-book-slot {
+    flex: none !important;
+    height: 220px !important;
+  }
+
+  .queue-books-stack {
+    flex-direction: row !important;
+    height: auto !important;
+    gap: 8px !important;
+  }
+
+  .queue-card-slot {
+    flex: 1 !important;
+    height: auto !important;
+    min-height: 90px !important;
+  }
+}
+
+/* ------- Small Phone (≤ 575px) ------- */
+@media (max-width: 575px) {
+  /* Header: tighter */
+  .public-header-bar {
+    padding: 10px 12px !important;
+  }
+
+  /* Hide quote on very small screens to save space */
+  .header-right .quote-text,
+  .header-right .quote-source {
+    font-size: 0.775rem !important;
+  }
+
+  /* Logo size */
+  .header-admin-logo {
+    height: 36px !important;
+    width: 36px !important;
+  }
+
+  /* Title font */
+  .header-title-box .header-main-title {
+    font-size: 1rem !important;
+  }
+
+  .header-title-box .header-sub-title {
+    font-size: 0.7rem !important;
+  }
+
+  /* Clock */
+  .time-display-box .live-time {
+    font-size: 1.25rem !important;
+  }
+
+  .time-display-box .live-date {
+    font-size: 0.7rem !important;
+  }
+
+  /* Card body padding */
+  .single-row-ticker-container {
+    padding: 8px 10px !important;
+  }
+
+  .ticker-user-name {
+    font-size: 0.85rem !important;
+  }
+
+  /* Bottom bar: very compact */
+  .public-bottom-bar {
+    font-size: 0.725rem !important;
+  }
+
+  .footer-msg-sub {
+    font-size: 0.675rem !important;
+  }
+
+  /* Badge sizes */
+  .pub-header-badge,
+  .pub-btn-see-all {
+    font-size: 0.675rem !important;
+    padding: 2px 8px !important;
+  }
+
+  /* Info box: compact */
+  .info-box {
+    padding: 6px 10px !important;
+  }
+
+  /* Table text */
+  .pub-table {
+    font-size: 0.72rem !important;
+  }
+
+  .pub-table th,
+  .pub-table td {
+    padding: 5px 8px !important;
+  }
+
+  /* Hero: reduce height */
+  .hero-book-slot {
+    height: 170px !important;
+  }
+
+  .queue-card-slot {
+    min-height: 75px !important;
+  }
+
+  /* Catalog grid: 2 columns on small phone */
+  .row-cols-sm-2 {
+    --bs-columns: 2 !important;
+  }
+}
+
+/* ------- Non-kiosk public pages (book.php, buku-tamu.php, login.php) ------- */
+@media (max-width: 767px) {
+  /* Top nav: Kembali + action buttons — wrap to next line */
+  .container > .d-flex.justify-content-between.mb-3,
+  .container > .d-flex.justify-content-between.mb-4 {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .container > .d-flex.justify-content-between > .d-flex.gap-2 {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+
+  /* Catalog header banner: stack title + search */
+  .card-body .row.align-items-center.gy-3 > .col-md-7,
+  .card-body .row.align-items-center.gy-3 > .col-md-5 {
+    width: 100% !important;
+  }
+
+  /* Search form: full width */
+  .col-md-5 .d-flex.gap-2 {
+    width: 100%;
+  }
+
+  /* Book grid: 2 columns on phone */
+  .row.row-cols-2.row-cols-sm-3.row-cols-md-4.row-cols-lg-5 {
+    --bs-columns: 2 !important;
+  }
+}
+
+@media (max-width: 575px) {
+  /* Catalog book card text: smaller */
+  .catalog-book-card .card-body {
+    padding: 0.5rem !important;
+  }
+
+  /* Book detail: min-height adjustment for cover */
+  .col-12.col-md-4.col-lg-3 .rounded-4 {
+    min-height: 200px !important;
+  }
+
+  /* Visitor buku tamu: clock */
+  .visitor-clock {
+    font-size: 2rem !important;
+  }
+
+  /* Visitor form: full width */
+  .visitor-kiosk-card .col-lg-7,
+  .visitor-kiosk-card .col-lg-5 {
+    width: 100% !important;
+  }
+}
+
+/* ------- Extra Small (≤ 400px) ------- */
+@media (max-width: 400px) {
+  .public-header-bar {
+    padding: 8px 10px !important;
+  }
+
+  .header-title-box .header-main-title {
+    font-size: 0.875rem !important;
+  }
+
+  /* Catalog: 1 column on very tiny screens */
+  .row-cols-2 {
+    --bs-columns: 1 !important;
+  }
+
+  .visitor-clock {
+    font-size: 1.6rem !important;
+  }
+}
