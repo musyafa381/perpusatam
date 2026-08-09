@@ -153,55 +153,6 @@
         </div>
       </div>
 
-      <!-- Section 3: Informasi Perpustakaan (Dynamic Multi-Banner / Info) -->
-      <?php
-      helper(['upload_helper']);
-      $tvBanners = getTvBanners();
-      ?>
-      <div class="pub-card info-card">
-        <div class="pub-card-header gold-header header-between">
-          <div class="header-icon-title">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="16" x2="12" y2="12"></line>
-              <line x1="12" y1="8" x2="12.01" y2="8"></line>
-            </svg>
-            <span>INFORMASI PERPUSTAKAAN</span>
-          </div>
-          <span class="pub-header-badge" id="bannerCounterBadge">Assalafiyyah</span>
-        </div>
-
-        <div class="info-card-body p-0" style="background: #ffffff;">
-          <?php if (!empty($tvBanners)): ?>
-            <div class="tv-poster-container text-center overflow-hidden position-relative" id="tvPosterContainer" style="height: 220px; max-height: 220px; background: #ffffff; border-radius: 0 !important;">
-              <img id="tvBannerLayer1" src="<?= esc($tvBanners[0]['url']) ?>" alt="Informasi Perpustakaan" class="tv-banner-layer active-layer">
-              <img id="tvBannerLayer2" src="<?= esc($tvBanners[0]['url']) ?>" alt="Informasi Perpustakaan" class="tv-banner-layer">
-            </div>
-          <?php else: ?>
-            <div class="info-item-grid p-2">
-              <div class="info-box">
-                <div class="info-icon-box icon-clock">
-                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                </div>
-                <div class="info-content">
-                  <span class="info-label">Jam Layanan</span>
-                  <span class="info-val">Senin - Sabtu: 08.00 - 16.00 WIB</span>
-                </div>
-              </div>
-
-              <div class="info-box">
-                <div class="info-icon-box icon-rules">
-                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                </div>
-                <div class="info-content">
-                  <span class="info-label">Ketentuan Pinjam</span>
-                  <span class="info-val">Maks. 3 Buku • Durasi 7 Hari</span>
-                </div>
-              </div>
-            </div>
-          <?php endif; ?>
-        </div>
-      </div>
 
     </div>
 
@@ -557,42 +508,6 @@
     }, 1000);
   })();
 
-  // Multi-Banner Ultra-Smooth Cross-Fade Rotation for TV Content
-  (function() {
-    const layer1 = document.getElementById('tvBannerLayer1');
-    const layer2 = document.getElementById('tvBannerLayer2');
-    const badgeEl = document.getElementById('bannerCounterBadge');
-    if (!layer1 || !layer2) return;
-
-    let bIdx = 0;
-    let activeLayer = 1;
-
-    function rotateTvBanner() {
-      const banners = window.liveDataStore.tvBanners || [];
-      if (banners.length <= 1) return;
-
-      bIdx = (bIdx + 1) % banners.length;
-      const nextBannerUrl = banners[bIdx].url;
-
-      if (activeLayer === 1) {
-        layer2.src = nextBannerUrl;
-        layer2.classList.add('active-layer');
-        layer1.classList.remove('active-layer');
-        activeLayer = 2;
-      } else {
-        layer1.src = nextBannerUrl;
-        layer1.classList.add('active-layer');
-        layer2.classList.remove('active-layer');
-        activeLayer = 1;
-      }
-
-      if (badgeEl) {
-        badgeEl.textContent = `Banner ${bIdx + 1} dari ${banners.length}`;
-      }
-    }
-
-    setInterval(rotateTvBanner, 6000);
-  })();
 
   // Real-Time Background Auto-Sync (Sinkronisasi Data Terbaru Setiap 3 Detik Tanpa Reload)
   (function() {
