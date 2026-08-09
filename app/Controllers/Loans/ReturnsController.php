@@ -226,9 +226,15 @@ class ReturnsController extends ResourceController
 
             if (empty($param)) return;
 
+            // Strip optional 'TRX-' or 'trx-' prefix if scanned from receipt label
+            $cleanParam = preg_replace('/^TRX-?/i', '', $param);
+
             // Check if param matches a specific loan UID first
             $matchedLoan = $this->loanModel
-                ->where('uid', $param)
+                ->groupStart()
+                    ->where('uid', $param)
+                    ->orWhere('uid', $cleanParam)
+                ->groupEnd()
                 ->where('deleted_at', null)
                 ->where('return_date', null)
                 ->first();
@@ -242,7 +248,7 @@ class ReturnsController extends ResourceController
                 ->where('loans.return_date', null);
 
             if ($matchedLoan) {
-                // If scanned by specific Loan UID, aggregate all loans from that same borrowing session (member_id + loan_date YYYY-MM-DD HH:MM)
+                // If scanned by specific Loan UID, aggregate all loans from that same borrowing session
                 $sessionTime = substr($matchedLoan['loan_date'], 0, 16);
                 $query->where('loans.member_id', $matchedLoan['member_id'])
                       ->where('SUBSTRING(loans.loan_date, 1, 16)', $sessionTime);
@@ -256,7 +262,9 @@ class ReturnsController extends ResourceController
                     ->orLike('publisher', $param, insensitiveSearch: true)
                     ->orLike('book_items.item_code', $param, insensitiveSearch: true)
                     ->orLike('loans.uid', $param, insensitiveSearch: true)
+                    ->orLike('loans.uid', $cleanParam, insensitiveSearch: true)
                     ->orLike('members.uid', $param, insensitiveSearch: true)
+                    ->orLike('members.uid', $cleanParam, insensitiveSearch: true)
                     ->groupEnd();
             }
 

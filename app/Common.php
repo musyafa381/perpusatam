@@ -119,3 +119,38 @@ if (!function_exists('generateBarcodeSVG')) {
         return $svg;
     }
 }
+
+if (!function_exists('generateQRCodeSVG')) {
+    /**
+     * Generate a crisp 2D QR Code SVG string (scannable by HP cameras and 2D barcode scanners)
+     */
+    function generateQRCodeSVG(?string $code = '', int $size = 90): string
+    {
+        $code = trim((string)$code);
+        if (empty($code)) {
+            $code = '00000000';
+        }
+
+        try {
+            if (class_exists('\Endroid\QrCode\QrCode')) {
+                $qrCode = \Endroid\QrCode\QrCode::create($code)
+                    ->setEncoding(new \Endroid\QrCode\Encoding\Encoding('UTF-8'))
+                    ->setErrorCorrectionLevel(new \Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow())
+                    ->setSize($size)
+                    ->setMargin(4);
+
+                $writer = new \Endroid\QrCode\Writer\SvgWriter();
+                $result = $writer->write($qrCode);
+                $svg = $result->getString();
+
+                // Remove XML declaration for clean inline embedding
+                $svg = preg_replace('/<\?xml.*?\?>/i', '', $svg);
+                return trim($svg);
+            }
+        } catch (\Throwable $e) {
+            // Fallback
+        }
+
+        return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' . $size . ' ' . $size . '" width="' . $size . 'px" height="' . $size . 'px"><rect width="100%" height="100%" fill="#ffffff"/><text x="50%" y="50%" text-anchor="middle" font-size="10">QR Code</text></svg>';
+    }
+}

@@ -140,7 +140,7 @@
     word-break: break-word;
   }
 
-  /* CETAK PRINT STRUK THERMAL 58MM (CLEAR, LARGE, SCANNER-FRIENDLY BARCODE) */
+  /* CETAK PRINT STRUK THERMAL 58MM (DUAL BARCODE 1D + QR CODE 2D) */
   @media print {
     @page {
       size: 58mm auto;
@@ -238,10 +238,15 @@
       filter: grayscale(100%) contrast(200%);
     }
 
-    /* Barcode high contrast & scanner scannable height */
-    svg {
+    /* Barcode 1D & 2D styling in print */
+    .barcode-1d-container svg {
       max-width: 100% !important;
-      height: 48px !important;
+      height: 50px !important;
+    }
+
+    .qrcode-2d-container svg {
+      width: 80px !important;
+      height: 80px !important;
     }
   }
 </style>
@@ -303,13 +308,24 @@ $footerNote = $settings['struk_footer_note'] ?? 'Simpan & bawa struk ini saat pe
 
     <div class="thermal-divider"></div>
 
-    <!-- Barcode & TRX UID (Scanner-Friendly Size) -->
+    <!-- DUAL SCAN CODES: 1D BARCODE + 2D QR CODE -->
     <div class="text-center my-2">
-      <div style="height: 48px; display: flex; justify-content: center; align-items: center; overflow: hidden; background: #ffffff; padding: 2px 0;">
-        <?= generateBarcodeSVG($loan['uid'], 48); ?>
+      <!-- 1. Barcode Batang 1D (For POS/Laser Scanner) -->
+      <div class="barcode-1d-container" style="height: 52px; display: flex; justify-content: center; align-items: center; overflow: hidden; background: #ffffff; padding: 2px 0;">
+        <?= generateBarcodeSVG($loan['uid'], 50); ?>
       </div>
-      <div style="font-weight: bold; font-size: 9.5pt; margin-top: 3px; font-family: monospace; letter-spacing: 0.5px; word-break: break-all;">
+      <div style="font-weight: bold; font-size: 9.5pt; margin-top: 2px; font-family: monospace; letter-spacing: 0.5px; word-break: break-all;">
         NO: TRX-<?= esc($loan['uid']); ?>
+      </div>
+
+      <!-- 2. QR Code 2D (For HP Camera & 2D Optical Scanners) -->
+      <div style="margin-top: 8px; display: flex; flex-direction: column; align-items: center;">
+        <div class="qrcode-2d-container" style="padding: 4px; background: #ffffff; border: 1px solid #000; border-radius: 4px; display: inline-block;">
+          <?= generateQRCodeSVG($loan['uid'], 80); ?>
+        </div>
+        <small style="font-size: 7.5pt; font-weight: bold; text-transform: uppercase; margin-top: 3px; color: #000; display: block;">
+          <i class="ti ti-qrcode me-1"></i>Scan QR Code (Kamera / HP)
+        </small>
       </div>
     </div>
 
