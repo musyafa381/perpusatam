@@ -44,6 +44,8 @@
     <div class="public-left-col">
       
       <?php
+      helper(['upload_helper', 'tv_helper']);
+      $tvBanners = function_exists('getTvBanners') ? getTvBanners() : [];
       $loansPayload = [];
       if (!empty($activeLoans)) {
           foreach ($activeLoans as $ln) {
@@ -341,7 +343,7 @@
     books: <?= json_encode($allBooks); ?>,
     loans: <?= json_encode($loansPayload); ?>,
     visitors: <?= json_encode($visitorsPayload); ?>,
-    tvBanners: <?= json_encode($tvBanners); ?>
+    tvBanners: <?= json_encode($tvBanners ?? []); ?>
   };
 
   // Rotasi Antrean Koleksi Buku (Hero Spotlight + Queue Rotation)
