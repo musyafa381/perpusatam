@@ -275,6 +275,9 @@ $coverImageUrl = getBookCoverUrl($book['book_cover']);
                 </td>
                 <td class="text-center pe-4">
                   <div class="d-flex justify-content-center gap-1">
+                    <button type="button" class="btn btn-outline-warning btn-sm rounded-pill px-2.5" onclick="printBookingSticker58mm('<?= addslashes(esc("{$res['first_name']} {$res['last_name']}")); ?>', '<?= addslashes(esc($res['tier']['name'])); ?>', '<?= esc($res['member_uid'] ?? ''); ?>', '<?= addslashes(esc($book['title'])); ?>', '<?= addslashes(esc($book['author'])); ?>', '<?= addslashes(esc($book['call_number'] ?? ($book['ddc'] ?? ''))); ?>', '<?= esc($book['isbn'] ?? ''); ?>', '<?= addslashes(esc($book['rack'])); ?>', '<?= esc($book['floor']); ?>', '<?= \CodeIgniter\I18n\Time::parse($res['created_at'], locale: 'id')->toLocalizedString('d MMM Y HH:mm'); ?>', 'Menunggu Buku Kembalian')" title="Cetak Stiker Booking (58mm)">
+                      <i class="ti ti-printer"></i>
+                    </button>
                     <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-2.5" data-bs-toggle="modal" data-bs-target="#resDetailModal-<?= $res['id']; ?>" title="Detail Booking">
                       <i class="ti ti-eye"></i>
                     </button>
@@ -478,7 +481,10 @@ $coverImageUrl = getBookCoverUrl($book['book_cover']);
                     <div>Diupdate: <?= !empty($item['updated_at']) ? \CodeIgniter\I18n\Time::parse($item['updated_at'], locale: 'id')->toLocalizedString('d MMM Y HH:mm') : '-'; ?></div>
                   </div>
 
-                  <div class="d-flex gap-2 mt-3 pt-2 border-top">
+                  <div class="d-flex flex-wrap gap-2 mt-3 pt-2 border-top">
+                    <button type="button" class="btn btn-outline-primary btn-sm flex-fill fw-semibold" onclick="printBookLabelSticker('<?= addslashes(esc($book['title'])); ?>', '<?= addslashes(esc($book['author'])); ?>', '<?= addslashes(esc($book['publisher'])); ?>', '<?= esc($book['year']); ?>', '<?= addslashes(esc($book['call_number'] ?? ($book['ddc'] ?? ''))); ?>', '<?= esc($book['isbn'] ?? ''); ?>', '<?= esc($item['item_code']); ?>', '<?= addslashes(esc($item['rack_name'] ?? $book['rack'])); ?>', '<?= esc($item['rack_floor'] ?? $book['floor']); ?>')" title="Cetak Stiker Label Identitas Eksemplar Ini">
+                      <i class="ti ti-printer me-1"></i>Stiker Label
+                    </button>
                     <button type="button" class="btn btn-outline-info btn-sm flex-fill" data-bs-toggle="modal" data-bs-target="#conditionLogModal-<?= $item['id']; ?>" title="Lihat Riwayat Kerusakan & Perubahan Kondisi">
                       <i class="ti ti-history me-1"></i>Riwayat
                     </button>
@@ -808,7 +814,6 @@ function toggleDonorEdit(id) {
   }
 }
 </script>
-<script src="<?= base_url('assets/libs/jsbarcode/JsBarcode.all.min.js'); ?>"></script>
 <script>
   function renderIsbnBarcode() {
     const svgEl = document.querySelector('#isbnBarcodeSvg');
@@ -817,31 +822,47 @@ function toggleDonorEdit(id) {
     const cleanIsbn = rawIsbn.replace(/[^0-9X]/gi, '');
     if (!cleanIsbn) return;
 
-    try {
-      JsBarcode("#isbnBarcodeSvg", cleanIsbn, {
-        format: cleanIsbn.length === 13 ? "EAN13" : "CODE128",
-        width: 1.8,
-        height: 50,
-        displayValue: true,
-        font: "monospace",
-        fontSize: 14,
-        margin: 6,
-        background: "#ffffff",
-        lineColor: "#000000"
-      });
-    } catch (e) {
-      JsBarcode("#isbnBarcodeSvg", cleanIsbn, {
-        format: "CODE128",
-        width: 1.8,
-        height: 50,
-        displayValue: true,
-        font: "monospace",
-        fontSize: 14,
-        margin: 6,
-        background: "#ffffff",
-        lineColor: "#000000"
-      });
+    let retries = 0;
+    function generate() {
+      if (typeof JsBarcode === 'undefined') {
+        if (retries < 20) {
+          retries++;
+          setTimeout(generate, 50);
+        }
+        return;
+      }
+      try {
+        JsBarcode("#isbnBarcodeSvg", cleanIsbn, {
+          format: cleanIsbn.length === 13 ? "EAN13" : "CODE128",
+          width: 1.8,
+          height: 50,
+          displayValue: true,
+          font: "monospace",
+          fontSize: 14,
+          margin: 6,
+          background: "#ffffff",
+          lineColor: "#000000"
+        });
+      } catch (e) {
+        try {
+          JsBarcode("#isbnBarcodeSvg", cleanIsbn, {
+            format: "CODE128",
+            width: 1.8,
+            height: 50,
+            displayValue: true,
+            font: "monospace",
+            fontSize: 14,
+            margin: 6,
+            background: "#ffffff",
+            lineColor: "#000000"
+          });
+        } catch (err) {
+          console.error('JsBarcode rendering error:', err);
+        }
+      }
     }
+
+    generate();
   }
 
   if (document.readyState === 'loading') {
@@ -849,6 +870,8 @@ function toggleDonorEdit(id) {
   } else {
     renderIsbnBarcode();
   }
+  // Extra safety fallback for SPA DOM injection timing
+  setTimeout(renderIsbnBarcode, 100);
 
   function printIsbnBarcode() {
     const svgEl = document.querySelector('#isbnBarcodeSvg');
@@ -879,6 +902,463 @@ function toggleDonorEdit(id) {
             setTimeout(function() { window.close(); }, 500);
           };
         <\/script>
+      </body>
+      </html>
+    `);
+    printWin.document.close();
+  }
+
+  function printBookLabelSticker(title, author, publisher, year, callNo, isbn, itemCode, rackName, rackFloor) {
+    const tempDiv = document.createElement('div');
+    tempDiv.style.position = 'absolute';
+    tempDiv.style.left = '-9999px';
+    document.body.appendChild(tempDiv);
+
+    let isbnSvgData = '';
+    const cleanIsbn = (isbn || '').replace(/[^0-9X]/gi, '');
+    if (cleanIsbn && typeof JsBarcode !== 'undefined') {
+      const isbnSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      tempDiv.appendChild(isbnSvg);
+      try {
+        JsBarcode(isbnSvg, cleanIsbn, {
+          format: cleanIsbn.length === 13 ? "EAN13" : "CODE128",
+          width: 0.9,
+          height: 26,
+          displayValue: true,
+          font: "monospace",
+          fontSize: 8.5,
+          fontOptions: "bold",
+          margin: 1,
+          background: "#ffffff",
+          lineColor: "#000000"
+        });
+        isbnSvgData = new XMLSerializer().serializeToString(isbnSvg);
+      } catch (e) {
+        try {
+          JsBarcode(isbnSvg, cleanIsbn, {
+            format: "CODE128",
+            width: 0.9,
+            height: 26,
+            displayValue: true,
+            font: "monospace",
+            fontSize: 8.5,
+            fontOptions: "bold",
+            margin: 1,
+            background: "#ffffff",
+            lineColor: "#000000"
+          });
+          isbnSvgData = new XMLSerializer().serializeToString(isbnSvg);
+        } catch (err) {}
+      }
+    }
+
+    let itemCodeSvgData = '';
+    const cleanItemCode = (itemCode || '').trim();
+    if (cleanItemCode && typeof JsBarcode !== 'undefined') {
+      const itemCodeSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      tempDiv.appendChild(itemCodeSvg);
+      try {
+        JsBarcode(itemCodeSvg, cleanItemCode, {
+          format: "CODE128",
+          width: 0.95,
+          height: 28,
+          displayValue: true,
+          font: "monospace",
+          fontSize: 9,
+          fontOptions: "bold",
+          margin: 1,
+          background: "#ffffff",
+          lineColor: "#000000"
+        });
+        itemCodeSvgData = new XMLSerializer().serializeToString(itemCodeSvg);
+      } catch (e) {}
+    }
+
+    document.body.removeChild(tempDiv);
+
+    const printWin = window.open('', '_blank', 'width=400,height=600');
+    printWin.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Stiker 58mm - ${itemCode || title}</title>
+        <style>
+          @page { size: 58mm auto; margin: 0mm; }
+          * { box-sizing: border-box; margin: 0; padding: 0; }
+          body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #ffffff;
+            margin: 0 auto;
+            padding: 1mm 2mm;
+            width: 44mm;
+            max-width: 44mm;
+            color: #000000;
+            -webkit-font-smoothing: none;
+          }
+          .no-print {
+            text-align: center;
+            margin-bottom: 6px;
+          }
+          .no-print button {
+            padding: 6px 14px;
+            background: #000000;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 11px;
+            cursor: pointer;
+          }
+          .sticker-card {
+            width: 100%;
+            border: 1px solid #000000;
+            padding: 3px;
+            text-align: center;
+            background: #ffffff;
+          }
+          .header-title {
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            line-height: 1.2;
+            color: #000000;
+          }
+          .header-sub {
+            font-size: 7.5px;
+            font-weight: bold;
+            color: #000000;
+            display: block;
+            margin-top: 1px;
+          }
+          .divider {
+            border-bottom: 1px dashed #000000;
+            margin: 3px 0;
+          }
+          .call-number-box {
+            border: 1px solid #000000;
+            padding: 2px;
+            margin: 3px 0;
+            text-align: center;
+          }
+          .call-number-label {
+            font-size: 7px;
+            font-weight: bold;
+            text-transform: uppercase;
+            display: block;
+          }
+          .call-number-val {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            font-weight: bold;
+            color: #000000;
+          }
+          .book-details {
+            font-size: 8.5px;
+            text-align: left;
+            margin: 3px 0;
+            line-height: 1.3;
+            color: #000000;
+          }
+          .book-title {
+            font-size: 10px;
+            font-weight: bold;
+            margin-bottom: 2px;
+            word-wrap: break-word;
+            color: #000000;
+          }
+          .meta-line {
+            font-size: 8.5px;
+            margin-top: 1.5px;
+            color: #000000;
+            word-wrap: break-word;
+          }
+          .barcode-wrap {
+            border-top: 1px dashed #000000;
+            padding-top: 3px;
+            margin-top: 3px;
+            text-align: center;
+          }
+          .barcode-item {
+            margin-bottom: 4px;
+          }
+          .barcode-label {
+            font-size: 7.5px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 1px;
+          }
+          .barcode-item svg {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+          }
+          @media print {
+            body { width: 44mm; max-width: 44mm; padding: 1mm 2mm; margin: 0 auto; }
+            .no-print { display: none !important; }
+            .sticker-card { border: 1px solid #000000; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="no-print">
+          <button onclick="window.print()">🖨️ Cetak (58mm)</button>
+        </div>
+        <div class="sticker-card">
+          <div class="header-title">
+            Perpustakaan Assalafiyyah
+            <span class="header-sub">STIKER IDENTITAS BUKU</span>
+          </div>
+          <div class="divider"></div>
+
+          ${callNo ? `
+          <div class="call-number-box">
+            <span class="call-number-label">Nomor Panggil (Call No)</span>
+            <span class="call-number-val">${callNo}</span>
+          </div>` : ''}
+
+          <div class="book-details">
+            <div class="book-title">${title}</div>
+            <div class="meta-line"><strong>Pengarang:</strong> ${author || '-'}</div>
+            ${publisher ? `<div class="meta-line"><strong>Penerbit:</strong> ${publisher} ${year ? '(' + year + ')' : ''}</div>` : ''}
+            <div class="meta-line"><strong>Lokasi:</strong> Rak ${rackName} (Lt. ${rackFloor})</div>
+          </div>
+
+          <div class="barcode-wrap">
+            ${itemCodeSvgData ? `
+              <div class="barcode-item">
+                <div class="barcode-label">📌 KODE EKSEMPLAR</div>
+                ${itemCodeSvgData}
+              </div>` : ''}
+
+            ${isbnSvgData ? `
+              <div class="barcode-item">
+                <div class="barcode-label">🔖 ISBN</div>
+                ${isbnSvgData}
+              </div>` : ''}
+          </div>
+        </div>
+      </body>
+      </html>
+    `);
+    printWin.document.close();
+  }
+
+  function printBookingSticker58mm(memberName, memberTier, memberUid, bookTitle, bookAuthor, bookCallNo, bookIsbn, rackName, rackFloor, bookingDate, bookingStatus) {
+    const tempDiv = document.createElement('div');
+    tempDiv.style.position = 'absolute';
+    tempDiv.style.left = '-9999px';
+    document.body.appendChild(tempDiv);
+
+    let isbnSvgData = '';
+    const cleanIsbn = (bookIsbn || '').replace(/[^0-9X]/gi, '');
+    if (cleanIsbn && typeof JsBarcode !== 'undefined') {
+      const isbnSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      tempDiv.appendChild(isbnSvg);
+      try {
+        JsBarcode(isbnSvg, cleanIsbn, {
+          format: cleanIsbn.length === 13 ? "EAN13" : "CODE128",
+          width: 0.9,
+          height: 26,
+          displayValue: true,
+          font: "monospace",
+          fontSize: 8.5,
+          fontOptions: "bold",
+          margin: 1,
+          background: "#ffffff",
+          lineColor: "#000000"
+        });
+        isbnSvgData = new XMLSerializer().serializeToString(isbnSvg);
+      } catch (e) {
+        try {
+          JsBarcode(isbnSvg, cleanIsbn, {
+            format: "CODE128",
+            width: 0.9,
+            height: 26,
+            displayValue: true,
+            font: "monospace",
+            fontSize: 8.5,
+            fontOptions: "bold",
+            margin: 1,
+            background: "#ffffff",
+            lineColor: "#000000"
+          });
+          isbnSvgData = new XMLSerializer().serializeToString(isbnSvg);
+        } catch (err) {}
+      }
+    }
+
+    document.body.removeChild(tempDiv);
+
+    const printWin = window.open('', '_blank', 'width=400,height=600');
+    printWin.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Stiker Booking - ${memberName}</title>
+        <style>
+          @page { size: 58mm auto; margin: 0mm; }
+          * { box-sizing: border-box; margin: 0; padding: 0; }
+          body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #ffffff;
+            margin: 0 auto;
+            padding: 1mm 2mm;
+            width: 44mm;
+            max-width: 44mm;
+            color: #000000;
+            -webkit-font-smoothing: none;
+          }
+          .no-print {
+            text-align: center;
+            margin-bottom: 6px;
+          }
+          .no-print button {
+            padding: 6px 14px;
+            background: #000000;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 11px;
+            cursor: pointer;
+          }
+          .sticker-card {
+            width: 100%;
+            border: 1px solid #000000;
+            padding: 3px;
+            text-align: center;
+            background: #ffffff;
+          }
+          .header-title {
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            line-height: 1.2;
+            color: #000000;
+          }
+          .header-sub {
+            font-size: 7.5px;
+            font-weight: bold;
+            color: #000000;
+            display: block;
+            margin-top: 1px;
+          }
+          .divider {
+            border-bottom: 1px dashed #000000;
+            margin: 3px 0;
+          }
+          .booking-badge {
+            border: 1px solid #000000;
+            padding: 2px;
+            margin: 3px 0;
+            font-size: 8.5px;
+            font-weight: bold;
+            text-transform: uppercase;
+            background: #ffffff;
+          }
+          .member-info {
+            text-align: left;
+            font-size: 8.5px;
+            margin: 3px 0;
+            line-height: 1.3;
+            color: #000000;
+          }
+          .member-name {
+            font-size: 10px;
+            font-weight: bold;
+            word-wrap: break-word;
+          }
+          .call-box {
+            border: 1px solid #000000;
+            padding: 2px;
+            margin: 3px 0;
+            text-align: center;
+          }
+          .call-val {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            font-weight: bold;
+          }
+          .book-info {
+            text-align: left;
+            font-size: 8.5px;
+            margin: 3px 0;
+            line-height: 1.3;
+            color: #000000;
+          }
+          .book-title {
+            font-size: 10px;
+            font-weight: bold;
+            word-wrap: break-word;
+          }
+          .meta-line {
+            font-size: 8.5px;
+            margin-top: 1.5px;
+            color: #000000;
+            word-wrap: break-word;
+          }
+          .barcode-wrap {
+            border-top: 1px dashed #000000;
+            padding-top: 3px;
+            margin-top: 3px;
+            text-align: center;
+          }
+          .barcode-item svg {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+          }
+          @media print {
+            body { width: 44mm; max-width: 44mm; padding: 1mm 2mm; margin: 0 auto; }
+            .no-print { display: none !important; }
+            .sticker-card { border: 1px solid #000000; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="no-print">
+          <button onclick="window.print()">🖨️ Cetak Booking (58mm)</button>
+        </div>
+        <div class="sticker-card">
+          <div class="header-title">
+            Perpustakaan Assalafiyyah
+            <span class="header-sub">TANDA STIKER BOOKING BUKU</span>
+          </div>
+          <div class="divider"></div>
+
+          <div class="booking-badge">
+            STATUS: ${bookingStatus ? bookingStatus.toUpperCase() : 'BOOKED'}
+          </div>
+
+          <div class="member-info">
+            <div class="member-name">${memberName}</div>
+            <div class="meta-line"><strong>Status Member:</strong> ${memberTier}</div>
+            ${memberUid ? `<div class="meta-line"><strong>ID Member:</strong> ${memberUid}</div>` : ''}
+            <div class="meta-line"><strong>Waktu Booking:</strong> ${bookingDate}</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="book-info">
+            <div class="book-title">${bookTitle}</div>
+            ${bookAuthor ? `<div class="meta-line"><strong>Pengarang:</strong> ${bookAuthor}</div>` : ''}
+            <div class="meta-line"><strong>Lokasi Rak:</strong> Rak ${rackName} (Lt. ${rackFloor})</div>
+          </div>
+
+          ${bookCallNo ? `
+          <div class="call-box">
+            <div style="font-size:7px; font-weight:bold;">NOMOR PANGGIL BUKU</div>
+            <div class="call-val">${bookCallNo}</div>
+          </div>` : ''}
+
+          ${isbnSvgData ? `
+          <div class="barcode-wrap">
+            <div style="font-size:7.5px; font-weight:bold; margin-bottom:1px;">BARCODE ISBN</div>
+            <div class="barcode-item">${isbnSvgData}</div>
+          </div>` : ''}
+        </div>
       </body>
       </html>
     `);

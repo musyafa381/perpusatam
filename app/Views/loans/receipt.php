@@ -140,116 +140,114 @@
     word-break: break-word;
   }
 
-  /* CETAK PRINT STRUK THERMAL 58MM (DUAL BARCODE 1D + QR CODE 2D) */
-  @media print {
-    @page {
-      size: 58mm auto;
-      margin: 0mm !important;
-    }
+    /* CETAK PRINT STRUK THERMAL 58MM (DUAL BARCODE 1D + QR CODE 2D) */
+    @media print {
+      @page {
+        size: 58mm auto;
+        margin: 0mm !important;
+      }
 
-    html, body, #main-wrapper, .body-wrapper, .container-fluid, #spa-content-container {
-      background: #ffffff !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      width: 58mm !important;
-      max-width: 58mm !important;
-      color: #000000 !important;
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-      overflow: visible !important;
-    }
+      html, body, #main-wrapper, .body-wrapper, .container-fluid, #spa-content-container {
+        background: #ffffff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 47mm !important;
+        max-width: 47mm !important;
+        color: #000000 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        overflow: visible !important;
+      }
 
-    body * {
-      visibility: hidden !important;
-    }
+      body * {
+        visibility: hidden !important;
+      }
 
-    .printable-receipt-area,
-    .printable-receipt-area * {
-      visibility: visible !important;
-    }
+      .printable-receipt-area,
+      .printable-receipt-area * {
+        visibility: visible !important;
+      }
 
-    .printable-receipt-area {
-      position: fixed !important;
-      left: 0 !important;
-      top: 0 !important;
-      width: 58mm !important;
-      max-width: 58mm !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      box-sizing: border-box !important;
-      z-index: 999999 !important;
-    }
+      .printable-receipt-area {
+        position: fixed !important;
+        left: 0 !important;
+        right: 0 !important;
+        top: 0 !important;
+        width: 44mm !important;
+        max-width: 44mm !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        z-index: 999999 !important;
+      }
 
-    .thermal-receipt {
-      width: 52mm !important; /* Full optimal printable width for 58mm paper */
-      max-width: 52mm !important;
-      border: none !important;
-      border-radius: 0 !important;
-      box-shadow: none !important;
-      padding: 1.5mm 0 !important;
-      margin: 0 auto !important;
-      font-size: 9.5pt !important;
-      line-height: 1.25 !important;
-      color: #000000 !important;
-      background: transparent !important;
-      font-family: Arial, Helvetica, sans-serif !important;
-      box-sizing: border-box !important;
-      word-break: break-word !important;
-      overflow-wrap: break-word !important;
-    }
+      .thermal-receipt {
+        width: 44mm !important;
+        max-width: 44mm !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 1mm 2mm !important;
+        margin: 0 auto !important;
+        font-size: 8.5pt !important;
+        line-height: 1.25 !important;
+        color: #000000 !important;
+        background: transparent !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        box-sizing: border-box !important;
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+        -webkit-font-smoothing: none !important;
+      }
 
-    .no-print {
-      display: none !important;
-    }
+      .no-print {
+        display: none !important;
+      }
 
-    .thermal-title {
-      font-size: 11pt !important;
-      font-weight: bold !important;
-      line-height: 1.15 !important;
-    }
+      .thermal-title {
+        font-size: 10.5pt !important;
+        font-weight: bold !important;
+        line-height: 1.15 !important;
+      }
 
-    .thermal-sub {
-      font-size: 8.5pt !important;
-    }
+      .thermal-sub {
+        font-size: 7.5pt !important;
+      }
 
-    .thermal-footer {
-      font-size: 8.5pt !important;
-    }
+      .thermal-footer {
+        font-size: 8pt !important;
+      }
 
-    .thermal-info-table {
-      font-size: 9.5pt !important;
-    }
+      .thermal-books-table {
+        font-size: 8.5pt !important;
+      }
 
-    .thermal-books-table {
-      font-size: 9pt !important;
-    }
+      .thermal-title, .thermal-sub, .thermal-badge, strong, td, th, p, span, div {
+        color: #000000 !important;
+      }
 
-    .thermal-title, .thermal-sub, .thermal-badge, strong, td, th {
-      color: #000000 !important;
-    }
+      .thermal-divider {
+        border-top: 1px dashed #000000 !important;
+      }
 
-    .thermal-divider {
-      border-top: 1px dashed #000000 !important;
-    }
+      .thermal-logo {
+        height: 32px !important;
+        width: 34px !important;
+        filter: grayscale(100%) contrast(200%);
+      }
 
-    .thermal-logo {
-      height: 34px !important;
-      width: 34px !important;
-      filter: grayscale(100%) contrast(200%);
-    }
+      /* Barcode 1D & 2D styling in print */
+      .barcode-1d-container svg {
+        max-width: 100% !important;
+        height: 44px !important;
+      }
 
-    /* Barcode 1D & 2D styling in print */
-    .barcode-1d-container svg {
-      max-width: 100% !important;
-      height: 50px !important;
+      .qrcode-2d-container svg {
+        width: 75px !important;
+        height: 75px !important;
+      }
     }
-
-    .qrcode-2d-container svg {
-      width: 80px !important;
-      height: 80px !important;
-    }
-  }
-</style>
+  </style>
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
@@ -295,13 +293,9 @@ $footerNote = $settings['struk_footer_note'] ?? 'Simpan & bawa struk ini saat pe
     
     <!-- Kop Header -->
     <div class="thermal-header">
-      <img src="<?= base_url('assets/images/logoku.jpg'); ?>" alt="Logo" class="thermal-logo" onerror="this.src='<?= base_url('assets/images/logos/favicon.png'); ?>'">
       <div class="thermal-title"><?= esc($libraryName); ?></div>
       <?php if (!empty($libraryAddress)) : ?>
         <span class="thermal-sub"><?= esc($libraryAddress); ?></span>
-      <?php endif; ?>
-      <?php if (!empty($libraryContact)) : ?>
-        <span class="thermal-sub">TELP/WA: <?= esc($libraryContact); ?></span>
       <?php endif; ?>
       <div class="thermal-badge">STRUK PEMINJAMAN BUKU</div>
     </div>
@@ -311,53 +305,32 @@ $footerNote = $settings['struk_footer_note'] ?? 'Simpan & bawa struk ini saat pe
     <!-- DUAL SCAN CODES: 1D BARCODE + 2D QR CODE -->
     <div class="text-center my-2">
       <!-- 1. Barcode Batang 1D (For POS/Laser Scanner) -->
-      <div class="barcode-1d-container" style="height: 52px; display: flex; justify-content: center; align-items: center; overflow: hidden; background: #ffffff; padding: 2px 0;">
-        <?= generateBarcodeSVG($loan['uid'], 50); ?>
-      </div>
-      <div style="font-weight: bold; font-size: 9.5pt; margin-top: 2px; font-family: monospace; letter-spacing: 0.5px; word-break: break-all;">
+      <div style="font-weight: bold; font-size: 9pt; margin-top: 2px; font-family: monospace; letter-spacing: 0.5px; word-break: break-all; color: #000;">
         NO: TRX-<?= esc($loan['uid']); ?>
       </div>
 
       <!-- 2. QR Code 2D (For HP Camera & 2D Optical Scanners) -->
-      <div style="margin-top: 8px; display: flex; flex-direction: column; align-items: center;">
-        <div class="qrcode-2d-container" style="padding: 4px; background: #ffffff; border: 1px solid #000; border-radius: 4px; display: inline-block;">
-          <?= generateQRCodeSVG($loan['uid'], 80); ?>
+      <div style="margin-top: 6px; display: flex; flex-direction: column; align-items: center;">
+        <div class="qrcode-2d-container" style="padding: 3px; background: #ffffff; border: 1px solid #000; border-radius: 3px; display: inline-block;">
+          <?= generateQRCodeSVG($loan['uid'], 75); ?>
         </div>
-        <small style="font-size: 7.5pt; font-weight: bold; text-transform: uppercase; margin-top: 3px; color: #000; display: block;">
-          <i class="ti ti-qrcode me-1"></i>Scan QR Code (Kamera / HP)
-        </small>
       </div>
     </div>
 
     <div class="thermal-divider"></div>
 
-    <!-- Info Peminjam & Tanggal (Fixed Table Grid - Clear & No Overflow) -->
-    <table class="thermal-info-table">
-      <tr>
-        <td style="width: 68px;">Peminjam:</td>
-        <td style="text-align: right; font-weight: bold; word-break: break-word;">
-          <?= esc("{$loan['first_name']} {$loan['last_name']}"); ?>
-        </td>
-      </tr>
-      <tr>
-        <td style="width: 68px;">ID Anggota:</td>
-        <td style="text-align: right; font-weight: bold; font-family: monospace; word-break: break-all;">
-          <?= esc($loan['member_uid']); ?>
-        </td>
-      </tr>
-      <tr>
-        <td style="width: 68px;">Tgl Pinjam:</td>
-        <td style="text-align: right; font-weight: bold; word-break: break-word;">
-          <?= $loanDate->toLocalizedString('dd/MM/yy HH:mm'); ?>
-        </td>
-      </tr>
-      <tr>
-        <td style="width: 68px;">Tenggat:</td>
-        <td style="text-align: right; font-weight: bold; text-decoration: underline; word-break: break-word;">
-          <?= $dueDate->toLocalizedString('dd/MM/yy'); ?>
-        </td>
-      </tr>
-    </table>
+    <!-- Info Peminjam & Tanggal (Stacked Block - Pure Black & Crisp 58mm Fit) -->
+    <div style="text-align: left; font-size: 8.5pt; line-height: 1.35; color: #000; padding: 2px 0;">
+      <div style="margin-bottom: 2px; word-break: break-word;">
+        <strong>Peminjam:</strong> <?= esc("{$loan['first_name']} {$loan['last_name']}"); ?>
+      </div>
+      <div style="margin-bottom: 2px;">
+        <strong>Tgl Pinjam:</strong> <?= $loanDate->toLocalizedString('EEE, dd/MM/yyyy HH:mm'); ?>
+      </div>
+      <div style="margin-bottom: 2px;">
+        <strong>Tenggat:</strong> <span style="font-weight: bold; font-size: 9pt;"><?= $dueDate->toLocalizedString('EEEE, dd/MM/yyyy'); ?></span>
+      </div>
+    </div>
 
     <div class="thermal-divider"></div>
 
@@ -402,10 +375,6 @@ $footerNote = $settings['struk_footer_note'] ?? 'Simpan & bawa struk ini saat pe
       <p style="margin: 0 0 3px 0; font-weight: 600; font-style: italic;">
         <?= esc($footerNote); ?>
       </p>
-      <div style="font-size: 7.5pt; opacity: 0.9; margin-top: 3px;">
-        Printed: <?= date('d/m/Y H:i'); ?> WIB<br>
-        *** TERIMA KASIH ***
-      </div>
     </div>
 
   </div>

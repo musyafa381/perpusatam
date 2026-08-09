@@ -151,11 +151,11 @@ if (session()->getFlashdata('msg')) : ?>
                 <div class="d-flex justify-content-center gap-2">
                   <?php if (!$paidOffFilter && ($fine['amount_paid'] ?? 0) < $fine['fine_amount']) : ?>
                     <a href="<?= base_url("admin/fines/pay/{$fine['uid']}"); ?>" class="btn btn-pill-gold btn-sm px-3 fw-bold">
-                      <i class="ti ti-cash me-1"></i> Bayar
+                      Bayar
                     </a>
                   <?php endif; ?>
                   <a href="<?= base_url("admin/returns/{$fine['uid']}"); ?>" class="btn btn-outline-secondary btn-sm px-3 rounded-pill fw-semibold">
-                    <i class="ti ti-eye me-1"></i> Detail
+                    Detail
                   </a>
                 </div>
 

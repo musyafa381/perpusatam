@@ -1,7 +1,7 @@
 <?= $this->extend('layouts/home_layout') ?>
 
 <?= $this->section('head') ?>
-<title>PERPUSTAKAAN YAYASAN ASSALAFIYYAH</title>
+<title>Perpustakaan Assalafiyyah</title>
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
@@ -32,8 +32,8 @@
     </div>
 
     <div class="header-right">
-      <div class="quote-text">"Bacalah, maka kamu akan tahu"</div>
-      <div class="quote-source">- QS. Al-'Alaq : 1</div>
+      <div class="quote-text">"Jalan mencari kesempurnaan belajar ilmu adalah membaca"</div>
+      <div class="quote-source">- Ibnu Jauzi</div>
     </div>
   </header>
 
@@ -294,7 +294,7 @@
       </div>
       <div class="footer-msg-text">
         <div class="font-bold">Jaga buku, jaga ilmu, jaga masa depan.</div>
-        <div class="footer-msg-sub">Terima kasih telah berkunjung ke perpustakaan.</div>
+        <div class="footer-msg-sub">Terima kasih telah berkunjung ke perpustakaan pusat Assalafiyyah.</div>
       </div>
     </div>
 
@@ -305,9 +305,9 @@
         <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
         <line x1="12" y1="20" x2="12.01" y2="20"></line>
       </svg>
-      <span>Wi-Fi: <strong>Perpus_Assalafiyyah</strong></span>
+      <span>Wi-Fi: <strong>ASA-Perpus</strong></span>
       <span class="wifi-sep">|</span>
-      <span>Password: <strong>membaca123</strong></span>
+      <span>Password: <strong>perpus12345678</strong></span>
     </div>
   </footer>
 
