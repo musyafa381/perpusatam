@@ -631,10 +631,12 @@ class LoansController extends ResourceController
     public function receipt($uid = null)
     {
         $loan = $this->loanModel
-            ->select('members.*, members.uid as member_uid, books.*, loans.*, book_items.item_code')
+            ->select('members.*, members.uid as member_uid, books.*, loans.*, book_items.item_code, racks.name as rack_name, racks.floor as rack_floor, item_racks.name as item_rack_name, item_racks.floor as item_rack_floor')
             ->join('members', 'loans.member_id = members.id', 'LEFT')
             ->join('books', 'loans.book_id = books.id', 'LEFT')
             ->join('book_items', 'loans.book_item_id = book_items.id', 'LEFT')
+            ->join('racks', 'books.rack_id = racks.id', 'LEFT')
+            ->join('racks as item_racks', 'book_items.rack_id = item_racks.id', 'LEFT')
             ->where('loans.uid', $uid)
             ->first();
 
@@ -645,11 +647,12 @@ class LoansController extends ResourceController
         $loanMinute = substr($loan['loan_date'], 0, 16);
 
         $allSessionLoans = $this->loanModel
-            ->select('loans.*, books.title as book_title, books.author as book_author, books.publisher as book_publisher, books.year as book_year, book_items.item_code, categories.name as category_name, racks.name as rack_name')
+            ->select('loans.*, books.title as book_title, books.author as book_author, books.publisher as book_publisher, books.year as book_year, book_items.item_code, categories.name as category_name, racks.name as rack_name, racks.floor as rack_floor, item_racks.name as item_rack_name, item_racks.floor as item_rack_floor')
             ->join('books', 'loans.book_id = books.id', 'LEFT')
             ->join('book_items', 'loans.book_item_id = book_items.id', 'LEFT')
             ->join('categories', 'books.category_id = categories.id', 'LEFT')
             ->join('racks', 'books.rack_id = racks.id', 'LEFT')
+            ->join('racks as item_racks', 'book_items.rack_id = item_racks.id', 'LEFT')
             ->where('loans.member_id', $loan['member_id'])
             ->like('loans.loan_date', $loanMinute, 'after')
             ->where('loans.return_date', null)
@@ -659,9 +662,13 @@ class LoansController extends ResourceController
             $allSessionLoans = [$loan];
         }
 
+        $settingModel = new \App\Models\SettingModel();
+        $settings     = $settingModel->getAllLibrarySettings();
+
         $data = [
             'loan'            => $loan,
             'allSessionLoans' => $allSessionLoans,
+            'settings'        => $settings,
         ];
 
         return view('loans/receipt', $data);

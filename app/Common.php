@@ -45,44 +45,75 @@ if (!function_exists('getBookCover')) {
 }
 
 if (!function_exists('generateBarcodeSVG')) {
+    /**
+     * Generate a crisp, wide-spaced, scanner-friendly Code 128-B SVG barcode
+     */
     function generateBarcodeSVG(?string $code = '', int $height = 55): string
     {
-        $code = strtoupper(trim((string)$code));
+        // Code 128 pattern dictionary (symbols 0 to 106 - ISO/IEC 15417 compliant)
+        $c128 = [
+            '212222','222122','222221','121223','121322','131222','122213','122312','132212','221213', // 0-9
+            '221312','231212','112232','122132','122231','113222','123122','123221','223211','221132', // 10-19
+            '221231','213212','223112','312131','311222','321122','321221','312212','322112','322211', // 20-29
+            '212123','212321','232121','111323','131123','131321','112313','132113','132311','113312', // 30-39
+            '133112','133211','311312','331112','331211','112133','112331','132131','113123','113321', // 40-49
+            '133121','313112','331121','312113','312311','332111','314111','221411','431111','111224', // 50-59
+            '111422','121124','121421','141122','141221','112214','112412','122114','122411','142112', // 60-69
+            '142211','141212','142121','141221','211214','211412','213112','213211','241112','131124', // 70-79
+            '131312','114112','114211','121142','121241','114221','124112','124211','411131','411311', // 80-89
+            '431113','511111','111431','311141','111341','131141','114113','114311','411113','411311', // 90-99
+            '113141','114131','311141','211412','211214','211232','2331112'                            // 100-106 (103:StartA, 104:StartB, 105:StartC, 106:Stop)
+        ];
+
+        $code = trim((string)$code);
         if (empty($code)) {
             $code = '00000000';
         }
 
-        $patterns = [
-            '0' => '101001101101', '1' => '110100101011', '2' => '101100101011', '3' => '110110010101',
-            '4' => '101001101011', '5' => '110100110101', '6' => '101100110101', '7' => '101001011011',
-            '8' => '110100101101', '9' => '101100101101', 'A' => '110101001011', 'B' => '101101001011',
-            'C' => '110110100101', 'D' => '101011001011', 'E' => '110101100101', 'F' => '101101100101',
-            'G' => '101010011011', 'H' => '110101001101', 'I' => '101101001101', 'J' => '101011001101',
-            'K' => '110101010011', 'L' => '101101010011', 'M' => '110110101001', 'N' => '101011010011',
-            'O' => '110101101001', 'P' => '101101101001', 'Q' => '101010110011', 'R' => '110101011001',
-            'S' => '101101011001', 'T' => '101011011001', 'U' => '110010101011', 'V' => '100110101011',
-            'W' => '110011010101', 'X' => '100101101011', 'Y' => '110010110101', 'Z' => '100110110101',
-            '-' => '100101011011', '.' => '110010101101', ' ' => '100110101101', '*' => '100101101101',
-            '$' => '100100100101', '/' => '100100101001', '+' => '100101001001', '%' => '100100100101'
-        ];
+        $indices = [104]; // Start Code B
+        $checksum = 104;
 
-        $cleanCode = '*' . preg_replace('/[^A-Z0-9\-\.\ \$\/\+\%]/', '', $code) . '*';
-        $bitString = '';
-        for ($i = 0; $i < strlen($cleanCode); $i++) {
-            $char = $cleanCode[$i];
-            if (isset($patterns[$char])) {
-                $bitString .= $patterns[$char] . '0';
+        $len = strlen($code);
+        for ($i = 0; $i < $len; $i++) {
+            $ascii = ord($code[$i]);
+            $idx = $ascii - 32;
+            if ($idx < 0 || $idx > 94) {
+                $idx = 0;
             }
+            $indices[] = $idx;
+            $checksum += $idx * ($i + 1);
         }
 
-        $width = strlen($bitString) * 2;
-        $svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' . $width . ' ' . $height . '" width="100%" height="' . $height . 'px" preserveAspectRatio="none" style="background:#ffffff; border-radius: 4px; padding: 4px;">';
-        $x = 0;
-        for ($i = 0; $i < strlen($bitString); $i++) {
-            if ($bitString[$i] === '1') {
-                $svg .= '<rect x="' . $x . '" y="0" width="2" height="' . $height . '" fill="#0f172a"/>';
+        $checkIdx = $checksum % 103;
+        $indices[] = $checkIdx;
+        $indices[] = 106; // Stop Code
+
+        $widths = '';
+        foreach ($indices as $idx) {
+            $widths .= $c128[$idx];
+        }
+
+        $moduleWidth = 2;
+        $quietZone = 18; // Quiet Zone margin left & right
+        $totalBarModules = 0;
+        $wLen = strlen($widths);
+        for ($j = 0; $j < $wLen; $j++) {
+            $totalBarModules += (int)$widths[$j];
+        }
+        $totalWidth = ($totalBarModules * $moduleWidth) + ($quietZone * 2);
+
+        $svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' . $totalWidth . ' ' . $height . '" width="100%" height="' . $height . 'px" preserveAspectRatio="xMidYMid meet" style="background:#ffffff; display:block; margin:0 auto; padding:0;">';
+        $svg .= '<rect x="0" y="0" width="' . $totalWidth . '" height="' . $height . '" fill="#ffffff"/>';
+
+        $posX = $quietZone;
+        $isBar = true;
+        for ($j = 0; $j < $wLen; $j++) {
+            $w = (int)$widths[$j] * $moduleWidth;
+            if ($isBar) {
+                $svg .= '<rect x="' . $posX . '" y="0" width="' . $w . '" height="' . $height . '" fill="#000000"/>';
             }
-            $x += 2;
+            $posX += $w;
+            $isBar = !$isBar;
         }
         $svg .= '</svg>';
         return $svg;
