@@ -339,7 +339,14 @@ class BooksController extends ResourceController
         $book = $this->bookModel
             ->select('books.*, book_stock.quantity')
             ->join('book_stock', 'books.id = book_stock.book_id', 'LEFT')
-            ->where('slug', $slug)->first();
+            ->where('books.slug', $slug)->first();
+
+        if (empty($book)) {
+            $book = $this->bookModel
+                ->select('books.*, book_stock.quantity')
+                ->join('book_stock', 'books.id = book_stock.book_id', 'LEFT')
+                ->where('books.id', $slug)->first();
+        }
 
         if (empty($book)) {
             throw new PageNotFoundException('Book with slug \'' . $slug . '\' not found');
@@ -372,6 +379,10 @@ class BooksController extends ResourceController
     public function update($slug = null)
     {
         $book = $this->bookModel->where('slug', $slug)->first();
+
+        if (empty($book)) {
+            $book = $this->bookModel->find($slug);
+        }
 
         if (empty($book)) {
             throw new PageNotFoundException('Book with slug \'' . $slug . '\' not found');

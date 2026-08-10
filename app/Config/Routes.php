@@ -74,6 +74,7 @@ $routes->group('admin', ['filter' => 'session'], static function (RouteCollectio
     $routes->post('books/copies/(:num)/delete', 'Books\BooksController::deleteCopy/$1');
     $routes->get('books/lookup-isbn', 'Books\BooksController::lookupIsbn');
     $routes->get('books/lookup-ai', 'Books\BooksController::lookupAi');
+    $routes->get('books/update/(:segment)', 'Books\BooksController::edit/$1');
     $routes->post('books/update/(:segment)', 'Books\BooksController::update/$1');
     $routes->resource('books', ['controller' => 'Books\BooksController']);
     $routes->resource('authors', ['controller' => 'Books\AuthorsController']);
