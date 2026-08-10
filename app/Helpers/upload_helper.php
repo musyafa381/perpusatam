@@ -102,28 +102,38 @@ function uploadBookCover(\CodeIgniter\HTTP\Files\UploadedFile|null $coverImage):
         return null;
     }
 
-    $targetDir = rtrim(BOOK_COVER_PATH, '/\\') . DIRECTORY_SEPARATOR;
-    if (!is_dir($targetDir)) {
-        @mkdir($targetDir, 0777, true);
-    }
-
-    $coverImageFileName = $coverImage->getRandomName();
-    // save cover image file to local
-    $save = $coverImage->move($targetDir, $coverImageFileName);
-
-    if ($save) {
-        $localPath = $targetDir . $coverImageFileName;
-
-        // Auto Resize & Crop to fixed 600x900px (2:3 standard book aspect ratio)
-        optimizeAndResizeBookCover($localPath, 600, 900);
-
-        // Attempt upload to Cloudinary if configured
-        $cloudinaryUrl = uploadToCloudinary($localPath);
-        if ($cloudinaryUrl) {
-            @unlink($localPath);
-            return $cloudinaryUrl;
+    try {
+        $targetDir = rtrim(BOOK_COVER_PATH, '/\\') . DIRECTORY_SEPARATOR;
+        if (!is_dir($targetDir)) {
+            @mkdir($targetDir, 0777, true);
         }
-        return $coverImageFileName;
+
+        $coverImageFileName = $coverImage->getRandomName();
+        // save cover image file to local
+        $save = $coverImage->move($targetDir, $coverImageFileName);
+
+        if ($save) {
+            $localPath = $targetDir . $coverImageFileName;
+
+            // Auto Resize & Crop to fixed 600x900px (2:3 standard book aspect ratio)
+            optimizeAndResizeBookCover($localPath, 600, 900);
+
+            // Attempt upload to Cloudinary if configured
+            try {
+                $cloudinaryUrl = uploadToCloudinary($localPath);
+                if ($cloudinaryUrl) {
+                    @unlink($localPath);
+                    return $cloudinaryUrl;
+                }
+            } catch (\Throwable $e) {
+                log_message('error', 'Cloudinary upload failed: ' . $e->getMessage());
+                // Cloudinary failed, fallback to local file
+            }
+
+            return $coverImageFileName;
+        }
+    } catch (\Throwable $e) {
+        log_message('error', 'uploadBookCover failed: ' . $e->getMessage());
     }
 
     return null;

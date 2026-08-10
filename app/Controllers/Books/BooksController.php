@@ -255,8 +255,14 @@ class BooksController extends ResourceController
             return view('books/create', $data);
         }
 
+        // Sanitize and clean ISBN input (keep only digits and X)
+        $rawIsbn = trim((string)$this->request->getVar('isbn'));
+        $isbnInput = preg_replace('/[^0-9X]/i', '', $rawIsbn);
+        if (empty($isbnInput)) {
+            $isbnInput = $rawIsbn;
+        }
+
         // Cek duplikasi ISBN sebelum mendaftarkan buku baru
-        $isbnInput = trim((string)$this->request->getVar('isbn'));
         $existingBook = $this->bookModel->where('isbn', $isbnInput)->first();
         if ($existingBook) {
             session()->setFlashdata([
@@ -266,68 +272,58 @@ class BooksController extends ResourceController
             return redirect()->back()->withInput();
         }
 
-        $authorRes = $this->resolveAuthorId($this->request->getVar('author_id'));
-        $publisherRes = $this->resolvePublisherId($this->request->getVar('publisher_id'));
-        $categoryRes = $this->resolveCategoryId($this->request->getVar('category'));
+        try {
+            $authorRes = $this->resolveAuthorId($this->request->getVar('author_id'));
+            $publisherRes = $this->resolvePublisherId($this->request->getVar('publisher_id'));
+            $categoryRes = $this->resolveCategoryId($this->request->getVar('category'));
 
-        $coverImage = $this->request->getFile('cover');
-        $remoteCoverUrl = $this->request->getVar('cover_url');
+            $coverImage = $this->request->getFile('cover');
+            $remoteCoverUrl = $this->request->getVar('cover_url');
 
-        $coverImageFileName = null;
-        if ($coverImage && $coverImage->isValid() && !$coverImage->hasMoved()) {
-            $coverImageFileName = uploadBookCover($coverImage);
-        } elseif (!empty($remoteCoverUrl)) {
-            $coverImageFileName = downloadBookCoverFromUrl($remoteCoverUrl);
+            $coverImageFileName = null;
+            if ($coverImage && $coverImage->isValid() && !$coverImage->hasMoved()) {
+                $coverImageFileName = uploadBookCover($coverImage);
+            } elseif (!empty($remoteCoverUrl)) {
+                $coverImageFileName = downloadBookCoverFromUrl($remoteCoverUrl);
+            }
+
+            $slug = url_title($this->request->getVar('title') . ' ' . rand(0, 1000), '-', true);
+
+            if (!$this->bookModel->save([
+                'slug'         => $slug,
+                'title'        => $this->request->getVar('title'),
+                'author'       => $authorRes['name'],
+                'author_id'    => $authorRes['id'],
+                'publisher'    => $publisherRes['name'],
+                'publisher_id' => $publisherRes['id'],
+                'isbn'         => substr($isbnInput, 0, 13),
+                'year'         => $this->request->getVar('year'),
+                'rack_id'      => $this->request->getVar('rack'),
+                'category_id'  => $categoryRes['id'],
+                'synopsis'     => $this->request->getVar('synopsis'),
+                'ddc'          => $this->request->getVar('ddc'),
+                'call_number'  => $this->request->getVar('call_number'),
+                'book_cover'   => $coverImageFileName ?? null,
+            ])) {
+                session()->setFlashdata(['msg' => 'Gagal mendaftarkan buku ke database.', 'error' => true]);
+                return redirect()->back()->withInput();
+            }
+
+            $newBookId = $this->bookModel->insertID();
+            $this->bookStockModel->save([
+                'book_id'  => $newBookId,
+                'quantity' => 0
+            ]);
+
+            $createdBook = $this->bookModel->find($newBookId);
+
+            session()->setFlashdata(['msg' => 'Buku berhasil didaftarkan. Silakan tambahkan kartu salinan fisik buku.']);
+            return redirect()->to('admin/books/' . ($createdBook['slug'] ?? ''));
+        } catch (\Throwable $e) {
+            log_message('error', 'Create Book Exception: ' . $e->getMessage());
+            session()->setFlashdata(['msg' => 'Terjadi kesalahan sistem saat menyimpan buku baru: ' . $e->getMessage(), 'error' => true]);
+            return redirect()->back()->withInput();
         }
-
-        $slug = url_title($this->request->getVar('title') . ' ' . rand(0, 1000), '-', true);
-
-        if (!$this->bookModel->save([
-            'slug'         => $slug,
-            'title'        => $this->request->getVar('title'),
-            'author'       => $authorRes['name'],
-            'author_id'    => $authorRes['id'],
-            'publisher'    => $publisherRes['name'],
-            'publisher_id' => $publisherRes['id'],
-            'isbn'         => $this->request->getVar('isbn'),
-            'year'         => $this->request->getVar('year'),
-            'rack_id'      => $this->request->getVar('rack'),
-            'category_id'  => $categoryRes['id'],
-            'synopsis'     => $this->request->getVar('synopsis'),
-            'ddc'          => $this->request->getVar('ddc'),
-            'call_number'   => $this->request->getVar('call_number'),
-            'book_cover'   => $coverImageFileName ?? null,
-        ])) {
-            $categories = $this->categoryModel->findAll();
-            $racks = $this->rackModel->findAll();
-            $authorModel = new \App\Models\AuthorModel();
-            $publisherModel = new \App\Models\PublisherModel();
-            $authors = $authorModel->orderBy('name', 'ASC')->findAll();
-            $publishers = $publisherModel->orderBy('name', 'ASC')->findAll();
-
-            $data = [
-                'categories' => $categories,
-                'racks'      => $racks,
-                'authors'    => $authors,
-                'publishers' => $publishers,
-                'validation' => \Config\Services::validation(),
-                'oldInput'   => $this->request->getVar(),
-            ];
-
-            session()->setFlashdata(['msg' => 'Insert failed']);
-            return view('books/create', $data);
-        }
-
-        $newBookId = $this->bookModel->insertID();
-        $this->bookStockModel->save([
-            'book_id'  => $newBookId,
-            'quantity' => 0
-        ]);
-
-        $createdBook = $this->bookModel->find($newBookId);
-
-        session()->setFlashdata(['msg' => 'Buku berhasil didaftarkan. Silakan tambahkan kartu salinan fisik buku.']);
-        return redirect()->to('admin/books/' . ($createdBook['slug'] ?? ''));
     }
 
     /**
@@ -421,8 +417,14 @@ class BooksController extends ResourceController
             return view('books/edit', $data);
         }
 
+        // Sanitize and clean ISBN input (keep only digits and X) to prevent MySQL VARCHAR(13) overflow
+        $rawIsbn = trim((string)$this->request->getPost('isbn'));
+        $isbnInput = preg_replace('/[^0-9X]/i', '', $rawIsbn);
+        if (empty($isbnInput)) {
+            $isbnInput = $rawIsbn;
+        }
+
         // Cek duplikasi ISBN saat mengedit buku (abaikan ID buku sendiri)
-        $isbnInput = trim((string)$this->request->getPost('isbn'));
         $existingBook = $this->bookModel
             ->where('isbn', $isbnInput)
             ->where('id !=', $book['id'])
@@ -435,75 +437,66 @@ class BooksController extends ResourceController
             return redirect()->back()->withInput();
         }
 
-        $authorRes = $this->resolveAuthorId($this->request->getPost('author_id'));
-        $publisherRes = $this->resolvePublisherId($this->request->getPost('publisher_id'));
-        $categoryRes = $this->resolveCategoryId($this->request->getPost('category'));
+        try {
+            $authorRes = $this->resolveAuthorId($this->request->getPost('author_id'));
+            $publisherRes = $this->resolvePublisherId($this->request->getPost('publisher_id'));
+            $categoryRes = $this->resolveCategoryId($this->request->getPost('category'));
 
-        $coverImage = $this->request->getFile('cover');
-        $remoteCoverUrl = $this->request->getPost('cover_url');
+            $coverImage = $this->request->getFile('cover');
+            $remoteCoverUrl = $this->request->getPost('cover_url');
 
-        if ($coverImage && $coverImage->isValid() && !$coverImage->hasMoved()) {
-            $coverImageFileName = updateBookCover(
-                newCoverImage: $coverImage,
-                formerCoverImageFileName: $book['book_cover']
-            );
-        } elseif (!empty($remoteCoverUrl)) {
-            $downloadedName = downloadBookCoverFromUrl($remoteCoverUrl);
-            if ($downloadedName) {
-                deleteBookCover($book['book_cover']);
-                $coverImageFileName = $downloadedName;
+            if ($coverImage && $coverImage->isValid() && !$coverImage->hasMoved()) {
+                $coverImageFileName = updateBookCover(
+                    newCoverImage: $coverImage,
+                    formerCoverImageFileName: $book['book_cover']
+                );
+            } elseif (!empty($remoteCoverUrl)) {
+                $downloadedName = downloadBookCoverFromUrl($remoteCoverUrl);
+                if ($downloadedName) {
+                    deleteBookCover($book['book_cover']);
+                    $coverImageFileName = $downloadedName;
+                } else {
+                    $coverImageFileName = $book['book_cover'];
+                }
             } else {
                 $coverImageFileName = $book['book_cover'];
             }
-        } else {
-            $coverImageFileName = $book['book_cover'];
-        }
 
-        $newTitle = trim((string)$this->request->getPost('title'));
-        $slug = ($newTitle !== $book['title'])
-            ? url_title($newTitle . ' ' . rand(10, 999), '-', true)
-            : $book['slug'];
+            $newTitle = trim((string)$this->request->getPost('title'));
+            $slug = ($newTitle !== $book['title'])
+                ? url_title($newTitle . ' ' . rand(10, 999), '-', true)
+                : $book['slug'];
 
-        if (!$this->bookModel->save([
-            'id'           => $book['id'],
-            'slug'         => $slug,
-            'title'        => $newTitle,
-            'author'       => $authorRes['name'],
-            'author_id'    => $authorRes['id'],
-            'publisher'    => $publisherRes['name'],
-            'publisher_id' => $publisherRes['id'],
-            'isbn'         => $isbnInput,
-            'year'         => $this->request->getPost('year'),
-            'rack_id'      => $this->request->getPost('rack'),
-            'category_id'  => $categoryRes['id'],
-            'synopsis'     => $this->request->getPost('synopsis'),
-            'ddc'          => $this->request->getPost('ddc'),
-            'call_number'   => $this->request->getPost('call_number'),
-            'book_cover'   => $coverImageFileName ?? null,
-        ])) {
-            $categories = $this->categoryModel->findAll();
-            $racks = $this->rackModel->findAll();
-            $authorModel = new \App\Models\AuthorModel();
-            $publisherModel = new \App\Models\PublisherModel();
-            $authors = $authorModel->orderBy('name', 'ASC')->findAll();
-            $publishers = $publisherModel->orderBy('name', 'ASC')->findAll();
-
-            $data = [
-                'book'       => $book,
-                'categories' => $categories,
-                'racks'      => $racks,
-                'authors'    => $authors,
-                'publishers' => $publishers,
-                'validation' => \Config\Services::validation(),
-                'oldInput'   => $this->request->getPost(),
+            $saveData = [
+                'id'           => $book['id'],
+                'slug'         => $slug,
+                'title'        => $newTitle,
+                'author'       => $authorRes['name'],
+                'author_id'    => $authorRes['id'],
+                'publisher'    => $publisherRes['name'],
+                'publisher_id' => $publisherRes['id'],
+                'isbn'         => substr($isbnInput, 0, 13),
+                'year'         => $this->request->getPost('year'),
+                'rack_id'      => $this->request->getPost('rack'),
+                'category_id'  => $categoryRes['id'],
+                'synopsis'     => $this->request->getPost('synopsis'),
+                'ddc'          => $this->request->getPost('ddc'),
+                'call_number'  => $this->request->getPost('call_number'),
+                'book_cover'   => $coverImageFileName ?? $book['book_cover'],
             ];
 
-            session()->setFlashdata(['msg' => 'Gagal memperbarui data buku', 'error' => true]);
-            return view('books/edit', $data);
-        }
+            if (!$this->bookModel->save($saveData)) {
+                session()->setFlashdata(['msg' => 'Gagal memperbarui data buku ke database.', 'error' => true]);
+                return redirect()->back()->withInput();
+            }
 
-        session()->setFlashdata(['msg' => 'Data buku berhasil diperbarui']);
-        return redirect()->to('admin/books/' . $slug);
+            session()->setFlashdata(['msg' => 'Data buku berhasil diperbarui']);
+            return redirect()->to('admin/books/' . $slug);
+        } catch (\Throwable $e) {
+            log_message('error', 'Update Book Exception: ' . $e->getMessage());
+            session()->setFlashdata(['msg' => 'Terjadi kesalahan sistem saat menyimpan perubahan buku: ' . $e->getMessage(), 'error' => true]);
+            return redirect()->back()->withInput();
+        }
     }
 
     /**

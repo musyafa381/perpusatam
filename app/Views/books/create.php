@@ -85,6 +85,7 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
+<?php $oldInput = $oldInput ?? (session('_ci_old_input')['post'] ?? []); ?>
 <a href="<?= base_url('admin/books'); ?>" class="btn btn-outline-primary mb-3">
   <i class="ti ti-arrow-left"></i>
   Kembali
@@ -390,19 +391,25 @@
     if (inputToken) return { name: inputToken.getAttribute('name'), value: inputToken.value };
     return { name: '<?= csrf_token(); ?>', value: '<?= csrf_hash(); ?>' };
   }
-  function previewImage() {
-    const fileInput = document.querySelector('#cover');
+  function previewImage(inputEl) {
+    const fileInput = inputEl || document.querySelector('#cover');
     const imagePreview = document.querySelector('#bookCoverPreview');
 
-    if (fileInput.files && fileInput.files[0]) {
+    if (fileInput && fileInput.files && fileInput.files[0]) {
       const reader = new FileReader();
-      reader.readAsDataURL(fileInput.files[0]);
-
       reader.onload = function(e) {
-        imagePreview.src = e.target.result;
+        if (imagePreview) {
+          imagePreview.src = e.target.result;
+          imagePreview.style.display = 'block';
+        }
       };
+      reader.readAsDataURL(fileInput.files[0]);
     }
   }
+
+  $(document).on('change', '#cover', function() {
+    previewImage(this);
+  });
 
   function initIsbnFocusAndEvents() {
     const isbnInput = document.querySelector('#isbn');
