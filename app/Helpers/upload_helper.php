@@ -5,15 +5,18 @@
  */
 function getCloudinaryConfig(): array
 {
-    $cloudName = env('CLOUDINARY_CLOUD_NAME');
+    $cloudName = trim((string)env('CLOUDINARY_CLOUD_NAME'), "'\" \t\n\r");
     if (empty($cloudName) || $cloudName === 'isi_cloud_name_di_sini') {
         $cloudName = '';
     }
 
+    $apiKey = trim((string)env('CLOUDINARY_API_KEY', '997438152812494'), "'\" \t\n\r");
+    $apiSecret = trim((string)env('CLOUDINARY_API_SECRET', 'rrZ9HXa1DI3LkutcejkC9_kR-TU'), "'\" \t\n\r");
+
     return [
         'cloud_name' => $cloudName,
-        'api_key'    => env('CLOUDINARY_API_KEY', '997438152812494'),
-        'api_secret' => env('CLOUDINARY_API_SECRET', 'rrZ9HXa1DI3LkutcejkC9_kR-TU'),
+        'api_key'    => $apiKey,
+        'api_secret' => $apiSecret,
     ];
 }
 
@@ -24,10 +27,12 @@ function uploadToCloudinary(string $realFilePath, string $folder = 'perpustakaan
 {
     $config = getCloudinaryConfig();
     if (empty($config['cloud_name']) || empty($config['api_key']) || empty($config['api_secret'])) {
+        log_message('error', 'Cloudinary Config Empty: ' . json_encode($config));
         return null;
     }
 
     if (empty($realFilePath) || !file_exists($realFilePath)) {
+        log_message('error', 'Cloudinary File Not Found: ' . $realFilePath);
         return null;
     }
 
@@ -57,6 +62,7 @@ function uploadToCloudinary(string $realFilePath, string $folder = 'perpustakaan
 
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlErr  = curl_error($ch);
     curl_close($ch);
 
     if ($httpCode >= 200 && $httpCode < 300 && !empty($response)) {
@@ -66,6 +72,7 @@ function uploadToCloudinary(string $realFilePath, string $folder = 'perpustakaan
         }
     }
 
+    log_message('error', "Cloudinary Upload Failed (HTTP {$httpCode}): {$curlErr} | Response: {$response}");
     return null;
 }
 

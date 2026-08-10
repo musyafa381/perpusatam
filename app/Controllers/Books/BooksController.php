@@ -446,10 +446,7 @@ class BooksController extends ResourceController
             $remoteCoverUrl = $this->request->getPost('cover_url');
 
             if ($coverImage && $coverImage->isValid() && !$coverImage->hasMoved()) {
-                $coverImageFileName = updateBookCover(
-                    newCoverImage: $coverImage,
-                    formerCoverImageFileName: $book['book_cover']
-                );
+                $coverImageFileName = updateBookCover($coverImage, $book['book_cover']);
             } elseif (!empty($remoteCoverUrl)) {
                 $downloadedName = downloadBookCoverFromUrl($remoteCoverUrl);
                 if ($downloadedName) {
