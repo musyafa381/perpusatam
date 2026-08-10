@@ -136,7 +136,7 @@
 <div class="card">
   <div class="card-body">
     <h5 class="card-title fw-semibold mb-3">Form Tambah Buku</h5>
-    <form action="<?= base_url('admin/books'); ?>" method="post" enctype="multipart/form-data">
+    <form action="<?= base_url('admin/books'); ?>" method="post" enctype="multipart/form-data" data-no-pjax>
       <?= csrf_field(); ?>
       <input type="hidden" name="cover_url" id="cover_url" value="">
       <div class="row">

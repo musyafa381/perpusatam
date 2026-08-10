@@ -512,11 +512,12 @@
   document.addEventListener('submit', function (e) {
     const form = e.target;
 
-    // Skip forms with data-no-pjax or target="_blank"
+    // Skip forms with data-no-pjax, target="_blank", or file upload forms
     if (
       form.hasAttribute('data-no-pjax') ||
       form.getAttribute('target') === '_blank' ||
-      form.classList.contains('no-spa')
+      form.classList.contains('no-spa') ||
+      form.getAttribute('enctype') === 'multipart/form-data'
     ) {
       return;
     }

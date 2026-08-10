@@ -19,6 +19,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
 /* Styling Select2 Multiple Tag Badges + Small x remove icon */
 .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__rendered {
   display: flex !important;
@@ -84,7 +85,7 @@
 <div class="card">
   <div class="card-body">
     <h5 class="card-title fw-semibold mb-3">Form Edit Buku</h5>
-    <form action="<?= base_url('admin/books/update/' . $book['slug']); ?>" method="post" enctype="multipart/form-data">
+    <form action="<?= base_url('admin/books/update/' . $book['slug']); ?>" method="post" enctype="multipart/form-data" data-no-pjax>
       <?= csrf_field(); ?>
       <input type="hidden" name="cover_url" id="cover_url" value="">
       <div class="row">
