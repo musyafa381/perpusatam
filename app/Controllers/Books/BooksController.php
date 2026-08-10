@@ -393,7 +393,7 @@ class BooksController extends ResourceController
             'title'        => 'required|string|max_length[127]',
             'author_id'    => 'required',
             'publisher_id' => 'required',
-            'isbn'         => 'required|numeric|min_length[10]|max_length[13]',
+            'isbn'         => 'required|min_length[10]|max_length[18]',
             'year'         => 'required|numeric|min_length[4]|max_length[4]|less_than_equal_to[2100]',
             'rack'         => 'required|numeric',
             'category'     => 'required',
@@ -422,7 +422,7 @@ class BooksController extends ResourceController
 
         // Cek duplikasi ISBN saat mengedit buku (abaikan ID buku sendiri)
         $isbnInput = trim((string)$this->request->getPost('isbn'));
-        $existingBook = $this->bookModel->where('deleted_at', null)
+        $existingBook = $this->bookModel
             ->where('isbn', $isbnInput)
             ->where('id !=', $book['id'])
             ->first();
@@ -441,7 +441,7 @@ class BooksController extends ResourceController
         $coverImage = $this->request->getFile('cover');
         $remoteCoverUrl = $this->request->getPost('cover_url');
 
-        if ($coverImage && $coverImage->getError() != 4) {
+        if ($coverImage && $coverImage->isValid() && !$coverImage->hasMoved()) {
             $coverImageFileName = updateBookCover(
                 newCoverImage: $coverImage,
                 formerCoverImageFileName: $book['book_cover']
@@ -458,19 +458,20 @@ class BooksController extends ResourceController
             $coverImageFileName = $book['book_cover'];
         }
 
-        $slug = $this->request->getPost('title') != $book['title']
-            ? url_title($this->request->getPost('title') . ' ' . rand(0, 1000), '-', true)
+        $newTitle = trim((string)$this->request->getPost('title'));
+        $slug = ($newTitle !== $book['title'])
+            ? url_title($newTitle . ' ' . rand(10, 999), '-', true)
             : $book['slug'];
 
         if (!$this->bookModel->save([
             'id'           => $book['id'],
             'slug'         => $slug,
-            'title'        => $this->request->getPost('title'),
+            'title'        => $newTitle,
             'author'       => $authorRes['name'],
             'author_id'    => $authorRes['id'],
             'publisher'    => $publisherRes['name'],
             'publisher_id' => $publisherRes['id'],
-            'isbn'         => $this->request->getPost('isbn'),
+            'isbn'         => $isbnInput,
             'year'         => $this->request->getPost('year'),
             'rack_id'      => $this->request->getPost('rack'),
             'category_id'  => $categoryRes['id'],
@@ -496,12 +497,12 @@ class BooksController extends ResourceController
                 'oldInput'   => $this->request->getPost(),
             ];
 
-            session()->setFlashdata(['msg' => 'Update failed']);
+            session()->setFlashdata(['msg' => 'Gagal memperbarui data buku', 'error' => true]);
             return view('books/edit', $data);
         }
 
-        session()->setFlashdata(['msg' => 'Update book successful']);
-        return redirect()->to('admin/books');
+        session()->setFlashdata(['msg' => 'Data buku berhasil diperbarui']);
+        return redirect()->to('admin/books/' . $slug);
     }
 
     /**
