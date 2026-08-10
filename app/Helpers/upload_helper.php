@@ -79,6 +79,9 @@ function optimizeAndResizeBookCover(string $filePath, int $width = 600, int $hei
     }
 
     try {
+        if (!extension_loaded('gd') && !extension_loaded('imagick')) {
+            return false;
+        }
         $image = \Config\Services::image();
         $image->withFile($filePath)
               ->fit($width, $height, 'center')
@@ -99,12 +102,17 @@ function uploadBookCover(\CodeIgniter\HTTP\Files\UploadedFile|null $coverImage):
         return null;
     }
 
+    $targetDir = rtrim(BOOK_COVER_PATH, '/\\') . DIRECTORY_SEPARATOR;
+    if (!is_dir($targetDir)) {
+        @mkdir($targetDir, 0777, true);
+    }
+
     $coverImageFileName = $coverImage->getRandomName();
     // save cover image file to local
-    $save = $coverImage->move(BOOK_COVER_PATH, $coverImageFileName);
+    $save = $coverImage->move($targetDir, $coverImageFileName);
 
     if ($save) {
-        $localPath = BOOK_COVER_PATH . DIRECTORY_SEPARATOR . $coverImageFileName;
+        $localPath = $targetDir . $coverImageFileName;
 
         // Auto Resize & Crop to fixed 600x900px (2:3 standard book aspect ratio)
         optimizeAndResizeBookCover($localPath, 600, 900);
@@ -187,7 +195,8 @@ if (!function_exists('getBookCover')) {
         }
 
         // If file exists in local storage
-        if (file_exists(BOOK_COVER_PATH . DIRECTORY_SEPARATOR . $coverImageFileName)) {
+        $localFile = rtrim(BOOK_COVER_PATH, '/\\') . DIRECTORY_SEPARATOR . $coverImageFileName;
+        if (file_exists($localFile)) {
             return base_url(BOOK_COVER_URI . $coverImageFileName);
         }
 
@@ -212,7 +221,7 @@ if (!function_exists('deleteLoansQRCode')) {
             return false;
         }
 
-        $filePath = LOANS_QR_CODE_PATH . $qrCodeValue;
+        $filePath = rtrim(LOANS_QR_CODE_PATH, '/\\') . DIRECTORY_SEPARATOR . $qrCodeValue;
         if (file_exists($filePath)) {
             return @unlink($filePath);
         }
@@ -237,7 +246,7 @@ if (!function_exists('deleteBookCover')) {
             return false;
         }
 
-        $filePath = BOOK_COVER_PATH . DIRECTORY_SEPARATOR . $coverImageFileName;
+        $filePath = rtrim(BOOK_COVER_PATH, '/\\') . DIRECTORY_SEPARATOR . $coverImageFileName;
         if (file_exists($filePath)) {
             return @unlink($filePath);
         }

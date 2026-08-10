@@ -227,11 +227,11 @@ class BooksController extends ResourceController
     public function create()
     {
         if (!$this->validate([
-            'cover'        => 'is_image[cover]|mime_in[cover,image/jpg,image/jpeg,image/gif,image/png,image/webp]|max_size[cover,5120]',
+            'cover'        => 'permit_empty|is_image[cover]|mime_in[cover,image/jpg,image/jpeg,image/gif,image/png,image/webp]|max_size[cover,5120]',
             'title'        => 'required|string|max_length[127]',
             'author_id'    => 'required',
             'publisher_id' => 'required',
-            'isbn'         => 'required|numeric|min_length[10]|max_length[13]',
+            'isbn'         => 'required|min_length[10]|max_length[18]',
             'year'         => 'required|numeric|min_length[4]|max_length[4]|less_than_equal_to[2100]',
             'rack'         => 'required|numeric',
             'category'     => 'required',
@@ -257,7 +257,7 @@ class BooksController extends ResourceController
 
         // Cek duplikasi ISBN sebelum mendaftarkan buku baru
         $isbnInput = trim((string)$this->request->getVar('isbn'));
-        $existingBook = $this->bookModel->where('deleted_at', null)->where('isbn', $isbnInput)->first();
+        $existingBook = $this->bookModel->where('isbn', $isbnInput)->first();
         if ($existingBook) {
             session()->setFlashdata([
                 'msg'   => 'Gagal mendaftarkan buku: Buku dengan ISBN "' . esc($isbnInput) . '" sudah terdaftar di sistem ("' . esc($existingBook['title']) . '").',
@@ -273,7 +273,8 @@ class BooksController extends ResourceController
         $coverImage = $this->request->getFile('cover');
         $remoteCoverUrl = $this->request->getVar('cover_url');
 
-        if ($coverImage && $coverImage->getError() != 4) {
+        $coverImageFileName = null;
+        if ($coverImage && $coverImage->isValid() && !$coverImage->hasMoved()) {
             $coverImageFileName = uploadBookCover($coverImage);
         } elseif (!empty($remoteCoverUrl)) {
             $coverImageFileName = downloadBookCoverFromUrl($remoteCoverUrl);
@@ -389,7 +390,7 @@ class BooksController extends ResourceController
         }
 
         $rules = [
-            'cover'        => 'is_image[cover]|mime_in[cover,image/jpg,image/jpeg,image/gif,image/png,image/webp]|max_size[cover,5120]',
+            'cover'        => 'permit_empty|is_image[cover]|mime_in[cover,image/jpg,image/jpeg,image/gif,image/png,image/webp]|max_size[cover,5120]',
             'title'        => 'required|string|max_length[127]',
             'author_id'    => 'required',
             'publisher_id' => 'required',
