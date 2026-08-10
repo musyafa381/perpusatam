@@ -517,9 +517,13 @@ class LoansController extends ResourceController
         $bookItemModel = new \App\Models\BookItemModel();
         $sharedTransactionTime = Time::now()->toDateTimeString();
 
+        $db = \Config\Database::connect();
+        $db->transStart();
+
         foreach ($selectedItemIds as $bookItemId) {
             $bookItemId = (int)$bookItemId;
             if ($bookItemId <= 0) {
+                $db->transRollback();
                 session()->setFlashdata([
                     'msg'   => "Gagal memproses peminjaman: Salah satu buku terpilih tidak memiliki eksemplar fisik yang dapat dipinjam (Stok Habis / 0).",
                     'error' => true
@@ -530,6 +534,7 @@ class LoansController extends ResourceController
             // Verify the selected item exists and is available
             $bookItem = $bookItemModel->find($bookItemId);
             if (!$bookItem) {
+                $db->transRollback();
                 session()->setFlashdata([
                     'msg'   => "Gagal memproses peminjaman: Eksemplar fisik buku tidak ditemukan di database.",
                     'error' => true
@@ -551,6 +556,7 @@ class LoansController extends ResourceController
             // Check Novel restriction for non-members (None tier)
             $isNovel = (stripos($book['category_name'] ?? '', 'novel') !== false);
             if ($isNovel && !$tier['allow_novel']) {
+                $db->transRollback();
                 session()->setFlashdata([
                     'msg'   => "Buku kategori Novel (\"{$bookTitle}\") hanya dapat dipinjam oleh Anggota berstatus minimal Silver Member.",
                     'error' => true
@@ -560,6 +566,7 @@ class LoansController extends ResourceController
 
             $itemStatus = strtolower($bookItem['status'] ?? 'tersedia');
             if ($itemStatus !== 'tersedia' && $itemStatus !== 'available') {
+                $db->transRollback();
                 session()->setFlashdata([
                     'msg'   => "Gagal memproses peminjaman: Eksemplar buku \"{$bookTitle}\" (Kode: {$bookItem['item_code']}) saat ini berstatus '{$bookItem['status']}' (sedang dipinjam / tidak tersedia).",
                     'error' => true
@@ -568,6 +575,7 @@ class LoansController extends ResourceController
             }
 
             if (($bookItem['condition'] ?? 'baik') === 'hilang') {
+                $db->transRollback();
                 session()->setFlashdata([
                     'msg'   => "Gagal memproses peminjaman: Eksemplar buku \"{$bookTitle}\" berstatus 'Hilang'.",
                     'error' => true
@@ -584,12 +592,17 @@ class LoansController extends ResourceController
             $qrGenerator = new QRGenerator();
             $qrCodeLabel = substr($member['first_name'] . ($member['last_name'] ? " {$member['last_name']}" : ''), 0, 12) . '_' . substr($book['title'], 0, 12);
 
-            $qrCode = $qrGenerator->generateQRCode(
-                data: $loanUid,
-                labelText: $qrCodeLabel,
-                dir: LOANS_QR_CODE_PATH,
-                filename: $qrCodeLabel
-            );
+            $qrCode = '';
+            try {
+                $qrCode = $qrGenerator->generateQRCode(
+                    data: $loanUid,
+                    labelText: $qrCodeLabel,
+                    dir: LOANS_QR_CODE_PATH,
+                    filename: $qrCodeLabel
+                );
+            } catch (\Throwable $e) {
+                log_message('error', 'QR Code generation fail: ' . $e->getMessage());
+            }
 
             $newLoan = [
                 'book_id'      => $book['id'],
@@ -602,14 +615,18 @@ class LoansController extends ResourceController
                 'qr_code'      => $qrCode,
             ];
 
-            $this->loanModel->insert($newLoan);
-            $bookItemModel->update($bookItemId, ['status' => 'dipinjam']);
-            array_push($newLoanIds, $this->loanModel->getInsertID());
+            $inserted = $this->loanModel->insert($newLoan);
+            if ($inserted) {
+                $bookItemModel->update($bookItemId, ['status' => 'dipinjam']);
+                array_push($newLoanIds, $this->loanModel->getInsertID());
+            }
         }
 
-        if (empty($newLoanIds)) {
+        $db->transComplete();
+
+        if ($db->transStatus() === false || empty($newLoanIds)) {
             session()->setFlashdata([
-                'msg'   => 'Gagal menyimpan transaksi peminjaman. Tidak ada eksemplar fisik buku yang berhasil dipinjam (Stok Habis / 0).',
+                'msg'   => 'Gagal menyimpan transaksi peminjaman. Silakan periksa koneksi atau kelengkapan data.',
                 'error' => true
             ]);
             return redirect()->back()->withInput();

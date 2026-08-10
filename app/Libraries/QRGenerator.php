@@ -47,21 +47,33 @@ class QRGenerator
         string $filename = 'My QR Code',
         string $logoPath = null
     ) {
-        if (!file_exists($dir)) mkdir($dir);
+        try {
+            if (!file_exists($dir)) {
+                @mkdir($dir, 0777, true);
+            }
 
-        $filename = url_title(substr($filename, 0, 16), lowercase: true) . '_'
-            . substr(sha1($filename . rand(0, 1000)), 19, 5) . '_'
-            . time() . '.png';
+            $cleanFilename = url_title(substr($filename, 0, 16), lowercase: true);
+            if (empty($cleanFilename)) {
+                $cleanFilename = 'qrcode';
+            }
 
-        // Save it to a file
-        $this->writer
-            ->write(
-                qrCode: $this->qrCode->setData($data),
-                label: $labelText ? $this->label->setText($labelText) : null,
-                logo: $logoPath ? $this->logo->setPath($logoPath) : null
-            )
-            ->saveToFile(path: $dir . $filename);
+            $generatedFilename = $cleanFilename . '_'
+                . substr(sha1($filename . rand(0, 1000)), 19, 5) . '_'
+                . time() . '.png';
 
-        return $filename;
+            // Save it to a file
+            $this->writer
+                ->write(
+                    qrCode: $this->qrCode->setData($data),
+                    label: $labelText ? $this->label->setText($labelText) : null,
+                    logo: $logoPath ? $this->logo->setPath($logoPath) : null
+                )
+                ->saveToFile(path: $dir . $generatedFilename);
+
+            return $generatedFilename;
+        } catch (\Throwable $e) {
+            log_message('error', 'QRGenerator error: ' . $e->getMessage());
+            return '';
+        }
     }
 }
