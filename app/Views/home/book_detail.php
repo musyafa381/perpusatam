@@ -10,20 +10,14 @@
 
 <div class="container py-4">
 
-  <!-- Top Action Navigation -->
-  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
-    <a href="<?= base_url('book'); ?>" class="btn btn-outline-secondary btn-sm rounded-pill px-3 fw-bold bg-white shadow-sm transition-all" style="border-color: #d4c4b0; color: #6e4727;">
-      <i class="ti ti-arrow-left me-1"></i> Kembali ke Katalog Buku
-    </a>
-    <div class="d-flex align-items-center flex-wrap gap-2">
-      <a href="<?= base_url('buku-tamu'); ?>" class="btn btn-sm rounded-pill px-3 fw-bold shadow-sm text-white" style="background-color: #c59b27; border: none;">
-        <i class="ti ti-id-badge-2 me-1"></i> Buku Tamu Digital
-      </a>
-      <a href="<?= base_url('login'); ?>" class="btn btn-sm rounded-pill px-3 fw-bold shadow-sm text-white" style="background-color: #6e4727; border: none;">
-        <i class="ti ti-login me-1"></i> Login Admin
-      </a>
-    </div>
-  </div>
+  <!-- UNIDA Style Breadcrumb Navigation -->
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb bg-white px-3 py-2.5 rounded-pill shadow-xs border" style="border-color: #e2d5c3 !important;">
+      <li class="breadcrumb-item"><a href="<?= base_url(); ?>" class="text-decoration-none fw-bold" style="color: #6e4727;"><i class="ti ti-home me-1"></i>Beranda</a></li>
+      <li class="breadcrumb-item"><a href="<?= base_url('book'); ?>" class="text-decoration-none fw-bold" style="color: #6e4727;"><i class="ti ti-books me-1"></i>Katalog Buku</a></li>
+      <li class="breadcrumb-item active fw-semibold text-truncate" style="color: #8b5e3c; max-width: 250px;" aria-current="page"><?= esc($book['title']); ?></li>
+    </ol>
+  </nav>
 
   <?php
     $rawCover = $book['book_cover'] ?? '';

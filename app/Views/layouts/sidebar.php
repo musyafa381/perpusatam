@@ -55,6 +55,11 @@ $sidebarNavs =
     ],
     'Tampilan TV',
     [
+      'name' => 'Buka Display TV',
+      'link' => '/tv',
+      'icon' => 'ti ti-external-link'
+    ],
+    [
       'name' => 'Konten TV Perpus',
       'link' => '/admin/tv-content',
       'icon' => 'ti ti-device-tv'

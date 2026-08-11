@@ -17,19 +17,37 @@ class Home extends BaseController
         $this->categoryModel = new CategoryModel;
     }
 
+    /**
+     * Official Public Library Portal (UNIDA Gontor Style)
+     */
     public function index(): string
     {
-        // Get highlighted / latest books (all available books up to 32 for slide rotation)
-        $latestBooks = $this->bookModel
-            ->select('books.*, book_stock.quantity, categories.name as category, racks.name as rack, racks.floor')
+        $search = $this->request->getGet('search');
+        $categoryFilter = $this->request->getGet('category');
+
+        $query = $this->bookModel
+            ->select('books.*, book_stock.quantity, categories.name as category, categories.id as category_id, racks.name as rack, racks.floor')
             ->join('book_stock', 'books.id = book_stock.book_id', 'LEFT')
             ->join('categories', 'books.category_id = categories.id', 'LEFT')
             ->join('racks', 'books.rack_id = racks.id', 'LEFT')
-            ->where('books.deleted_at', null)
-            ->orderBy('books.id', 'DESC')
-            ->findAll();
+            ->where('books.deleted_at', null);
 
-        // Calculate available stock (total stock minus active unreturned loans)
+        if (!empty($categoryFilter)) {
+            $query->where('categories.id', $categoryFilter);
+        }
+
+        if (!empty($search)) {
+            $query->groupStart()
+                ->like('books.title', $search, insensitiveSearch: true)
+                ->orLike('books.author', $search, insensitiveSearch: true)
+                ->orLike('books.publisher', $search, insensitiveSearch: true)
+                ->orLike('books.isbn', $search, insensitiveSearch: true)
+                ->groupEnd();
+        }
+
+        $latestBooks = $query->orderBy('books.id', 'DESC')->findAll(30);
+
+        // Calculate available stock
         $loanModel = new \App\Models\LoanModel();
         $activeLoansGrouped = $loanModel
             ->select('book_id, SUM(COALESCE(quantity, 1)) as total_borrowed')
@@ -49,7 +67,71 @@ class Home extends BaseController
         }
         unset($bk);
 
-        // Loans Query (Hanya Peminjaman Aktif yang return_date NULL dari tabel peminjaman admin)
+        // Top 7 categories with most books
+        $categories = $this->categoryModel
+            ->select('categories.*, COUNT(books.id) as total_books')
+            ->join('books', 'books.category_id = categories.id AND books.deleted_at IS NULL', 'LEFT')
+            ->groupBy('categories.id')
+            ->orderBy('total_books', 'DESC')
+            ->findAll(7);
+
+        // Portal Stats
+        $memberModel = new MemberModel();
+        $visitorLogModel = new \App\Models\VisitorLogModel();
+
+        $totalBooksCount = $this->bookModel->where('deleted_at', null)->countAllResults();
+        $totalMembersCount = $memberModel->where('deleted_at', null)->countAllResults();
+        $totalVisitorsCount = $visitorLogModel->countAllResults();
+        $totalLoansCount = $loanModel->countAllResults();
+
+        $data = [
+            'latestBooks'        => $latestBooks,
+            'categories'         => $categories,
+            'search'             => $search,
+            'categoryFilter'     => $categoryFilter,
+            'totalBooksCount'    => $totalBooksCount,
+            'totalMembersCount'  => $totalMembersCount,
+            'totalVisitorsCount' => $totalVisitorsCount,
+            'totalLoansCount'    => $totalLoansCount,
+        ];
+
+        return view('home/portal', $data);
+    }
+
+    /**
+     * Digital TV Display Dashboard View
+     */
+    public function tvDisplay(): string
+    {
+        // Get highlighted / latest books
+        $latestBooks = $this->bookModel
+            ->select('books.*, book_stock.quantity, categories.name as category, racks.name as rack, racks.floor')
+            ->join('book_stock', 'books.id = book_stock.book_id', 'LEFT')
+            ->join('categories', 'books.category_id = categories.id', 'LEFT')
+            ->join('racks', 'books.rack_id = racks.id', 'LEFT')
+            ->where('books.deleted_at', null)
+            ->orderBy('books.id', 'DESC')
+            ->findAll();
+
+        $loanModel = new \App\Models\LoanModel();
+        $activeLoansGrouped = $loanModel
+            ->select('book_id, SUM(COALESCE(quantity, 1)) as total_borrowed')
+            ->where('return_date', null)
+            ->groupBy('book_id')
+            ->findAll();
+
+        $borrowedMap = [];
+        foreach ($activeLoansGrouped as $al) {
+            $borrowedMap[$al['book_id']] = (int)$al['total_borrowed'];
+        }
+
+        foreach ($latestBooks as &$bk) {
+            $totalQty = (int)($bk['quantity'] ?? 0);
+            $borrowedQty = $borrowedMap[$bk['id']] ?? 0;
+            $bk['quantity'] = max(0, $totalQty - $borrowedQty);
+        }
+        unset($bk);
+
         $activeLoans = $loanModel
             ->select('loans.*, books.title as book_title, members.first_name, members.last_name, members.uid as member_uid')
             ->join('books', 'loans.book_id = books.id', 'LEFT')
@@ -58,14 +140,12 @@ class Home extends BaseController
             ->orderBy('loans.loan_date', 'DESC')
             ->findAll(20);
 
-        // Visitor Logs & Active Session (Maksimal Pengunjung Terbaru Hari Ini dari tabel buku tamu admin)
         $visitorLogModel = new \App\Models\VisitorLogModel();
         $visitorSessionModel = new \App\Models\VisitorSessionModel();
         $activeSession = $visitorSessionModel->getActiveSession();
         $todayVisitorLogs = $visitorLogModel->getTodayLogs($activeSession['id'] ?? null);
         $todayVisitorCount = $visitorLogModel->getTodayCount();
 
-        // Get categories with count
         $categories = $this->categoryModel
             ->select('categories.*, COUNT(books.id) as total_books')
             ->join('books', 'books.category_id = categories.id AND books.deleted_at IS NULL', 'LEFT')
@@ -232,7 +312,12 @@ class Home extends BaseController
         }
         unset($bk);
 
-        $categories = $this->categoryModel->where('deleted_at', null)->findAll();
+        $categories = $this->categoryModel
+            ->select('categories.*, COUNT(books.id) as total_books')
+            ->join('books', 'books.category_id = categories.id AND books.deleted_at IS NULL', 'LEFT')
+            ->groupBy('categories.id')
+            ->orderBy('total_books', 'DESC')
+            ->findAll(7);
 
         $data = [
             'books'            => $books,

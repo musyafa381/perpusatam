@@ -9,35 +9,20 @@
 
 <div class="container py-4">
 
-  <!-- Top Action Navigation -->
-  <div class="d-flex align-items-center justify-content-between gap-2 mb-3" style="flex-wrap: nowrap;">
-    <a href="<?= base_url(); ?>" class="btn btn-outline-secondary btn-sm rounded-pill px-3 fw-bold bg-white shadow-sm text-nowrap flex-shrink-0">
-      <i class="ti ti-arrow-left me-1"></i> <span class="d-none d-sm-inline">Kembali ke Beranda TV</span><span class="d-inline d-sm-none">Kembali</span>
-    </a>
-    <div class="d-flex align-items-center gap-2">
-      <a href="<?= base_url('buku-tamu'); ?>" class="btn btn-sm rounded-pill px-3 fw-bold shadow-sm text-white text-nowrap" style="background-color: #c59b27; border: none;">
-        <i class="ti ti-id-badge-2 me-1"></i> <span class="d-none d-sm-inline">Buku Tamu Digital</span><span class="d-inline d-sm-none">Buku Tamu</span>
-      </a>
-      <a href="<?= base_url('login'); ?>" class="btn btn-sm rounded-pill px-3 fw-bold shadow-sm text-white text-nowrap" style="background-color: #6e4727; border: none;">
-        <i class="ti ti-login me-1"></i> Login
-      </a>
-    </div>
-  </div>
-
-  <!-- Header Banner & Search Status (Harmonized Cream, Brown & Gold Theme) -->
-  <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden" style="background: linear-gradient(135deg, #ffffff 0%, #faf5ee 50%, #f4eae0 100%); border: 1px solid #e2d5c3 !important; box-shadow: 0 4px 18px rgba(110, 71, 39, 0.06) !important;">
+  <!-- Header Banner & Search Status (UNIDA Gontor Style) -->
+  <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden" style="background: linear-gradient(135deg, #59391f 0%, #6e4727 40%, #8b5e3c 100%); border: 1.5px solid #e2d5c3 !important; color: #ffffff;">
     <div class="card-body p-4 p-md-4">
       <div class="row align-items-center gy-3">
         <div class="col-md-7">
           <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
-            <span class="badge px-3 py-2 rounded-pill fw-bold text-white shadow-sm flex-shrink-0" style="background: linear-gradient(135deg, #6e4727 0%, #8b5e3c 50%, #c59b27 100%); font-size: 0.75rem; letter-spacing: 0.5px;">
-              <i class="ti ti-books me-1"></i> KATALOG KEILMUAN
+            <span class="badge px-3 py-1.5 rounded-pill fw-bold text-dark shadow-sm flex-shrink-0" style="background: #c59b27; font-size: 0.75rem; letter-spacing: 0.5px;">
+              <i class="ti ti-books me-1"></i> KATALOG BUKU
             </span>
-            <span class="fw-semibold small" style="color: #8b5e3c;">• Perpustakaan Assalafiyyah Mlangi</span>
+            <span class="fw-semibold small text-white-50">• Perpustakaan Assalafiyyah Mlangi</span>
           </div>
-          <h2 class="fw-extrabold mb-1" style="color: #4a3424 !important; font-family: 'Georgia', serif; font-size: 1.65rem;">Pameran Koleksi Buku</h2>
-          <p class="fs-7 mb-0" style="color: #7c6857 !important; font-weight: 500;">
-            <?= !empty($search) ? 'Menampilkan hasil pencarian kata kunci: <strong style="color: #4a3424;">"' . esc($search) . '"</strong>' : 'Menjelajahi seluruh perbendaharaan kitab turats, buku keilmuan, dan referensi pustaka.'; ?>
+          <h2 class="fw-extrabold text-white mb-1" style="font-family: 'Georgia', serif; font-size: 1.75rem;">Pencarian & Katalog Pustaka</h2>
+          <p class="fs-7 mb-0 text-white-50" style="font-weight: 500;">
+            <?= !empty($search) ? 'Menampilkan hasil pencarian kata kunci: <strong class="text-warning">"' . esc($search) . '"</strong>' : 'Jelajahi perbendaharaan kitab turats, karya ilmiah, dan koleksi referensi pustaka.'; ?>
           </p>
         </div>
 
@@ -46,37 +31,37 @@
             <?php if (!empty($selectedCategory)): ?>
               <input type="hidden" name="category" value="<?= esc($selectedCategory); ?>">
             <?php endif; ?>
-            <div class="input-group shadow-sm rounded-pill overflow-hidden bg-white" style="border: 1.5px solid #d4c4b0 !important;">
-              <span class="input-group-text bg-white border-0 ps-3" style="color: #8b5e3c;">
+            <div class="input-group shadow-sm rounded-pill overflow-hidden bg-white" style="border: 2px solid #c59b27 !important;">
+              <span class="input-group-text bg-white border-0 ps-3" style="color: #6e4727;">
                 <i class="ti ti-search fs-5"></i>
               </span>
-              <input type="text" name="search" class="form-control border-0 shadow-none fs-7 py-2" value="<?= esc($search ?? ''); ?>" placeholder="Cari judul, penulis, ISBN..." style="color: #2d241e;" />
+              <input type="text" name="search" class="form-control border-0 shadow-none fs-7 py-2" value="<?= esc($search ?? ''); ?>" placeholder="Cari judul, pengarang, ISBN..." style="color: #2d241e;" />
               <?php if (!empty($search)): ?>
                 <a href="<?= base_url('book' . ($selectedCategory ? '?category=' . $selectedCategory : '')); ?>" class="input-group-text bg-white border-0 pe-2 text-decoration-none" style="color: #8b5e3c;">
                   <i class="ti ti-x fs-6"></i>
                 </a>
               <?php endif; ?>
-              <button type="submit" class="btn fw-bold px-4 text-white shadow-sm" style="background: linear-gradient(135deg, #8b5e3c 0%, #6e4727 100%); border: none;">Cari</button>
+              <button type="submit" class="btn fw-extrabold px-4 text-dark shadow-sm" style="background: linear-gradient(135deg, #c59b27 0%, #d4af37 100%); border: none;">Cari</button>
             </div>
           </form>
         </div>
       </div>
 
-      <!-- Category Filter Pills -->
+      <!-- Category Filter Pills UNIDA Style (Top 7) -->
       <?php if (!empty($categories)): ?>
-        <div class="mt-4 pt-3 border-top" style="border-color: #e8decb !important;">
-          <span class="fw-bold small d-block mb-2" style="color: #6e4727;"><i class="ti ti-filter me-1" style="color: #c59b27;"></i> Filter Kategori:</span>
+        <div class="mt-4 pt-3 border-top" style="border-color: rgba(255, 255, 255, 0.15) !important;">
+          <span class="fw-bold small d-block mb-2 text-white-50"><i class="ti ti-filter me-1" style="color: #c59b27;"></i> Filter Kategori Utama (Top 7):</span>
           <div class="d-flex align-items-center gap-2 pb-1" style="overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap; scrollbar-width: none;">
             <a href="<?= base_url('book' . ($search ? '?search=' . urlencode($search) : '')); ?>" 
-               class="btn btn-sm rounded-pill px-3 fw-bold transition-all shadow-sm text-nowrap flex-shrink-0" 
-               style="<?= empty($selectedCategory) ? 'background: linear-gradient(135deg, #8b5e3c 0%, #6e4727 100%); color: #ffffff; border: none;' : 'background: #ffffff; border: 1px solid #d4c4b0; color: #6e4727;'; ?>">
-              Semua Kategori
+               class="unida-cat-pill <?= empty($selectedCategory) ? 'active' : 'inactive'; ?>">
+              <i class="ti ti-books"></i>
+              <span>Semua Kategori</span>
             </a>
             <?php foreach ($categories as $cat): ?>
               <a href="<?= base_url('book?category=' . $cat['id'] . ($search ? '&search=' . urlencode($search) : '')); ?>" 
-                 class="btn btn-sm rounded-pill px-3 fw-semibold transition-all shadow-sm text-nowrap flex-shrink-0" 
-                 style="<?= ($selectedCategory == $cat['id']) ? 'background: linear-gradient(135deg, #8b5e3c 0%, #6e4727 100%); color: #ffffff; border: none;' : 'background: #ffffff; border: 1px solid #d4c4b0; color: #6e4727;'; ?>">
-                <?= esc($cat['name']); ?>
+                 class="unida-cat-pill <?= ($selectedCategory == $cat['id']) ? 'active' : 'inactive'; ?>">
+                <span><?= esc($cat['name']); ?></span>
+                <span class="unida-cat-count-badge"><?= (int)($cat['total_books'] ?? 0); ?></span>
               </a>
             <?php endforeach; ?>
           </div>

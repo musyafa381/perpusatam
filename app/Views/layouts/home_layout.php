@@ -11,7 +11,7 @@ $isHomePage = (uri_string() === '' || uri_string() === '/' || uri_string() === '
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Georgia&display=swap" rel="stylesheet">
 
   <?= $this->include('layouts/head') ?>
 
@@ -19,10 +19,344 @@ $isHomePage = (uri_string() === '' || uri_string() === '/' || uri_string() === '
   <?= $this->renderSection('head') ?>
 
   <link rel="stylesheet" href="<?= base_url('assets/css/home.css?v=' . time()); ?>">
+  <style>
+    body {
+      background-color: #faf7f2;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    
+    /* -------------------------------------------------------------
+       UNIDA GONTOR 2-TIER TOPBAR & NAVBAR (Harmonized Theme Colors)
+       ------------------------------------------------------------- */
+    
+    /* Tier 1: Dark Utility Ribbon Bar */
+    .unida-utility-bar {
+      background: #3d230e;
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 0.75rem;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .unida-utility-bar a {
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .unida-utility-bar a:hover {
+      color: #f0c968;
+    }
+
+    /* Tier 2: Main Header Navbar */
+    .unida-main-navbar {
+      background: #59391f;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 10px 0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Center Pill Capsule Nav Container (Exact UNIDA Style) */
+    .unida-nav-capsule {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 50px;
+      padding: 4px 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .unida-nav-item {
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 7px 16px;
+      border-radius: 50px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .unida-nav-item:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+    }
+    .unida-nav-item.active {
+      background: rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.15);
+    }
+
+    /* Right Action Pill Group (Search Circle + Login White Pill) */
+    .unida-action-capsule {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 50px;
+      padding: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .unida-search-circle-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      border: none;
+    }
+    .unida-search-circle-btn:hover {
+      background: #c59b27;
+      color: #2d1e18;
+    }
+
+    .unida-login-pill-btn {
+      background: #ffffff;
+      color: #59391f !important;
+      font-weight: 800;
+      font-size: 0.825rem;
+      border-radius: 50px;
+      padding: 7px 20px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: all 0.2s ease;
+    }
+    .unida-login-pill-btn:hover {
+      background: #c59b27;
+      color: #ffffff !important;
+      transform: translateY(-1px);
+    }
+
+    /* -------------------------------------------------------------
+       UNIDA GONTOR STYLE SEARCH LOADING ANIMATION OVERLAY
+       ------------------------------------------------------------- */
+    .unida-search-loader-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(40, 22, 10, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 999999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+      pointer-events: all;
+    }
+    .unida-search-loader-overlay.show {
+      opacity: 1;
+    }
+
+    .unida-pulse-circle-wrapper {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .unida-pulse-ring {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid rgba(240, 201, 104, 0.65);
+      animation: unidaPulseRing 2.4s infinite cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    @keyframes unidaPulseRing {
+      0% { transform: scale(0.8); opacity: 0.95; }
+      50% { transform: scale(1.22); opacity: 0.45; }
+      100% { transform: scale(1.55); opacity: 0; }
+    }
+
+    .unida-search-icon-circle {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      background: #ffffff;
+      color: #59391f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+      z-index: 2;
+    }
+
+    .unida-loader-subtitle {
+      font-size: 0.92rem;
+      letter-spacing: 2px;
+      color: rgba(255, 255, 255, 0.75);
+      font-weight: 600;
+      display: block;
+    }
+
+    .unida-loader-title {
+      font-size: 1.9rem;
+      color: #ffffff;
+      font-family: 'Georgia', serif;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.35);
+    }
+
+    .unida-progress-container {
+      width: 320px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .unida-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #c59b27 0%, #f0c968 100%);
+      border-radius: 10px;
+      animation: unidaProgressBar 2.6s infinite ease-in-out;
+    }
+
+    @keyframes unidaProgressBar {
+      0% { width: 0%; transform: translateX(0%); }
+      50% { width: 70%; transform: translateX(25%); }
+      100% { width: 100%; transform: translateX(0%); }
+    }
+  </style>
 </head>
 
-<body class="<?= $isHomePage ? 'public-kiosk-mode' : ''; ?>">
+<body>
 
+  <!-- =========================================================
+       UNIDA GONTOR STYLE SEARCH LOADING ANIMATION OVERLAY
+       ========================================================= -->
+  <div id="unidaSearchLoader" class="unida-search-loader-overlay d-none">
+    <div class="unida-loader-content text-center px-3">
+      <!-- Animated Pulse Ring & Magnifying Glass Icon -->
+      <div class="unida-pulse-circle-wrapper mx-auto mb-4">
+        <div class="unida-pulse-ring"></div>
+        <div class="unida-search-icon-circle">
+          <i class="ti ti-search fs-2"></i>
+        </div>
+      </div>
+
+      <!-- Search Term Heading -->
+      <span class="unida-loader-subtitle text-uppercase">Mencari</span>
+      <h3 id="unidaSearchKeywordText" class="unida-loader-title fw-extrabold mb-3">"Mencari..."</h3>
+
+      <!-- Animated Progress Bar -->
+      <div class="unida-progress-container mx-auto mb-2">
+        <div class="unida-progress-bar"></div>
+      </div>
+
+      <small class="unida-loader-status text-white-50">Menyiapkan tampilan...</small>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       TIER 1: DARK UTILITY RIBBON BAR (UNIDA Gontor Style)
+       ========================================================= -->
+  <div class="unida-utility-bar d-none d-md-block">
+    <div class="container-fluid px-3 px-md-4">
+      <div class="d-flex align-items-center justify-content-between">
+        
+        <!-- Left: Phone & Email Contact -->
+        <div class="d-flex align-items-center gap-4">
+          <a href="tel:081393128882" class="d-inline-flex align-items-center gap-2">
+            <i class="ti ti-phone text-warning" style="color: #f0c968 !important;"></i>
+            <span>0813-9312-8882</span>
+          </a>
+          <a href="mailto:perpusatku@gmail.com" class="d-inline-flex align-items-center gap-2">
+            <i class="ti ti-mail text-warning" style="color: #f0c968 !important;"></i>
+            <span>perpusatku@gmail.com</span>
+          </a>
+        </div>
+
+        <!-- Right: Social Media Links -->
+        <div class="d-flex align-items-center gap-3">
+          <div class="d-inline-flex align-items-center gap-2 fs-6">
+            <a href="https://youtube.com" target="_blank" title="YouTube Perpustakaan"><i class="ti ti-brand-youtube"></i></a>
+            <a href="https://instagram.com" target="_blank" title="Instagram Perpustakaan"><i class="ti ti-brand-instagram"></i></a>
+            <a href="https://tiktok.com" target="_blank" title="TikTok Perpustakaan"><i class="ti ti-brand-tiktok"></i></a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       TIER 2: MAIN HEADER NAVBAR (UNIDA Gontor 1-to-1 Style)
+       ========================================================= -->
+  <header class="unida-main-navbar sticky-top">
+    <div class="container-fluid px-3 px-md-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        
+        <!-- Left: Official Logo & Brand Title -->
+        <a href="<?= base_url(); ?>" class="d-flex align-items-center gap-3 text-decoration-none">
+          <img src="<?= base_url('assets/images/logoku.jpg'); ?>" alt="Logo Perpustakaan" class="flex-shrink-0" style="width: 44px; height: 44px; border-radius: 10px; object-fit: cover; border: 1.5px solid #f0c968;">
+          <div class="d-flex flex-column justify-content-center">
+            <h6 class="fw-extrabold mb-0 text-white" style="font-family: 'Georgia', serif; font-size: 0.98rem; letter-spacing: 0.5px; line-height: 1.2;">PERPUSTAKAAN PUSAT</h6>
+            <small class="d-block" style="font-size: 0.72rem; font-weight: 700; color: #f0c968 !important; letter-spacing: 0.5px; margin-top: 2px;">ASSALAFIYYAH MLANGI</small>
+          </div>
+        </a>
+
+        <!-- Center: Glassmorphism Pill Capsule Navigation Bar (Exact UNIDA Gontor) -->
+        <div class="d-none d-lg-flex align-items-center">
+          <div class="unida-nav-capsule">
+            
+            <a href="<?= base_url(); ?>" class="unida-nav-item <?= (uri_string() === '' || uri_string() === '/') ? 'active' : ''; ?>">
+              <i class="ti ti-home"></i> HOME
+            </a>
+
+            <a href="<?= base_url('book'); ?>" class="unida-nav-item <?= (uri_string() === 'book' || str_contains(uri_string(), 'book/')) ? 'active' : ''; ?>">
+              <i class="ti ti-books"></i> KATALOG BUKU
+            </a>
+
+            <a href="<?= base_url('buku-tamu'); ?>" class="unida-nav-item <?= uri_string() === 'buku-tamu' ? 'active' : ''; ?>">
+              <i class="ti ti-id-badge-2"></i> BUKU TAMU
+            </a>
+
+            <a href="<?= base_url('tv'); ?>" target="_blank" class="unida-nav-item">
+              <i class="ti ti-device-tv"></i> DISPLAY TV
+            </a>
+
+          </div>
+        </div>
+
+        <!-- Right: Dual Capsule Action Group (Search Circle + Login White Pill) -->
+        <div class="d-flex align-items-center gap-2">
+          <div class="unida-action-capsule">
+            <a href="<?= base_url('book'); ?>" class="unida-search-circle-btn" title="Cari Pustaka">
+              <i class="ti ti-search fs-5"></i>
+            </a>
+            <a href="<?= base_url('login'); ?>" class="unida-login-pill-btn">
+              <i class="ti ti-login"></i> Login
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
 
   <div class="page-wrapper" id="main-wrapper">
     <div class="body-wrapper">
@@ -32,20 +366,21 @@ $isHomePage = (uri_string() === '' || uri_string() === '/' || uri_string() === '
         <?= $this->renderSection('content') ?>
       </div>
 
-      <?php if (!$isHomePage): ?>
-      <footer class="mt-5 py-4 border-top bg-white">
+      <!-- Footer UNIDA Style with Theme Colors -->
+      <footer class="mt-5 py-4" style="background: #3d230e; color: rgba(255, 255, 255, 0.8); border-top: 3px solid #c59b27;">
         <div class="container text-center text-md-start">
-          <div class="row align-items-center">
-            <div class="col-md-6 mb-2 mb-md-0">
-              <span class="fw-bold text-dark fs-6">Perpustakaan Assalafiyyah Mlangi</span> &copy; <?= date('Y') ?>. Pameran Pustaka & Keilmuan.
+          <div class="row align-items-center g-3">
+            <div class="col-md-6">
+              <span class="fw-bold text-white fs-4 d-block" style="font-family: 'Georgia', serif;">Perpustakaan Pusat Assalafiyyah Mlangi</span>
+              <small style="color: rgba(255, 255, 255, 0.65);">&copy; <?= date('Y') ?>. Katalog Pustaka & Repositori Keilmuan Pesantren.</small>
             </div>
-            <div class="col-md-6 text-md-end text-muted">
-              <small><i class="ti ti-map-pin me-1"></i> Dusun Mlangi, Nogotirto, Gamping, Sleman, DI Yogyakarta</small>
+            <div class="col-md-6 text-md-end">
+              <small class="d-block mb-1" style="color: #f0c968;"><i class="ti ti-map-pin me-1"></i> Pondok Pesantren Assalafiyyah Malngi Yogyakarta</small>
+              <small style="color: rgba(255, 255, 255, 0.7);"><i class="ti ti-mail me-1"></i> perpusatku@gmail.com</small>
             </div>
           </div>
         </div>
       </footer>
-      <?php endif; ?>
     </div>
   </div>
 
@@ -54,35 +389,43 @@ $isHomePage = (uri_string() === '' || uri_string() === '/' || uri_string() === '
 
   <!-- Extra scripts -->
   <?= $this->renderSection('scripts') ?>
+
   <script>
-    (function() {
-      if (window.location.pathname.includes('buku-tamu')) {
-        let isHovered = false;
-        const header = document.querySelector('.gramedia-header');
-        const topUtil = document.querySelector('.gramedia-top-utility');
-        const trigger = document.getElementById('navHoverTrigger');
+    document.addEventListener('DOMContentLoaded', function () {
+      const searchForms = document.querySelectorAll('form');
+      const loader = document.getElementById('unidaSearchLoader');
+      const keywordEl = document.getElementById('unidaSearchKeywordText');
 
-        function checkAutoHide() {
-          if (window.scrollY > 50) {
-            document.body.classList.add('autohide-nav-active');
+      searchForms.forEach(form => {
+        form.addEventListener('submit', function (e) {
+          const searchInput = form.querySelector('input[name="search"]');
+          if (!searchInput) return;
+
+          if (form.dataset.submitting === 'true') return;
+
+          e.preventDefault();
+
+          const val = searchInput.value.trim();
+          if (val !== '') {
+            keywordEl.textContent = '"' + val + '"';
           } else {
-            document.body.classList.remove('autohide-nav-active');
+            keywordEl.textContent = '"Memuat Katalog..."';
           }
-        }
 
-        window.addEventListener('scroll', checkAutoHide);
+          if (loader) {
+            loader.classList.remove('d-none');
+            requestAnimationFrame(() => {
+              loader.classList.add('show');
+            });
+          }
 
-        [header, topUtil, trigger].forEach(el => {
-          if (!el) return;
-          el.addEventListener('mouseenter', () => {
-            document.body.classList.remove('autohide-nav-active');
-          });
-          el.addEventListener('mouseleave', () => {
-            checkAutoHide();
-          });
+          form.dataset.submitting = 'true';
+          setTimeout(() => {
+            form.submit();
+          }, 650);
         });
-      }
-    })();
+      });
+    });
   </script>
 </body>
 
