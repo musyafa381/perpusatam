@@ -81,6 +81,18 @@ if (!function_exists('deleteTvBanner')) {
     function deleteTvBanner(string $id): bool
     {
         $banners = getTvBanners();
+        $bannerToDelete = null;
+        foreach ($banners as $b) {
+            if (isset($b['id']) && $b['id'] === $id) {
+                $bannerToDelete = $b;
+                break;
+            }
+        }
+
+        if ($bannerToDelete && !empty($bannerToDelete['url']) && function_exists('deleteFromCloudinary')) {
+            deleteFromCloudinary($bannerToDelete['url']);
+        }
+
         $filtered = array_filter($banners, function ($b) use ($id) {
             return isset($b['id']) && $b['id'] !== $id;
         });

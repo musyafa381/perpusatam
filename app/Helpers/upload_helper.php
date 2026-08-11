@@ -274,8 +274,93 @@ if (!function_exists('deleteLoansQRCode')) {
 }
 
 /**
- * Delete a book cover file from local storage.
- * Skips deletion if it's an external URL (e.g. Cloudinary).
+ * Extract Cloudinary public_id from a full Cloudinary HTTPS URL
+ */
+if (!function_exists('extractCloudinaryPublicId')) {
+    function extractCloudinaryPublicId(string $url): string|null
+    {
+        if (empty($url) || !filter_var($url, FILTER_VALIDATE_URL)) {
+            return null;
+        }
+
+        if (!str_contains($url, 'res.cloudinary.com')) {
+            return null;
+        }
+
+        $path = parse_url($url, PHP_URL_PATH);
+        if (empty($path)) {
+            return null;
+        }
+
+        if (preg_match('#/image/upload/(?:v\d+/)?(.+)$#i', $path, $matches)) {
+            $publicIdWithExt = $matches[1];
+            return preg_replace('/\.[^.\/]+$/', '', $publicIdWithExt);
+        }
+
+        return null;
+    }
+}
+
+/**
+ * Delete image asset from Cloudinary storage using API Destroy call
+ */
+if (!function_exists('deleteFromCloudinary')) {
+    function deleteFromCloudinary(string $cloudinaryUrlOrPublicId): bool
+    {
+        $config = getCloudinaryConfig();
+        if (empty($config['cloud_name']) || empty($config['api_key']) || empty($config['api_secret'])) {
+            return false;
+        }
+
+        $publicId = filter_var($cloudinaryUrlOrPublicId, FILTER_VALIDATE_URL) 
+            ? extractCloudinaryPublicId($cloudinaryUrlOrPublicId) 
+            : $cloudinaryUrlOrPublicId;
+
+        if (empty($publicId)) {
+            return false;
+        }
+
+        $timestamp = time();
+        $toSign = "public_id={$publicId}&timestamp={$timestamp}" . $config['api_secret'];
+        $signature = sha1($toSign);
+
+        $postData = [
+            'public_id' => $publicId,
+            'api_key'   => $config['api_key'],
+            'timestamp' => $timestamp,
+            'signature' => $signature,
+        ];
+
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL            => "https://api.cloudinary.com/v1_1/{$config['cloud_name']}/image/destroy",
+            CURLOPT_POST           => true,
+            CURLOPT_POSTFIELDS     => http_build_query($postData),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT        => 30,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_USERAGENT      => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) CodeIgniter-Cloudinary-Uploader',
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpCode >= 200 && $httpCode < 300 && !empty($response)) {
+            $json = json_decode($response, true);
+            if (!empty($json['result']) && ($json['result'] === 'ok' || $json['result'] === 'not found')) {
+                return true;
+            }
+        }
+
+        log_message('error', "Cloudinary Delete Failed (HTTP {$httpCode}): Response: {$response}");
+        return false;
+    }
+}
+
+/**
+ * Delete a book cover file from local storage or Cloudinary cloud.
  */
 if (!function_exists('deleteBookCover')) {
     function deleteBookCover(string|null $coverImageFileName): bool
@@ -284,11 +369,12 @@ if (!function_exists('deleteBookCover')) {
             return false;
         }
 
-        // Skip if it's a full external / Cloudinary URL
+        // Delete from Cloudinary if it is a Cloudinary URL
         if (filter_var($coverImageFileName, FILTER_VALIDATE_URL)) {
-            return false;
+            return deleteFromCloudinary($coverImageFileName);
         }
 
+        // Delete from local storage if local file
         $filePath = rtrim(BOOK_COVER_PATH, '/\\') . DIRECTORY_SEPARATOR . $coverImageFileName;
         if (file_exists($filePath)) {
             return @unlink($filePath);
