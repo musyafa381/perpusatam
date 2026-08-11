@@ -109,11 +109,11 @@
   <div class="col-12 col-sm-6 col-xl-4">
     <a href="<?= base_url('admin/members'); ?>" class="text-decoration-none">
       <div class="card info-card border-0 h-100 shadow-sm overflow-hidden position-relative">
-        <div class="position-absolute top-0 start-0 h-100 bg-info" style="width: 4px;"></div>
+        <div class="position-absolute top-0 start-0 h-100 bg-warning" style="width: 4px;"></div>
         <div class="card-body p-3 ps-4">
           <div class="d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center">
-              <div class="member-avatar me-3 shadow-sm" style="width: 52px; height: 52px; font-size: 1.35rem; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);">
+              <div class="member-avatar me-3 shadow-sm" style="width: 52px; height: 52px; font-size: 1.35rem; background: linear-gradient(135deg, #8b5e3c 0%, #c59b27 100%);">
                 <i class="ti ti-users"></i>
               </div>
               <div>

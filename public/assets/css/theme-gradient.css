@@ -26,6 +26,20 @@ body, .body-wrapper, .page-wrapper {
   color: #2d241e !important;
 }
 
+/* Glassmorphism Ultra-Transparent Admin Header Navbar */
+.app-header {
+  background-color: rgba(252, 248, 242, 0.35) !important;
+  backdrop-filter: blur(8px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(8px) saturate(180%) !important;
+  box-shadow: 0 4px 20px -2px rgba(139, 94, 60, 0.05) !important;
+  border-bottom: 1px solid rgba(232, 222, 203, 0.4) !important;
+}
+
+.app-header .navbar {
+  background: transparent !important;
+}
+
+
 /* Header Banner - Light Brown to Warm Gold Gradient */
 .card-gradient-header {
   background: linear-gradient(135deg, #6e4727 0%, #8b5e3c 45%, #c59b27 100%) !important;

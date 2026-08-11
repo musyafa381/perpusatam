@@ -123,7 +123,7 @@ use CodeIgniter\I18n\Time;
               </td>
               <td class="text-center pe-4" style="width: 130px;">
                 <a href="<?= base_url("admin/loans/{$loan['uid']}"); ?>" class="btn btn-pill-gold btn-sm d-inline-flex align-items-center justify-content-center gap-1">
-                  <i class="ti ti-eye"></i> Detail
+                  Detail
                 </a>
               </td>
 

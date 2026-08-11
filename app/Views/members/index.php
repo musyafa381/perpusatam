@@ -134,7 +134,7 @@
               </td>
               <td class="text-center pe-3">
                 <a href="<?= base_url("admin/members/{$member['uid']}"); ?>" class="btn btn-primary btn-sm px-3 rounded-3">
-                  <i class="ti ti-eye me-1"></i> Detail
+                  Detail
                 </a>
               </td>
             </tr>

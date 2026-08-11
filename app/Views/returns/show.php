@@ -71,7 +71,7 @@ if (session()->getFlashdata('msg')) : ?>
             <i class="ti ti-file-text me-1"></i> Surat Pertanggungjawaban (PDF)
           </a>
         <?php endif; ?>
-        <a href="<?= base_url("admin/loans/receipt/{$loan['uid']}?print=true"); ?>" target="_blank" class="btn btn-pill-gold fw-bold shadow-sm">
+        <a href="<?= base_url("admin/loans/receipt/{$loan['uid']}?print=true"); ?>" target="_blank" class="btn btn-outline-light fw-bold shadow-sm">
           <i class="ti ti-printer me-1"></i> Cetak / Print Struk
         </a>
         <form action="<?= base_url("admin/returns/{$loan['uid']}"); ?>" method="post" class="m-0">

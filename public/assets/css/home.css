@@ -675,7 +675,8 @@ body:not(.public-kiosk-mode) .page-wrapper {
   display: flex;
   gap: 16px;
   width: 100%;
-  height: 100%;
+  height: 230px;
+  max-height: 230px;
   padding: 12px;
   box-sizing: border-box;
   overflow: hidden;
@@ -696,12 +697,14 @@ body:not(.public-kiosk-mode) .page-wrapper {
 .hero-book-slot {
   flex: 1.4;
   height: 100%;
+  max-height: 206px;
   background: linear-gradient(135deg, #ffffff 0%, #fcf8f2 100%);
   border: 1.5px solid #ebd9bc;
   border-radius: 14px;
   padding: 14px;
   box-sizing: border-box;
   display: flex;
+  align-items: center;
   box-shadow: 0 8px 20px rgba(110, 71, 39, 0.12);
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
@@ -714,27 +717,34 @@ body:not(.public-kiosk-mode) .page-wrapper {
   height: 100%;
   gap: 14px;
   align-items: center;
+  overflow: hidden;
 }
 
 .hero-cover-container {
   height: 100%;
+  max-height: 178px;
+  width: 118px;
+  max-width: 118px;
   aspect-ratio: 2/3;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  overflow: hidden;
 }
 
 .hero-book-img {
+  width: 100%;
   height: 100%;
   max-height: 100%;
+  max-width: 100%;
   aspect-ratio: 2/3;
-  width: auto;
   object-fit: cover;
   border-radius: 10px;
   filter: drop-shadow(4px 8px 16px rgba(110, 71, 39, 0.4));
   transition: transform 0.3s ease;
+  box-sizing: border-box;
 }
 
 .hero-book-slot:hover .hero-book-img {
@@ -742,24 +752,34 @@ body:not(.public-kiosk-mode) .page-wrapper {
 }
 
 .hero-mock-cover {
+  width: 100%;
   height: 100%;
+  max-height: 100%;
+  max-width: 100%;
   aspect-ratio: 2/3;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 12px;
+  padding: 10px;
   color: #fff;
   text-align: center;
+  box-sizing: border-box;
   box-shadow: 4px 8px 16px rgba(110, 71, 39, 0.35);
+  overflow: hidden;
 }
 
 .hero-mock-title {
   font-weight: 800;
-  font-size: 0.9rem;
-  margin-top: 8px;
-  line-height: 1.25;
+  font-size: 0.825rem;
+  margin-top: 6px;
+  line-height: 1.2;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .hero-details {
@@ -818,11 +838,14 @@ body:not(.public-kiosk-mode) .page-wrapper {
   flex-direction: column;
   gap: 10px;
   height: 100%;
+  max-height: 206px;
+  overflow: hidden;
 }
 
 .queue-card-slot {
   flex: 1;
-  height: 50%;
+  height: calc(50% - 5px);
+  max-height: 98px;
   background: #ffffff;
   border: 1.5px solid #f0e6d6;
   border-radius: 12px;
@@ -848,28 +871,40 @@ body:not(.public-kiosk-mode) .page-wrapper {
   height: 100%;
   gap: 10px;
   align-items: center;
+  overflow: hidden;
 }
 
 .queue-cover-container {
   height: 100%;
+  max-height: 82px;
+  width: 55px;
+  max-width: 55px;
   aspect-ratio: 2/3;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
 }
 
 .queue-book-img {
+  width: 100%;
   height: 100%;
+  max-height: 100%;
+  max-width: 100%;
   aspect-ratio: 2/3;
-  width: auto;
   object-fit: cover;
   border-radius: 6px;
   box-shadow: 2px 4px 8px rgba(110, 71, 39, 0.25);
+  box-sizing: border-box;
 }
 
 .queue-mock-cover {
+  width: 100%;
   height: 100%;
+  max-height: 100%;
+  max-width: 100%;
   aspect-ratio: 2/3;
   border-radius: 6px;
   display: flex;
@@ -880,6 +915,8 @@ body:not(.public-kiosk-mode) .page-wrapper {
   text-align: center;
   font-size: 0.65rem;
   font-weight: 700;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .queue-details {

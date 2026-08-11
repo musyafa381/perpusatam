@@ -1,17 +1,24 @@
 <?php
 
 /**
- * Get Cloudinary configuration array from env
+ * Get Cloudinary configuration array from env with automatic fallback defaults
  */
 function getCloudinaryConfig(): array
 {
-    $cloudName = trim((string)env('CLOUDINARY_CLOUD_NAME'), "'\" \t\n\r");
+    $cloudName = trim((string)env('CLOUDINARY_CLOUD_NAME', 'p9srrllp'), "'\" \t\n\r");
     if (empty($cloudName) || $cloudName === 'isi_cloud_name_di_sini') {
-        $cloudName = '';
+        $cloudName = 'p9srrllp';
     }
 
     $apiKey = trim((string)env('CLOUDINARY_API_KEY', '997438152812494'), "'\" \t\n\r");
+    if (empty($apiKey)) {
+        $apiKey = '997438152812494';
+    }
+
     $apiSecret = trim((string)env('CLOUDINARY_API_SECRET', 'rrZ9HXa1DI3LkutcejkC9_kR-TU'), "'\" \t\n\r");
+    if (empty($apiSecret)) {
+        $apiSecret = 'rrZ9HXa1DI3LkutcejkC9_kR-TU';
+    }
 
     return [
         'cloud_name' => $cloudName,
@@ -36,11 +43,18 @@ function uploadToCloudinary(string $realFilePath, string $folder = 'perpustakaan
         return null;
     }
 
+    $absPath = realpath($realFilePath) ?: $realFilePath;
     $timestamp = time();
     $toSign = "folder={$folder}&timestamp={$timestamp}" . $config['api_secret'];
     $signature = sha1($toSign);
 
-    $cfile = new \CURLFile($realFilePath);
+    $mimeType = function_exists('mime_content_type') ? (@mime_content_type($absPath) ?: 'image/jpeg') : 'image/jpeg';
+    $postFileName = basename($absPath);
+    if (!str_contains($postFileName, '.')) {
+        $postFileName .= '.jpg';
+    }
+
+    $cfile = new \CURLFile($absPath, $mimeType, $postFileName);
 
     $postData = [
         'file'      => $cfile,
@@ -56,8 +70,10 @@ function uploadToCloudinary(string $realFilePath, string $folder = 'perpustakaan
         CURLOPT_POST           => true,
         CURLOPT_POSTFIELDS     => $postData,
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT        => 30,
+        CURLOPT_TIMEOUT        => 45,
         CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => 0,
+        CURLOPT_USERAGENT      => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) CodeIgniter-Cloudinary-Uploader',
     ]);
 
     $response = curl_exec($ch);

@@ -49,7 +49,7 @@ if (session()->getFlashdata('msg')) : ?>
         <a href="<?= base_url('admin/loans'); ?>" class="btn btn-light text-primary fw-bold shadow-sm">
           <i class="ti ti-arrow-left me-1"></i> Kembali
         </a>
-        <a href="<?= base_url("admin/loans/receipt/{$loan['uid']}?print=true"); ?>" target="_blank" class="btn btn-pill-gold fw-bold shadow-sm">
+        <a href="<?= base_url("admin/loans/receipt/{$loan['uid']}?print=true"); ?>" target="_blank" class="btn btn-outline-light fw-bold shadow-sm">
           <i class="ti ti-printer me-1"></i> Cetak / Print Struk
         </a>
         <a href="<?= base_url("admin/returns/new?loan-uid={$loan['uid']}"); ?>" class="btn btn-light text-success fw-bold shadow-sm">

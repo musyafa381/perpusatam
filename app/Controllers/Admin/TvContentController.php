@@ -27,21 +27,22 @@ class TvContentController extends BaseController
         $finalUrl = null;
 
         if ($file && $file->isValid() && !$file->hasMoved()) {
-            $tempPath = $file->getTempName();
+            $targetDir = FCPATH . 'uploads/tv';
+            if (!is_dir($targetDir)) {
+                @mkdir($targetDir, 0777, true);
+            }
+            $newName = $file->getRandomName();
+            $file->move($targetDir, $newName);
+            $localPath = $targetDir . DIRECTORY_SEPARATOR . $newName;
 
             // Try Cloudinary upload first
-            $cloudUrl = uploadToCloudinary($tempPath, 'perpustakaan/tv');
+            $cloudUrl = uploadToCloudinary($localPath, 'perpustakaan/tv');
 
             if (!empty($cloudUrl)) {
+                @unlink($localPath);
                 $finalUrl = $cloudUrl;
             } else {
-                // Fallback to local uploads
-                $newName = $file->getRandomName();
-                $targetDir = FCPATH . 'uploads/tv';
-                if (!is_dir($targetDir)) {
-                    mkdir($targetDir, 0777, true);
-                }
-                $file->move($targetDir, $newName);
+                // Fallback to local uploads if Cloudinary returns null
                 $finalUrl = base_url('uploads/tv/' . $newName);
             }
         }
