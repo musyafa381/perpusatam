@@ -87,10 +87,13 @@ if (!empty($member['date_of_birth']) && $member['date_of_birth'] !== '0000-00-00
           <i class="ti ti-arrow-left me-1"></i> Kembali
         </a>
         <?php if (($tier['code'] ?? 'none') !== 'none') : ?>
-          <a href="<?= base_url("admin/members/cards/{$member['id']}"); ?>" class="btn btn-pill-gold shadow-sm">
+          <a href="<?= base_url("admin/members/cards/{$member['id']}"); ?>" class="btn btn-light text-primary fw-bold shadow-sm">
             <i class="ti ti-id-badge-2 me-1"></i> Kartu Member
           </a>
         <?php endif; ?>
+        <a href="<?= base_url("admin/members/id-card/{$member['uid']}?print=true"); ?>" target="_blank" class="btn btn-light text-primary fw-bold shadow-sm">
+          <i class="ti ti-id me-1"></i> Cetak ID Card
+        </a>
         <a href="<?= base_url("admin/members/{$member['uid']}/edit"); ?>" class="btn btn-light text-primary fw-bold shadow-sm">
           <i class="ti ti-edit me-1"></i> Edit
         </a>

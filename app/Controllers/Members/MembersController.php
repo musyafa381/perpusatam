@@ -183,6 +183,44 @@ class MembersController extends ResourceController
     }
 
     /**
+     * Display printable KTP-style Official Identity Card (Kartu Tanda Pustakawan / Anggota)
+     */
+    public function idCard($id = null)
+    {
+        $member = is_numeric($id)
+            ? $this->memberModel->find($id)
+            : $this->memberModel->where('uid', $id)->first();
+
+        if (!$member) {
+            throw PageNotFoundException::forPageNotFound('Data Anggota / Pustakawan tidak ditemukan');
+        }
+
+        // Create QR code if not exist
+        if (empty($member['qr_code']) || !file_exists(MEMBERS_QR_CODE_PATH . $member['qr_code'])) {
+            $qrGenerator = new QRGenerator();
+            $qrCodeLabel = $member['first_name'] . ($member['last_name'] ? ' ' . $member['last_name'] : '');
+            $qrCode = $qrGenerator->generateQRCode(
+                $member['uid'],
+                labelText: $qrCodeLabel,
+                dir: MEMBERS_QR_CODE_PATH,
+                filename: $qrCodeLabel
+            );
+            $this->memberModel->update($member['id'], ['qr_code' => $qrCode]);
+            $member = $this->memberModel->find($member['id']);
+        }
+
+        $tierDetails = MemberModel::getTierDetails($member);
+
+        $data = [
+            'member'      => $member,
+            'tierDetails' => $tierDetails,
+            'autoPrint'   => $this->request->getGet('print') === 'true',
+        ];
+
+        return view('members/id_card_print', $data);
+    }
+
+    /**
      * Return a new resource object, with default properties
      *
      * @return mixed

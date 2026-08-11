@@ -81,65 +81,90 @@
         <table class="table table-hover align-middle table-assalafiyyah mb-0">
           <thead>
             <tr>
-              <th scope="col" class="text-center" style="width: 50px;">#</th>
-              <th scope="col">Nama Member Pembooking</th>
-              <th scope="col">Tingkatan Member</th>
-              <th scope="col">Tanggal Booking</th>
-              <th scope="col" class="text-center">Status Antrean</th>
-              <th scope="col" class="text-center pe-4">Aksi</th>
+              <th scope="col" class="text-center py-3" style="width: 45px;">#</th>
+              <th scope="col" class="py-3">ANGGOTA / PEMESAN</th>
+              <th scope="col" class="py-3 text-center">TIER MEMBER</th>
+              <th scope="col" class="py-3">JUDUL BUKU</th>
+              <th scope="col" class="py-3">TANGGAL RESERVASI</th>
+              <th scope="col" class="py-3 text-center">STATUS STOCK</th>
+              <th scope="col" class="py-3 text-center">STATUS RESERVASI</th>
+              <th scope="col" class="py-3 text-center pe-4" style="width: 170px;">AKSI</th>
             </tr>
           </thead>
           <tbody>
             <?php $i = 1; ?>
             <?php foreach ($reservations as $r) : ?>
               <tr>
-                <th scope="row" class="col-index"><?= $i++; ?></th>
+                <th scope="row" class="text-center text-muted fw-bold"><?= $i++; ?></th>
                 <td>
                   <div class="d-flex align-items-center gap-2">
-                    <div class="table-avatar-initial">
+                    <div class="table-avatar-initial" style="flex-shrink: 0;">
                       <?= strtoupper(substr($r['first_name'] ?? 'A', 0, 1) . substr($r['last_name'] ?? '', 0, 1)); ?>
                     </div>
                     <div>
                       <div class="fw-bold text-dark fs-3 mb-0"><?= esc("{$r['first_name']} {$r['last_name']}"); ?></div>
+                      <small class="text-muted font-monospace fs-1"><i class="ti ti-barcode me-1"></i>UID: <?= esc($r['member_uid'] ?? '-'); ?></small>
                     </div>
                   </div>
                 </td>
-                <td>
-                  <span class="badge <?= $r['tier']['badge']; ?> px-3 py-2 fs-2"><i class="ti <?= $r['tier']['icon']; ?> me-1"></i><?= esc($r['tier']['name']); ?></span>
+                <td class="text-center">
+                  <?php 
+                  $tCode = strtolower($r['tier']['code'] ?? '');
+                  if ($tCode === 'gold') : ?>
+                    <span class="badge bg-warning text-dark fw-bold px-3 py-1.5 rounded-pill shadow-xs"><i class="ti ti-crown me-1"></i>Gold Member (Manual)</span>
+                  <?php elseif ($tCode === 'platinum' || $tCode === 'living_library') : ?>
+                    <span class="badge bg-primary text-white fw-bold px-3 py-1.5 rounded-pill shadow-xs"><i class="ti ti-star me-1"></i>Platinum Member</span>
+                  <?php else : ?>
+                    <span class="badge bg-secondary text-white fw-bold px-3 py-1.5 rounded-pill shadow-xs"><i class="ti ti-user me-1"></i><?= esc($r['tier']['name'] ?? 'Member'); ?></span>
+                  <?php endif; ?>
                 </td>
                 <td>
-                  <div class="fw-bold text-dark"><?= \CodeIgniter\I18n\Time::parse($r['created_at'], locale: 'id')->toLocalizedString('dd/MM/y'); ?></div>
-                  <small class="text-muted"><i class="ti ti-clock me-1"></i><?= \CodeIgniter\I18n\Time::parse($r['created_at'], locale: 'id')->toLocalizedString('HH:mm'); ?></small>
+                  <div class="fw-bold text-dark fs-3 mb-0" style="max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?= esc($r['book_title']); ?></div>
+                  <small class="text-muted fs-1"><i class="ti ti-bookmark me-1"></i>ID Buku: #<?= esc($r['book_id'] ?? '-'); ?></small>
+                </td>
+                <td>
+                  <div class="fw-bold text-dark fs-3 mb-0"><?= \CodeIgniter\I18n\Time::parse($r['created_at'], locale: 'id')->toLocalizedString('dd/MM/Y'); ?></div>
+                  <small class="text-muted fs-1"><i class="ti ti-clock me-1"></i><?= \CodeIgniter\I18n\Time::parse($r['created_at'], locale: 'id')->toLocalizedString('HH:mm'); ?></small>
+                </td>
+                <td class="text-center">
+                  <?php if (($r['available_stock'] ?? 0) > 0) : ?>
+                    <span class="badge bg-success-subtle text-success fw-bold px-3 py-1.5 rounded-pill"><i class="ti ti-check me-1"></i>Tersedia (<?= (int)$r['available_stock']; ?>)</span>
+                  <?php else : ?>
+                    <span class="badge bg-danger-subtle text-danger fw-bold px-3 py-1.5 rounded-pill"><i class="ti ti-circle-x me-1"></i>Stok Habis</span>
+                  <?php endif; ?>
                 </td>
                 <td class="text-center">
                   <?php if ($r['status'] === 'pending') : ?>
-                    <span class="badge badge-subtle-warning px-3 py-2 rounded-pill"><i class="ti ti-clock me-1"></i>Menunggu</span>
+                    <span class="badge bg-warning text-dark fw-bold px-3 py-1.5 rounded-pill"><i class="ti ti-clock me-1"></i>Pending</span>
                   <?php elseif ($r['status'] === 'fulfilled') : ?>
-                    <span class="badge badge-subtle-primary px-3 py-2 rounded-pill"><i class="ti ti-check me-1"></i>Selesai / Diproses</span>
+                    <span class="badge bg-success text-white fw-bold px-3 py-1.5 rounded-pill"><i class="ti ti-check-double me-1"></i>Selesai</span>
                   <?php else : ?>
-                    <span class="badge badge-subtle-secondary px-3 py-2 rounded-pill"><i class="ti ti-x me-1"></i>Dibatalkan</span>
+                    <span class="badge bg-secondary text-white fw-bold px-3 py-1.5 rounded-pill"><i class="ti ti-x me-1"></i>Dibatalkan</span>
                   <?php endif; ?>
                 </td>
                 <td class="text-center pe-4">
-                  <div class="d-flex justify-content-center align-items-center gap-1">
-                    <button type="button" class="btn btn-outline-warning btn-sm rounded-pill px-2.5" onclick="printBookingSticker58mm('<?= addslashes(esc("{$r['first_name']} {$r['last_name']}")); ?>', '<?= addslashes(esc($r['tier']['name'])); ?>', '<?= esc($r['member_uid'] ?? ''); ?>', '<?= addslashes(esc($r['book_title'])); ?>', '<?= addslashes(esc($r['book_author'] ?? '')); ?>', '<?= addslashes(esc($r['book_call_number'] ?? ($r['book_ddc'] ?? ''))); ?>', '<?= esc($r['book_isbn'] ?? ''); ?>', '<?= addslashes(esc($r['book_rack'] ?? '-')); ?>', '<?= esc($r['book_floor'] ?? '-'); ?>', '<?= \CodeIgniter\I18n\Time::parse($r['created_at'], locale: 'id')->toLocalizedString('d MMM Y HH:mm'); ?>', '<?= esc($r['status']); ?>')" title="Cetak Stiker Booking (58mm)">
-                      <i class="ti ti-printer"></i>
-                    </button>
-                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-2.5" data-bs-toggle="modal" data-bs-target="#resDetailModal-<?= $r['id']; ?>" title="Detail Booking">
-                      <i class="ti ti-eye"></i>
-                    </button>
+                  <div class="d-flex justify-content-center align-items-center gap-1 flex-nowrap">
                     <?php if ($r['status'] === 'pending') : ?>
                       <form action="<?= base_url("admin/reservations/{$r['id']}/fulfill"); ?>" method="post" class="m-0">
                         <?= csrf_field(); ?>
-                        <button type="submit" class="btn btn-pill-gold btn-sm d-inline-flex align-items-center gap-1 px-3" title="Tandai Selesai / Serahkan Buku">
-                          <i class="ti ti-check"></i> Selesai
+                        <button type="submit" class="btn btn-success btn-sm fw-bold rounded-pill px-3 shadow-xs d-inline-flex align-items-center gap-1" title="Tandai Selesai / Serahkan Buku">
+                          <i class="ti ti-check"></i> Process
                         </button>
                       </form>
                     <?php endif; ?>
+
+                    <button type="button" class="btn btn-outline-primary btn-sm rounded-circle p-0 d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" data-bs-toggle="modal" data-bs-target="#resDetailModal-<?= $r['id']; ?>" title="Detail Booking">
+                      <i class="ti ti-eye"></i>
+                    </button>
+
+                    <button type="button" class="btn btn-outline-warning btn-sm rounded-circle p-0 d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" onclick="printBookingSticker58mm('<?= addslashes(esc("{$r['first_name']} {$r['last_name']}")); ?>', '<?= addslashes(esc($r['tier']['name'])); ?>', '<?= esc($r['member_uid'] ?? ''); ?>', '<?= addslashes(esc($r['book_title'])); ?>', '<?= addslashes(esc($r['book_author'] ?? '')); ?>', '<?= addslashes(esc($r['book_call_number'] ?? ($r['book_ddc'] ?? ''))); ?>', '<?= esc($r['book_isbn'] ?? ''); ?>', '<?= addslashes(esc($r['book_rack'] ?? '-')); ?>', '<?= esc($r['book_floor'] ?? '-'); ?>', '<?= \CodeIgniter\I18n\Time::parse($r['created_at'], locale: 'id')->toLocalizedString('d MMM Y HH:mm'); ?>', '<?= esc($r['status']); ?>')" title="Cetak Stiker Booking (58mm)">
+                      <i class="ti ti-printer"></i>
+                    </button>
+
                     <form action="<?= base_url("admin/reservations/{$r['id']}/delete"); ?>" method="post" class="m-0">
                       <?= csrf_field(); ?>
-                      <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-2.5" data-confirm="Hapus data booking ini secara permanen?" title="Hapus Booking">
-                        <i class="ti ti-trash"></i>
+                      <button type="submit" class="btn btn-outline-danger btn-sm rounded-circle p-0 d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" data-confirm="Hapus data booking ini secara permanen?" title="Hapus Booking">
+                        <i class="ti ti-x"></i>
                       </button>
                     </form>
                   </div>

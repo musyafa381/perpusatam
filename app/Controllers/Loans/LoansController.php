@@ -26,6 +26,40 @@ class LoansController extends ResourceController
         helper('upload');
     }
 
+    public function seedLate()
+    {
+        $db = \Config\Database::connect();
+        $member = $db->table('members')->get()->getFirstRow('array');
+        $bookItem = $db->table('book_items')->where('status', 'Tersedia')->get()->getFirstRow('array');
+
+        if (!$member || !$bookItem) {
+            session()->setFlashdata(['msg' => 'Gagal membuat contoh transaksi: Anggota atau stok buku tidak ditemukan.', 'error' => true]);
+            return redirect()->to('admin/loans');
+        }
+
+        $uid = 'LATE-' . strtoupper(substr(md5(uniqid()), 0, 6));
+        $loanDate = date('Y-m-d H:i:s', strtotime('-14 days'));
+        $dueDate  = date('Y-m-d H:i:s', strtotime('-7 days')); // Terlambat 7 hari!
+
+        $db->table('loans')->insert([
+            'book_id'      => $bookItem['book_id'],
+            'book_item_id' => $bookItem['id'],
+            'quantity'     => 1,
+            'member_id'    => $member['id'],
+            'uid'          => $uid,
+            'loan_date'    => $loanDate,
+            'due_date'     => $dueDate,
+            'return_date'  => null,
+            'created_at'   => $loanDate,
+            'updated_at'   => $loanDate
+        ]);
+
+        $db->table('book_items')->where('id', $bookItem['id'])->update(['status' => 'Dipinjam']);
+
+        session()->setFlashdata(['msg' => 'Contoh transaksi peminjaman terlambat berhasil dibuat!']);
+        return redirect()->to("admin/loans/{$uid}");
+    }
+
     /**
      * Return an array of resource objects, themselves in array format
      *

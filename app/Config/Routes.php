@@ -57,6 +57,7 @@ $routes->group('admin', ['filter' => 'session'], static function (RouteCollectio
     $routes->post('members/cards/assign', 'Members\MembersController::assignManualTier');
     $routes->get('members/cards/(:num)', 'Members\MembersController::showCard/$1');
     $routes->post('members/cards/(:num)/status', 'Members\MembersController::updateCardStatus/$1');
+    $routes->get('members/id-card/(:any)', 'Members\MembersController::idCard/$1');
     $routes->resource('members', ['controller' => 'Members\MembersController']);
 
     $routes->get('visitors', 'VisitorController::adminIndex');
@@ -108,6 +109,7 @@ $routes->group('admin', ['filter' => 'session'], static function (RouteCollectio
     $routes->post('loans/new', 'Loans\LoansController::new');
     $routes->post('loans/(:segment)/add-item', 'Loans\LoansController::addItem/$1');
     $routes->post('loans/(:segment)/remove-item/(:num)', 'Loans\LoansController::removeItem/$1/$2');
+    $routes->get('loans/seed-late', 'Loans\LoansController::seedLate');
     $routes->get('loans/receipt/(:segment)', 'Loans\LoansController::receipt/$1');
     $routes->resource('loans', ['controller' => 'Loans\LoansController']);
 

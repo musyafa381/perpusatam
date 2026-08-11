@@ -324,18 +324,20 @@
                     </td>
                     <td class="text-center pe-3">
                       <?php if ($r['status'] === 'pending') : ?>
-                        <form action="<?= base_url('admin/reservations/' . $r['id'] . '/fulfill'); ?>" method="post" class="d-inline">
-                          <?= csrf_field(); ?>
-                          <button type="submit" class="btn btn-sm btn-success rounded-2 me-1" title="Proses Pinjam">
-                            <i class="ti ti-check"></i> Process
-                          </button>
-                        </form>
-                        <form action="<?= base_url('admin/reservations/' . $r['id'] . '/cancel'); ?>" method="post" class="d-inline">
-                          <?= csrf_field(); ?>
-                          <button type="submit" class="btn btn-sm btn-outline-danger rounded-2" onclick="return confirm('Batalkan reservasi ini?')" title="Batalkan">
-                            <i class="ti ti-x"></i>
-                          </button>
-                        </form>
+                        <div class="d-flex align-items-center justify-content-center gap-1.5">
+                          <form action="<?= base_url('admin/reservations/' . $r['id'] . '/fulfill'); ?>" method="post" class="m-0">
+                            <?= csrf_field(); ?>
+                            <button type="submit" class="btn btn-sm btn-success rounded-pill px-2.5 py-1.5 d-inline-flex align-items-center justify-content-center shadow-xs" title="Proses Pinjam">
+                              <i class="ti ti-check"></i>
+                            </button>
+                          </form>
+                          <form action="<?= base_url('admin/reservations/' . $r['id'] . '/cancel'); ?>" method="post" class="m-0">
+                            <?= csrf_field(); ?>
+                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-2.5 py-1.5 d-inline-flex align-items-center justify-content-center shadow-xs" onclick="return confirm('Batalkan reservasi ini?')" title="Batalkan">
+                              <i class="ti ti-x"></i>
+                            </button>
+                          </form>
+                        </div>
                       <?php else: ?>
                         <span class="text-muted fs-7">-</span>
                       <?php endif; ?>

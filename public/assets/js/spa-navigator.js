@@ -103,7 +103,9 @@
     if (!isMobileViewport()) return;
     const wrapper = document.getElementById('main-wrapper');
     if (!wrapper) return;
+    wrapper.classList.remove('mini-sidebar');
     wrapper.classList.add('show-sidebar');
+    wrapper.setAttribute('data-sidebartype', 'full');
     // Show overlay
     const overlay = getSidebarOverlay();
     overlay.style.display = 'block';
@@ -119,56 +121,52 @@
       wrapper.setAttribute('data-sidebartype', 'mini-sidebar');
     }
     const overlay = getSidebarOverlay();
-    overlay.style.opacity = '0';
-    setTimeout(() => { overlay.style.display = 'none'; }, 250);
+    if (overlay) {
+      overlay.style.opacity = '0';
+      setTimeout(() => { overlay.style.display = 'none'; }, 200);
+    }
   }
 
-  // Re-initialize sidebar toggler after SPA navigation.
-  // IMPORTANT: app.min.js binds .sidebartoggler with plain .on('click', ...)
-  // (no namespace). After SPA navigation those handlers still exist and conflict
-  // with ours. We must .off('click') ALL handlers then re-bind only ours.
-  function reinitSidebar() {
-    if (typeof jQuery === 'undefined') return;
-    const $ = jQuery;
+  // Native capture-phase sidebar toggle listener (survives all SPA navigations, zero conflicts)
+  document.addEventListener('click', function (e) {
+    const toggler = e.target.closest('.sidebartoggler, #headerCollapse, #sidebarCollapse');
+    if (!toggler) return;
 
-    // Ensure overlay exists
-    getSidebarOverlay();
+    e.preventDefault();
+    e.stopPropagation();
 
-    // Remove ALL click handlers (including app.min.js originals) — prevents
-    // double-fire conflict where app.min.js toggles show-sidebar first, then
-    // our handler sees the post-toggle state and does the wrong action.
-    $('.sidebartoggler').off('click');
+    const wrapper = document.getElementById('main-wrapper');
+    if (!wrapper) return;
 
-    // Re-bind a single, unified sidebar toggler handler
-    $('.sidebartoggler').on('click', function () {
-      const wrapper = document.getElementById('main-wrapper');
-      if (!wrapper) return;
-
-      if (isMobileViewport()) {
-        // Mobile mode: toggle show-sidebar + overlay
-        if (wrapper.classList.contains('show-sidebar')) {
-          closeMobileSidebar();
-        } else {
-          openMobileSidebar();
-        }
-      } else {
-        // Desktop mode: toggle mini-sidebar (mirroring app.min.js original logic)
-        const isMini = wrapper.classList.toggle('mini-sidebar');
-        wrapper.setAttribute('data-sidebartype', isMini ? 'mini-sidebar' : 'full');
-        // Ensure overlay & show-sidebar are cleared on desktop
-        wrapper.classList.remove('show-sidebar');
-        const overlay = getSidebarOverlay();
-        overlay.style.opacity = '0';
-        overlay.style.display = 'none';
-      }
-    });
-
-    // Auto-close sidebar when any sidebar link is clicked on mobile
-    $(document).off('click.spa-sidebar-link').on('click.spa-sidebar-link', '.sidebar-link', function () {
-      if (isMobileViewport()) {
+    const isMobile = isMobileViewport();
+    if (isMobile) {
+      const isShowing = wrapper.classList.contains('show-sidebar') && !wrapper.classList.contains('mini-sidebar');
+      if (isShowing) {
         closeMobileSidebar();
+      } else {
+        openMobileSidebar();
       }
-    });
+    } else {
+      const isMini = wrapper.classList.toggle('mini-sidebar');
+      wrapper.setAttribute('data-sidebartype', isMini ? 'mini-sidebar' : 'full');
+      wrapper.classList.remove('show-sidebar');
+      const overlay = getSidebarOverlay();
+      overlay.style.opacity = '0';
+      overlay.style.display = 'none';
+    }
+  }, true);
+
+  // Native capture-phase auto-close on sidebar menu link click
+  document.addEventListener('click', function (e) {
+    const link = e.target.closest('.sidebar-link, #sidebarnav a');
+    if (!link) return;
+    if (isMobileViewport()) {
+      closeMobileSidebar();
+    }
+  }, true);
+
+  function reinitSidebar() {
+    getSidebarOverlay();
   }
 
 

@@ -150,7 +150,7 @@
 <?= $this->section('content') ?>
 <div class="d-flex align-items-center justify-content-between mb-4">
   <div>
-    <a href="<?= base_url('admin/members/cards'); ?>" class="btn btn-pill-gold me-2">
+    <a href="<?= base_url('admin/members/cards'); ?>" class="btn btn-light text-primary fw-bold shadow-sm me-2">
       <i class="ti ti-arrow-left me-1"></i> Kembali ke Daftar Kartu Member
     </a>
   </div>
