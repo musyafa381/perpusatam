@@ -1,6 +1,6 @@
 <?php
 
-/**
+  /**
  * Get Cloudinary configuration array from env with automatic fallback defaults
  */
 function getCloudinaryConfig(): array
