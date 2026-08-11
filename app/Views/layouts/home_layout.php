@@ -272,93 +272,115 @@ $isHomePage = (uri_string() === '' || uri_string() === '/' || uri_string() === '
   </div>
 
   <!-- =========================================================
-       TIER 1: DARK UTILITY RIBBON BAR (UNIDA Gontor Style)
+       FIXED HEADER NAVBAR (Paten Di Atas, Seamless Tanpa Celah & Ber-Bayangan)
        ========================================================= -->
-  <div class="unida-utility-bar d-none d-md-block">
-    <div class="container-fluid px-3 px-md-4">
-      <div class="d-flex align-items-center justify-content-between">
-        
-        <!-- Left: Phone & Email Contact -->
-        <div class="d-flex align-items-center gap-4">
-          <a href="tel:081393128882" class="d-inline-flex align-items-center gap-2">
-            <i class="ti ti-phone text-warning" style="color: #f0c968 !important;"></i>
-            <span>0813-9312-8882</span>
-          </a>
-          <a href="mailto:perpusatku@gmail.com" class="d-inline-flex align-items-center gap-2">
-            <i class="ti ti-mail text-warning" style="color: #f0c968 !important;"></i>
-            <span>perpusatku@gmail.com</span>
-          </a>
-        </div>
+  <style>
+    .unida-fixed-header-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1040;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.20) !important;
+    }
+    .unida-main-body-wrapper {
+      padding-top: 95px;
+    }
+    @media (max-width: 767.98px) {
+      .unida-main-body-wrapper {
+        padding-top: 65px;
+      }
+    }
+  </style>
 
-        <!-- Right: Social Media Links -->
-        <div class="d-flex align-items-center gap-3">
-          <div class="d-inline-flex align-items-center gap-2 fs-6">
-            <a href="https://youtube.com" target="_blank" title="YouTube Perpustakaan"><i class="ti ti-brand-youtube"></i></a>
-            <a href="https://instagram.com" target="_blank" title="Instagram Perpustakaan"><i class="ti ti-brand-instagram"></i></a>
-            <a href="https://tiktok.com" target="_blank" title="TikTok Perpustakaan"><i class="ti ti-brand-tiktok"></i></a>
+  <div class="unida-fixed-header-wrapper">
+    
+    <!-- TIER 1: DARK UTILITY RIBBON BAR (UNIDA Gontor Style) -->
+    <div class="unida-utility-bar d-none d-md-block">
+      <div class="container-fluid px-3 px-md-4">
+        <div class="d-flex align-items-center justify-content-between">
+          
+          <!-- Left: Phone & Email Contact -->
+          <div class="d-flex align-items-center gap-4">
+            <a href="tel:081393128882" class="d-inline-flex align-items-center gap-2">
+              <i class="ti ti-phone text-warning" style="color: #f0c968 !important;"></i>
+              <span>0813-9312-8882</span>
+            </a>
+            <a href="mailto:perpusatku@gmail.com" class="d-inline-flex align-items-center gap-2">
+              <i class="ti ti-mail text-warning" style="color: #f0c968 !important;"></i>
+              <span>perpusatku@gmail.com</span>
+            </a>
           </div>
-        </div>
 
+          <!-- Right: Social Media Links -->
+          <div class="d-flex align-items-center gap-3">
+            <div class="d-inline-flex align-items-center gap-2 fs-6">
+              <a href="https://youtube.com" target="_blank" title="YouTube Perpustakaan"><i class="ti ti-brand-youtube"></i></a>
+              <a href="https://instagram.com" target="_blank" title="Instagram Perpustakaan"><i class="ti ti-brand-instagram"></i></a>
+              <a href="https://tiktok.com" target="_blank" title="TikTok Perpustakaan"><i class="ti ti-brand-tiktok"></i></a>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
+
+    <!-- TIER 2: MAIN HEADER NAVBAR (UNIDA Gontor 1-to-1 Style) -->
+    <header class="unida-main-navbar">
+      <div class="container-fluid px-3 px-md-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+          
+          <!-- Left: Official Logo & Brand Title -->
+          <a href="<?= base_url(); ?>" class="d-flex align-items-center gap-3 text-decoration-none">
+            <img src="<?= base_url('assets/images/logoku.jpg'); ?>" alt="Logo Perpustakaan" class="flex-shrink-0" style="width: 44px; height: 44px; border-radius: 10px; object-fit: cover; border: 1.5px solid #f0c968;">
+            <div class="d-flex flex-column justify-content-center">
+              <h6 class="fw-extrabold mb-0 text-white" style="font-family: 'Georgia', serif; font-size: 0.98rem; letter-spacing: 0.5px; line-height: 1.2;">PERPUSTAKAAN PUSAT</h6>
+              <small class="d-block" style="font-size: 0.72rem; font-weight: 700; color: #f0c968 !important; letter-spacing: 0.5px; margin-top: 2px;">ASSALAFIYYAH MLANGI</small>
+            </div>
+          </a>
+
+          <!-- Center: Glassmorphism Pill Capsule Navigation Bar (Exact UNIDA Gontor) -->
+          <div class="d-none d-lg-flex align-items-center">
+            <div class="unida-nav-capsule">
+              
+              <a href="<?= base_url(); ?>" class="unida-nav-item <?= (uri_string() === '' || uri_string() === '/') ? 'active' : ''; ?>">
+                <i class="ti ti-home"></i> HOME
+              </a>
+
+              <a href="<?= base_url('book'); ?>" class="unida-nav-item <?= (uri_string() === 'book' || str_contains(uri_string(), 'book/')) ? 'active' : ''; ?>">
+                <i class="ti ti-books"></i> KATALOG BUKU
+              </a>
+
+              <a href="<?= base_url('buku-tamu'); ?>" class="unida-nav-item <?= uri_string() === 'buku-tamu' ? 'active' : ''; ?>">
+                <i class="ti ti-id-badge-2"></i> BUKU TAMU
+              </a>
+
+              <a href="<?= base_url('tv'); ?>" target="_blank" class="unida-nav-item">
+                <i class="ti ti-device-tv"></i> DISPLAY TV
+              </a>
+
+            </div>
+          </div>
+
+          <!-- Right: Dual Capsule Action Group (Search Circle + Login White Pill) -->
+          <div class="d-flex align-items-center gap-2">
+            <div class="unida-action-capsule">
+              <a href="<?= base_url('book'); ?>" class="unida-search-circle-btn" title="Cari Pustaka">
+                <i class="ti ti-search fs-5"></i>
+              </a>
+              <a href="<?= base_url('login'); ?>" class="unida-login-pill-btn">
+                <i class="ti ti-login"></i> Login
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </header>
+
   </div>
 
-  <!-- =========================================================
-       TIER 2: MAIN HEADER NAVBAR (UNIDA Gontor 1-to-1 Style)
-       ========================================================= -->
-  <header class="unida-main-navbar sticky-top">
-    <div class="container-fluid px-3 px-md-4">
-      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-        
-        <!-- Left: Official Logo & Brand Title -->
-        <a href="<?= base_url(); ?>" class="d-flex align-items-center gap-3 text-decoration-none">
-          <img src="<?= base_url('assets/images/logoku.jpg'); ?>" alt="Logo Perpustakaan" class="flex-shrink-0" style="width: 44px; height: 44px; border-radius: 10px; object-fit: cover; border: 1.5px solid #f0c968;">
-          <div class="d-flex flex-column justify-content-center">
-            <h6 class="fw-extrabold mb-0 text-white" style="font-family: 'Georgia', serif; font-size: 0.98rem; letter-spacing: 0.5px; line-height: 1.2;">PERPUSTAKAAN PUSAT</h6>
-            <small class="d-block" style="font-size: 0.72rem; font-weight: 700; color: #f0c968 !important; letter-spacing: 0.5px; margin-top: 2px;">ASSALAFIYYAH MLANGI</small>
-          </div>
-        </a>
-
-        <!-- Center: Glassmorphism Pill Capsule Navigation Bar (Exact UNIDA Gontor) -->
-        <div class="d-none d-lg-flex align-items-center">
-          <div class="unida-nav-capsule">
-            
-            <a href="<?= base_url(); ?>" class="unida-nav-item <?= (uri_string() === '' || uri_string() === '/') ? 'active' : ''; ?>">
-              <i class="ti ti-home"></i> HOME
-            </a>
-
-            <a href="<?= base_url('book'); ?>" class="unida-nav-item <?= (uri_string() === 'book' || str_contains(uri_string(), 'book/')) ? 'active' : ''; ?>">
-              <i class="ti ti-books"></i> KATALOG BUKU
-            </a>
-
-            <a href="<?= base_url('buku-tamu'); ?>" class="unida-nav-item <?= uri_string() === 'buku-tamu' ? 'active' : ''; ?>">
-              <i class="ti ti-id-badge-2"></i> BUKU TAMU
-            </a>
-
-            <a href="<?= base_url('tv'); ?>" target="_blank" class="unida-nav-item">
-              <i class="ti ti-device-tv"></i> DISPLAY TV
-            </a>
-
-          </div>
-        </div>
-
-        <!-- Right: Dual Capsule Action Group (Search Circle + Login White Pill) -->
-        <div class="d-flex align-items-center gap-2">
-          <div class="unida-action-capsule">
-            <a href="<?= base_url('book'); ?>" class="unida-search-circle-btn" title="Cari Pustaka">
-              <i class="ti ti-search fs-5"></i>
-            </a>
-            <a href="<?= base_url('login'); ?>" class="unida-login-pill-btn">
-              <i class="ti ti-login"></i> Login
-            </a>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </header>
-
-  <div class="page-wrapper" id="main-wrapper">
+  <div class="page-wrapper unida-main-body-wrapper" id="main-wrapper">
     <div class="body-wrapper">
       <?= $this->renderSection('back') ?>
       <div class="w-100">

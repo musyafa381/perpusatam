@@ -217,10 +217,15 @@
     border: 1.5px solid #e2d5c3 !important;
     transition: all 0.25s ease;
   }
-  .catalog-book-card:hover {
-    transform: translateY(-3px);
+  /* Explore Collection Book Cover Cards (UNIDA Gontor Style) */
+  .explore-cover-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    border: 1.5px solid rgba(226, 213, 195, 0.6) !important;
+  }
+  .explore-cover-card:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 16px 32px rgba(89, 57, 31, 0.22) !important;
     border-color: #c59b27 !important;
-    box-shadow: 0 10px 24px rgba(110, 71, 39, 0.12) !important;
   }
 </style>
 <?= $this->endSection() ?>
@@ -291,18 +296,18 @@
     <div class="col-6 col-md-3 col-lg-2.4 col-xl" style="flex: 1;">
       <div class="unida-stat-card d-flex align-items-center gap-3">
         <div class="unida-stat-icon" style="background: #fff8eb; color: #b48316;">
-          <i class="ti ti-category"></i>
+          <i class="ti ti-copy"></i>
         </div>
         <div class="text-truncate">
-          <h4 class="fw-extrabold mb-0 text-dark"><?= count($categories); ?></h4>
-          <small class="text-muted fw-bold fs-1 text-uppercase">Kategori Pustaka</small>
+          <h4 class="fw-extrabold mb-0 text-dark"><?= number_format($totalCopiesCount ?? $totalBooksCount, 0, ',', '.'); ?></h4>
+          <small class="text-muted fw-bold fs-1 text-uppercase">Eksemplar Buku</small>
         </div>
       </div>
     </div>
 
     <div class="col-6 col-md-3 col-lg-2.4 col-xl" style="flex: 1;">
       <div class="unida-stat-card d-flex align-items-center gap-3">
-        <div class="unida-stat-icon" style="background: #e6f4ea; color: #137333;">
+        <div class="unida-stat-icon" style="background: #fff8eb; color: #b48316;">
           <i class="ti ti-users"></i>
         </div>
         <div class="text-truncate">
@@ -314,7 +319,7 @@
 
     <div class="col-6 col-md-3 col-lg-2.4 col-xl" style="flex: 1;">
       <div class="unida-stat-card d-flex align-items-center gap-3">
-        <div class="unida-stat-icon" style="background: #e8f0fe; color: #1a73e8;">
+        <div class="unida-stat-icon" style="background: #fff8eb; color: #b48316;">
           <i class="ti ti-id-badge-2"></i>
         </div>
         <div class="text-truncate">
@@ -326,7 +331,7 @@
 
     <div class="col-6 col-md-3 col-lg-2.4 col-xl d-none d-md-block" style="flex: 1;">
       <div class="unida-stat-card d-flex align-items-center gap-3">
-        <div class="unida-stat-icon" style="background: #fce8e6; color: #c5221f;">
+        <div class="unida-stat-icon" style="background: #fff8eb; color: #b48316;">
           <i class="ti ti-bookmarks"></i>
         </div>
         <div class="text-truncate">
@@ -340,7 +345,7 @@
 </div>
 
 <!-- 3. Main Split Section Container: Welcome Card (Left) & Quick Services (Right) -->
-<div class="container px-3 mb-4">
+<div class="container px-3 mb-5">
   <div class="row g-4 align-items-stretch">
     
     <!-- Left Column (8 Columns): Welcome Card UNIDA Style -->
@@ -429,93 +434,221 @@
   </div>
 </div>
 
-<!-- 4. Dedicated Full-Width Catalog Section Container (Below Main Split Row) -->
+<!-- 4. Explore Collection Section Container (With Warm Background Container Box) -->
 <div class="container px-3 mb-5">
-  
-  <!-- Section Header -->
-  <div class="d-flex align-items-center justify-content-between mb-3">
-    <h5 class="fw-bold mb-0" style="color: #4a3424; font-family: 'Georgia', serif; font-size: 1.25rem;">
-      <i class="ti ti-books text-warning me-1" style="color: #c59b27 !important;"></i> Koleksi Katalog Perpustakaan
-    </h5>
-    <a href="<?= base_url('book'); ?>" class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold">
-      Lihat Semua <i class="ti ti-arrow-right ms-1"></i>
-    </a>
-  </div>
-
-  <!-- Full Width Catalog Grid (5 Books per Row on Desktop) -->
-  <?php if (empty($latestBooks)) : ?>
-    <div class="card border-0 rounded-4 p-5 text-center mb-4" style="background: #ffffff; border: 1.5px solid #e8decb !important;">
-      <i class="ti ti-search-off text-muted mb-3" style="font-size: 3.5rem; opacity: 0.4;"></i>
-      <h5 class="fw-bold text-dark mb-1">Pustaka Tidak Ditemukan</h5>
-      <p class="text-muted mb-3">Maaf, buku dengan kata kunci tersebut tidak ditemukan dalam direktori.</p>
+  <div class="p-4 p-md-5 rounded-5 shadow-sm" style="background: linear-gradient(135deg, #fcf8f2 0%, #f4eae0 100%); border: 1.5px solid #e2d5c3;">
+    
+    <!-- Explore Collection Header & 4 Category Capsules -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-md-between gap-3 mb-4">
       <div>
-        <a href="<?= base_url(); ?>" class="btn btn-warning fw-bold rounded-pill px-4 shadow-sm text-dark">
-          <i class="ti ti-refresh me-1"></i> Reset Pencarian
-        </a>
+        <h3 class="fw-extrabold mb-1" style="color: #2d1e18; font-family: 'Georgia', serif; font-size: 1.65rem;">
+          Explore Collection
+        </h3>
+        <p class="text-muted mb-0 fs-7">Koleksi pustaka terbaru yang baru saja terdaftar di perpustakaan</p>
+      </div>
+
+      <!-- 4 Category Filter Capsules (Semua Buku + 3 Teratas) -->
+      <div class="d-flex align-items-center flex-wrap gap-2">
+        <button type="button" class="btn btn-sm rounded-pill px-3 py-2 fw-bold shadow-xs explore-cat-btn active" data-cat-id="all" style="background: #59391f; color: #ffffff; border: 1.5px solid #59391f; font-size: 0.8rem;">
+          <i class="ti ti-books me-1"></i> Semua Buku
+        </button>
+        <?php foreach (array_slice($categories, 0, 3) as $cItem) : ?>
+          <button type="button" class="btn btn-sm rounded-pill px-3 py-2 fw-bold shadow-xs explore-cat-btn" data-cat-id="<?= $cItem['id']; ?>" style="background: #ffffff; color: #6e4727; border: 1.5px solid #e8decb; font-size: 0.8rem;">
+            <i class="ti ti-bookmark me-1" style="color: #c59b27;"></i> <?= esc($cItem['name']); ?>
+          </button>
+        <?php endforeach; ?>
       </div>
     </div>
-  <?php else : ?>
-    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3 mb-4">
-      <?php foreach ($latestBooks as $b) : ?>
+
+    <!-- Books Showcase Grid (Max 6 Items Per Active Category Tab) -->
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3 mb-4" id="exploreBooksGrid">
+      <?php foreach ($latestBooks as $index => $b) : ?>
         <?php
           $rawCover = $b['book_cover'] ?? '';
           $coverUrl = getBookCoverUrl($rawCover);
           $hasCover = !empty($rawCover) && ($coverUrl !== base_url(BOOK_COVER_URI . DEFAULT_BOOK_COVER));
-          $stockCount = (int)($b['quantity'] ?? 0);
+          $catId = (int)($b['category_id'] ?? 0);
         ?>
-        <div class="col">
-          <a href="<?= base_url('book/' . ($b['slug'] ?: $b['id'])); ?>" class="text-decoration-none text-dark d-block h-100">
-            <div class="card h-100 border-0 rounded-4 overflow-hidden catalog-book-card position-relative transition-all" style="cursor: pointer;">
+        <div class="col explore-book-item" data-cat-id="<?= $catId; ?>" style="<?= $index < 6 ? '' : 'display: none;'; ?>">
+          <a href="<?= base_url('book/' . ($b['slug'] ?: $b['id'])); ?>" class="d-block text-decoration-none h-100">
+            <div class="card h-100 border-0 rounded-4 overflow-hidden explore-cover-card position-relative shadow-sm" style="background: #ffffff;">
               
-              <div class="catalog-book-cover position-relative d-flex align-items-center justify-content-center overflow-hidden p-2" style="height: 185px; background: linear-gradient(135deg, #faf5ee 0%, #eee4d5 100%);">
+              <!-- Book Cover Image Box (Compact Height) -->
+              <div class="position-relative overflow-hidden d-flex align-items-center justify-content-center p-2" style="height: 160px; background: linear-gradient(135deg, #faf5ee 0%, #eee4d5 100%);">
                 <?php if ($hasCover) : ?>
-                  <img src="<?= $coverUrl; ?>" alt="<?= esc($b['title']); ?>" loading="lazy" class="h-100 w-auto shadow-sm" style="object-fit: contain; max-width: 100%; max-height: 100%; filter: drop-shadow(0 5px 10px rgba(110, 71, 39, 0.2));">
+                  <img src="<?= $coverUrl; ?>" alt="<?= esc($b['title']); ?>" loading="lazy" class="h-100 w-auto shadow-sm rounded-2" style="object-fit: contain; max-width: 100%; max-height: 100%; filter: drop-shadow(0 4px 10px rgba(89, 57, 31, 0.2));">
                 <?php else : ?>
-                  <div class="d-flex flex-column align-items-center justify-content-center text-center p-2.5 h-100 w-100 rounded-3" style="background: linear-gradient(135deg, #6e4727 0%, #8b5e3c 100%); color: #ffffff;">
-                    <i class="ti ti-book fs-2 mb-1.5" style="color: #c59b27;"></i>
-                    <span class="fw-bold fs-7 text-white text-truncate-2 px-1" style="line-height: 1.25; font-family: 'Georgia', serif;"><?= esc($b['title']); ?></span>
+                  <div class="d-flex flex-column align-items-center justify-content-center text-center p-2 h-100 w-100 rounded-3" style="background: linear-gradient(135deg, #59391f 0%, #7c522f 100%); color: #ffffff;">
+                    <i class="ti ti-book fs-2 mb-1" style="color: #f0c968;"></i>
+                    <span class="fw-bold fs-8 text-white text-truncate-2 px-1" style="line-height: 1.2; font-family: 'Georgia', serif;"><?= esc($b['title']); ?></span>
                   </div>
                 <?php endif; ?>
+                
+                <!-- BARU Gold Pill Badge -->
+                <span class="position-absolute top-0 start-0 m-1.5 badge rounded-pill fw-bold" style="background: #c59b27; color: #ffffff; font-size: 0.58rem; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                  BARU
+                </span>
               </div>
 
-              <div class="card-body p-3 d-flex flex-column">
-                <h6 class="fw-bold mb-1 text-truncate-2" title="<?= esc($b['title']); ?>" style="color: #2d1e18 !important; font-size: 0.88rem; line-height: 1.3; min-height: 2.4em; font-weight: 700;">
+              <!-- Title & Author Tight Footer ("Rengkat" & Neat) -->
+              <div class="p-2 text-center" style="background: #ffffff;">
+                <h6 class="fw-bold text-truncate mb-1" title="<?= esc($b['title']); ?>" style="color: #2d1e18 !important; font-size: 0.82rem; font-family: 'Georgia', serif;">
                   <?= esc($b['title']); ?>
                 </h6>
-
-                <div class="fw-semibold mb-2 text-truncate" style="color: #8b5e3c !important; font-size: 0.76rem;">
-                  <i class="ti ti-user me-1" style="color: #c59b27;"></i><?= esc($b['author'] ?: 'Penulis tak diketahui'); ?>
+                <div class="d-flex align-items-center justify-content-center gap-1 mb-1">
+                  <small class="text-truncate fw-semibold" style="color: #8b5e3c !important; font-size: 0.72rem;">
+                    <i class="ti ti-user me-0.5" style="color: #c59b27;"></i><?= esc($b['author'] ?: 'Penulis tak diketahui'); ?>
+                  </small>
                 </div>
-
-                <div class="mb-2">
-                  <?php if ($stockCount > 0) : ?>
-                    <span class="badge rounded-pill px-2 py-1 fw-bold" style="background: #e6f4ea; color: #137333; border: 1px solid #ceead6; font-size: 0.65rem;">
-                      <i class="ti ti-circle-check me-1"></i>Tersedia (<?= $stockCount ?>)
-                    </span>
-                  <?php else : ?>
-                    <span class="badge rounded-pill px-2 py-1 fw-bold" style="background: #fce8e6; color: #c5221f; border: 1px solid #fad2cf; font-size: 0.65rem;">
-                      <i class="ti ti-circle-x me-1"></i>Dipinjam
-                    </span>
-                  <?php endif; ?>
-                </div>
-
-                <div class="mt-auto pt-2 border-top d-flex align-items-center justify-content-between fs-8" style="border-color: #f0e6d6 !important;">
-                  <span class="badge rounded-pill px-2 py-1 fw-bold text-truncate" style="background: #f4eae0; color: #6e4727; max-width: 85px; font-size: 0.62rem;">
-                    <?= esc($b['category'] ?: 'Umum'); ?>
-                  </span>
-                  <span class="badge rounded-pill px-2 py-1 fw-extrabold" style="background: #fff8eb; border: 1px solid #f3e5c8; color: #b48316; font-size: 0.62rem;">
-                    Rak <?= esc($b['rack'] ?: '-'); ?>
-                  </span>
-                </div>
-
+                <span class="badge rounded-pill px-2 py-0.5 fw-bold text-truncate" style="background: #fdf6ea; color: #6e4727; border: 1px solid #f3e5c8; font-size: 0.6rem;">
+                  <?= esc($b['category'] ?: 'Umum'); ?>
+                </span>
               </div>
+
             </div>
           </a>
         </div>
       <?php endforeach; ?>
     </div>
-  <?php endif; ?>
 
+    <!-- Empty Message if Selected Category Has No Books -->
+    <div id="exploreEmptyMsg" class="text-center py-4 text-muted" style="display: none;">
+      <i class="ti ti-folder-off fs-2 mb-2 d-block" style="color: #c59b27;"></i>
+      <span class="fw-bold fs-7">Belum ada buku untuk kategori ini</span>
+    </div>
+
+    <!-- Center Action Button: View All Books -->
+    <div class="text-center">
+      <a href="<?= base_url('book'); ?>" class="btn rounded-pill px-4 py-2.5 fw-bold shadow-sm" style="background: linear-gradient(135deg, #59391f 0%, #7c522f 100%); color: #ffffff; border: none; font-size: 0.9rem;">
+        View All Books <i class="ti ti-arrow-right ms-1"></i>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<!-- 5. Informasi Perpustakaan Showcase Container (Warm Cream Theme, 2 Cards Side-by-Side) -->
+<div class="container px-3 mb-5">
+  <div class="p-4 p-md-5 rounded-5 shadow-sm overflow-hidden position-relative" style="background: linear-gradient(135deg, #fcf8f2 0%, #f4eae0 100%); border: 1.5px solid #e2d5c3;">
+    
+    <!-- Section Header (Without Buka Layar TV Button) -->
+    <div class="mb-4 border-bottom pb-3" style="border-color: #e2d5c3 !important;">
+      <h3 class="fw-extrabold mb-1" style="color: #2d1e18; font-family: 'Georgia', serif; font-size: 1.65rem;">
+        Informasi Perpustakaan
+      </h3>
+      <p class="text-muted mb-0 fs-7">Konten pengumuman, banner literasi & sirkulasi digital</p>
+    </div>
+
+    <!-- Banners Showcase (2 Cards Side-by-Side Per Slide) -->
+    <?php
+      $displayBanners = !empty($tvBanners) ? $tvBanners : [];
+      $chunks = !empty($displayBanners) ? array_chunk($displayBanners, 2) : [];
+    ?>
+
+    <?php if (!empty($chunks)) : ?>
+      <?php if (count($displayBanners) <= 2) : ?>
+        <!-- Static 2 Cards Side-by-Side Row (For 2 or fewer banners) -->
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+          <?php foreach ($displayBanners as $tb) : ?>
+            <div class="col">
+              <div class="rounded-4 overflow-hidden shadow-sm position-relative border" style="border: 1.5px solid #e2d5c3 !important; background: #ffffff;">
+                <img src="<?= esc($tb['url']); ?>" alt="<?= esc($tb['title'] ?? 'Banner'); ?>" class="w-100 h-auto d-block rounded-4" style="object-fit: cover;">
+              </div>
+            </div>
+          <?php endforeach; ?>
+        </div>
+      <?php else : ?>
+        <!-- Sliding Carousel for More Than 2 Banners (2 Cards Per Slide) -->
+        <div id="tvMultiSlideCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+          
+          <div class="carousel-inner pb-2">
+            <?php foreach ($chunks as $cIdx => $chunk) : ?>
+              <div class="carousel-item <?= $cIdx === 0 ? 'active' : ''; ?>">
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                  <?php foreach ($chunk as $tb) : ?>
+                    <div class="col">
+                      <div class="rounded-4 overflow-hidden shadow-sm position-relative border" style="border: 1.5px solid #e2d5c3 !important; background: #ffffff;">
+                        <img src="<?= esc($tb['url']); ?>" alt="<?= esc($tb['title'] ?? 'Banner'); ?>" class="w-100 h-auto d-block rounded-4" style="object-fit: cover;">
+                      </div>
+                    </div>
+                  <?php endforeach; ?>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          </div>
+
+          <!-- Carousel Controls & Indicators -->
+          <div class="d-flex align-items-center justify-content-center gap-3 mt-3">
+            <button class="btn btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center shadow-xs" type="button" data-bs-target="#tvMultiSlideCarousel" data-bs-slide="prev" style="width: 38px; height: 38px; background: #ffffff; color: #6e4727; border: 1.5px solid #e8decb;">
+              <i class="ti ti-chevron-left fs-5"></i>
+            </button>
+
+            <div class="carousel-indicators position-static m-0 d-flex align-items-center gap-1.5">
+              <?php foreach ($chunks as $cIdx => $chunk) : ?>
+                <button type="button" data-bs-target="#tvMultiSlideCarousel" data-bs-slide-to="<?= $cIdx; ?>" class="<?= $cIdx === 0 ? 'active' : ''; ?>" aria-current="<?= $cIdx === 0 ? 'true' : 'false'; ?>" aria-label="Slide <?= $cIdx + 1; ?>" style="width: 24px; height: 6px; border-radius: 4px; background-color: #59391f; border: none;"></button>
+              <?php endforeach; ?>
+            </div>
+
+            <button class="btn btn-sm rounded-circle p-2 d-inline-flex align-items-center justify-content-center shadow-xs" type="button" data-bs-target="#tvMultiSlideCarousel" data-bs-slide="next" style="width: 38px; height: 38px; background: #ffffff; color: #6e4727; border: 1.5px solid #e8decb;">
+              <i class="ti ti-chevron-right fs-5"></i>
+            </button>
+          </div>
+
+        </div>
+      <?php endif; ?>
+
+    <?php else : ?>
+      <!-- 2 Default Side-by-Side Showcase Cards (When no banners uploaded) -->
+      <div class="row row-cols-1 row-cols-md-2 g-4">
+        
+        <!-- Card 1: Member Card & Tiering -->
+        <div class="col">
+          <div class="card h-100 border-0 rounded-4 overflow-hidden p-4 shadow-sm d-flex flex-column justify-content-between" style="background: linear-gradient(135deg, #ffffff 0%, #faf6f0 100%); border: 1.5px solid #e2d5c3 !important;">
+            <div>
+              <div class="d-flex align-items-center justify-content-between mb-3">
+                <span class="badge rounded-pill px-3 py-1.5 fw-bold" style="background: #59391f; color: #ffffff; font-size: 0.72rem;">
+                  MEMBER CARD GOLD
+                </span>
+                <i class="ti ti-id-badge-2 fs-2" style="color: #c59b27;"></i>
+              </div>
+              <h5 class="fw-bold mb-2" style="color: #2d1e18; font-family: 'Georgia', serif;">Fasilitas Member Premium</h5>
+              <ul class="list-unstyled text-muted fs-7 mb-3" style="line-height: 1.7;">
+                <li><i class="ti ti-circle-check-filled text-warning me-1.5" style="color: #c59b27 !important;"></i> Bawa novel & kitab ke asrama santri</li>
+                <li><i class="ti ti-circle-check-filled text-warning me-1.5" style="color: #c59b27 !important;"></i> Waktu peminjaman hingga 10 hari</li>
+                <li><i class="ti ti-circle-check-filled text-warning me-1.5" style="color: #c59b27 !important;"></i> Maksimal peminjaman 3 buku bersamaan</li>
+              </ul>
+            </div>
+            <div class="pt-2 border-top text-center" style="border-color: #e8decb !important;">
+              <span class="fw-bold fs-8" style="color: #6e4727;">Masa Berlaku Kartu 2 Tahun</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Layanan & Sirkulasi Digital -->
+        <div class="col">
+          <div class="card h-100 border-0 rounded-4 overflow-hidden p-4 shadow-sm d-flex flex-column justify-content-between" style="background: linear-gradient(135deg, #ffffff 0%, #faf6f0 100%); border: 1.5px solid #e2d5c3 !important;">
+            <div>
+              <div class="d-flex align-items-center justify-content-between mb-3">
+                <span class="badge rounded-pill px-3 py-1.5 fw-bold" style="background: #c59b27; color: #ffffff; font-size: 0.72rem;">
+                  INFORMASI LITERASI
+                </span>
+                <i class="ti ti-books fs-2" style="color: #59391f;"></i>
+              </div>
+              <h5 class="fw-bold mb-2" style="color: #2d1e18; font-family: 'Georgia', serif;">Layanan & Sirkulasi Santri</h5>
+              <p class="text-muted fs-7 mb-3" style="line-height: 1.65;">
+                Fasilitas presensi digital santri, pencarian katalog online, serta layanan sirkulasi peminjaman buku dan kitab berbasis sistem terintegrasi.
+              </p>
+            </div>
+            <div class="pt-2 border-top text-center" style="border-color: #e8decb !important;">
+              <span class="fw-bold fs-8" style="color: #6e4727;">Sinkronisasi Data Realtime</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    <?php endif; ?>
+
+  </div>
 </div>
 
 <!-- =========================================================
@@ -689,7 +822,58 @@
 
     </div>
 
-  </div>
-</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const catBtns = document.querySelectorAll('.explore-cat-btn');
+  const bookItems = document.querySelectorAll('.explore-book-item');
+  const emptyMsg = document.getElementById('exploreEmptyMsg');
+
+  catBtns.forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      // Update active state style on capsule buttons
+      catBtns.forEach(b => {
+        b.classList.remove('active');
+        b.style.background = '#ffffff';
+        b.style.color = '#6e4727';
+        b.style.border = '1.5px solid #e8decb';
+      });
+
+      this.classList.add('active');
+      this.style.background = '#59391f';
+      this.style.color = '#ffffff';
+      this.style.border = '1.5px solid #59391f';
+
+      const selectedCat = this.getAttribute('data-cat-id');
+      let visibleCount = 0;
+
+      bookItems.forEach(item => {
+        const itemCat = item.getAttribute('data-cat-id');
+        
+        if (selectedCat === 'all') {
+          if (visibleCount < 6) {
+            item.style.display = 'block';
+            visibleCount++;
+          } else {
+            item.style.display = 'none';
+          }
+        } else {
+          if (itemCat === selectedCat && visibleCount < 6) {
+            item.style.display = 'block';
+            visibleCount++;
+          } else {
+            item.style.display = 'none';
+          }
+        }
+      });
+
+      if (emptyMsg) {
+        emptyMsg.style.display = (visibleCount === 0) ? 'block' : 'none';
+      }
+    });
+  });
+});
+</script>
 
 <?= $this->endSection() ?>

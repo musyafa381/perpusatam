@@ -80,9 +80,16 @@ class Home extends BaseController
         $visitorLogModel = new \App\Models\VisitorLogModel();
 
         $totalBooksCount = $this->bookModel->where('deleted_at', null)->countAllResults();
+        $db = \Config\Database::connect();
+        $stockRow = $db->table('book_stock')->selectSum('quantity')->get()->getRow();
+        $totalCopiesCount = max($totalBooksCount, (int)($stockRow->quantity ?? 0));
+
         $totalMembersCount = $memberModel->where('deleted_at', null)->countAllResults();
         $totalVisitorsCount = $visitorLogModel->countAllResults();
         $totalLoansCount = $loanModel->countAllResults();
+
+        helper(['upload_helper', 'tv_helper']);
+        $tvBanners = function_exists('getTvBanners') ? getTvBanners() : [];
 
         $data = [
             'latestBooks'        => $latestBooks,
@@ -90,9 +97,11 @@ class Home extends BaseController
             'search'             => $search,
             'categoryFilter'     => $categoryFilter,
             'totalBooksCount'    => $totalBooksCount,
+            'totalCopiesCount'   => $totalCopiesCount,
             'totalMembersCount'  => $totalMembersCount,
             'totalVisitorsCount' => $totalVisitorsCount,
             'totalLoansCount'    => $totalLoansCount,
+            'tvBanners'          => $tvBanners,
         ];
 
         return view('home/portal', $data);

@@ -301,7 +301,7 @@ if (session()->getFlashdata('msg')) : ?>
       </div>
       <div style="text-align: right;">
         <span style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: #ffffff; font-size: 0.75rem; font-weight: 800; padding: 6px 14px; border-radius: 50px; letter-spacing: 0.5px; display: inline-block; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);">
-          ⚠️ TERLAMBAT KEMBALIKAN
+          ⚠️ SURAT PERINGATAN
         </span>
       </div>
     </div>
@@ -317,7 +317,7 @@ if (session()->getFlashdata('msg')) : ?>
       <div>
         <small style="font-size: 0.7rem; font-weight: 700; color: #8b5e3c; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 3px;">NAMA PEMINJAM / ANGGOTA</small>
         <strong style="font-size: 1.15rem; font-weight: 800; color: #2d241e; display: block;"><?= esc("{$loan['first_name']} {$loan['last_name']}"); ?></strong>
-        <span style="font-size: 0.8rem; font-weight: 700; color: #6e4727;">UID Anggota: <?= esc($loan['member_uid']); ?></span>
+        <span style="font-size: 0.8rem; font-weight: 700; color: #6e4727;">Kelas: <?= esc(!empty($loan['class_level']) ? $loan['class_level'] : '-'); ?></span>
       </div>
       <div style="text-align: right;">
         <span style="background: #ffffff; color: #8b5e3c; border: 1px solid #e8decb; font-size: 0.78rem; font-weight: 800; padding: 6px 14px; border-radius: 20px; display: inline-block;">
