@@ -1,6 +1,6 @@
 <?php
 
-  /**
+/**
  * Get Cloudinary configuration array from env with automatic fallback defaults
  */
 function getCloudinaryConfig(): array
@@ -28,9 +28,9 @@ function getCloudinaryConfig(): array
 }
 
 /**
- * Upload local file to Cloudinary cloud storage
+ * Upload local file or temp file to Cloudinary cloud storage
  */
-function uploadToCloudinary(string $realFilePath, string $folder = 'perpustakaan/covers'): string|null
+function uploadToCloudinary(string $realFilePath, string $folder = 'perpustakaan/covers', string $originalName = ''): string|null
 {
     $config = getCloudinaryConfig();
     if (empty($config['cloud_name']) || empty($config['api_key']) || empty($config['api_secret'])) {
@@ -49,9 +49,10 @@ function uploadToCloudinary(string $realFilePath, string $folder = 'perpustakaan
     $signature = sha1($toSign);
 
     $mimeType = function_exists('mime_content_type') ? (@mime_content_type($absPath) ?: 'image/jpeg') : 'image/jpeg';
-    $postFileName = basename($absPath);
+    $postFileName = !empty($originalName) ? basename($originalName) : basename($absPath);
     if (!str_contains($postFileName, '.')) {
-        $postFileName .= '.jpg';
+        $ext = ($mimeType === 'image/png') ? '.png' : (($mimeType === 'image/webp') ? '.webp' : '.jpg');
+        $postFileName .= $ext;
     }
 
     $cfile = new \CURLFile($absPath, $mimeType, $postFileName);
@@ -117,14 +118,29 @@ function optimizeAndResizeBookCover(string $filePath, int $width = 600, int $hei
 }
 
 /**
- * save book cover image and returns string value filename or Cloudinary URL
- * */
+ * Save book cover image directly to Cloudinary (or fallback to local disk)
+ */
 function uploadBookCover(\CodeIgniter\HTTP\Files\UploadedFile|null $coverImage): string|null
 {
     if (!$coverImage || !$coverImage->isValid() || $coverImage->hasMoved()) {
         return null;
     }
 
+    $tempPath = $coverImage->getTempName();
+
+    // 1. Direct Cloudinary upload from temp file (No local folder permission requirement!)
+    if (!empty($tempPath) && file_exists($tempPath)) {
+        try {
+            $cloudinaryUrl = uploadToCloudinary($tempPath, 'perpustakaan/covers', $coverImage->getClientName());
+            if (!empty($cloudinaryUrl)) {
+                return $cloudinaryUrl;
+            }
+        } catch (\Throwable $e) {
+            log_message('error', 'Cloudinary direct upload failed: ' . $e->getMessage());
+        }
+    }
+
+    // 2. Fallback to local storage if Cloudinary upload failed
     try {
         $targetDir = rtrim(BOOK_COVER_PATH, '/\\') . DIRECTORY_SEPARATOR;
         if (!is_dir($targetDir)) {
@@ -132,38 +148,22 @@ function uploadBookCover(\CodeIgniter\HTTP\Files\UploadedFile|null $coverImage):
         }
 
         $coverImageFileName = $coverImage->getRandomName();
-        // save cover image file to local
         $save = $coverImage->move($targetDir, $coverImageFileName);
 
         if ($save) {
             $localPath = $targetDir . $coverImageFileName;
-
-            // Auto Resize & Crop to fixed 600x900px (2:3 standard book aspect ratio)
-            optimizeAndResizeBookCover($localPath, 600, 900);
-
-            // Attempt upload to Cloudinary if configured
-            try {
-                $cloudinaryUrl = uploadToCloudinary($localPath);
-                if ($cloudinaryUrl) {
-                    @unlink($localPath);
-                    return $cloudinaryUrl;
-                }
-            } catch (\Throwable $e) {
-                log_message('error', 'Cloudinary upload failed: ' . $e->getMessage());
-                // Cloudinary failed, fallback to local file
-            }
-
+            @optimizeAndResizeBookCover($localPath, 600, 900);
             return $coverImageFileName;
         }
     } catch (\Throwable $e) {
-        log_message('error', 'uploadBookCover failed: ' . $e->getMessage());
+        log_message('error', 'uploadBookCover local fallback failed: ' . $e->getMessage());
     }
 
     return null;
 }
 
 /**
- * Download book cover from external URL and save to Cloudinary or BOOK_COVER_PATH
+ * Download book cover from external URL and save directly to Cloudinary
  */
 function downloadBookCoverFromUrl(string $url): string|null
 {
@@ -171,15 +171,16 @@ function downloadBookCoverFromUrl(string $url): string|null
         return null;
     }
 
-    // Download image to temp file first to crop/resize
+    // Download image data via cURL
     $ch = curl_init();
     curl_setopt_array($ch, [
         CURLOPT_URL            => $url,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_TIMEOUT        => 15,
+        CURLOPT_TIMEOUT        => 20,
         CURLOPT_SSL_VERIFYPEER => false,
-        CURLOPT_USERAGENT      => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        CURLOPT_SSL_VERIFYHOST => 0,
+        CURLOPT_USERAGENT      => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) CodeIgniter-Cloudinary-Uploader',
     ]);
 
     $imageData = curl_exec($ch);
@@ -187,17 +188,26 @@ function downloadBookCoverFromUrl(string $url): string|null
     curl_close($ch);
 
     if ($httpCode >= 200 && $httpCode < 300 && !empty($imageData)) {
-        $filename = 'cover_remote_' . time() . '_' . substr(md5(uniqid()), 0, 8) . '.jpg';
-        $savePath = BOOK_COVER_PATH . DIRECTORY_SEPARATOR . $filename;
-        if (file_put_contents($savePath, $imageData)) {
-            // Auto Resize & Crop to fixed 600x900px
-            optimizeAndResizeBookCover($savePath, 600, 900);
-
-            $cloudinaryUrl = uploadToCloudinary($savePath);
-            if ($cloudinaryUrl) {
-                @unlink($savePath);
+        // Save to system temp directory
+        $tempFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'remote_cover_' . uniqid() . '.jpg';
+        if (file_put_contents($tempFile, $imageData)) {
+            // Upload temp file directly to Cloudinary
+            $cloudinaryUrl = uploadToCloudinary($tempFile, 'perpustakaan/covers', 'remote_cover.jpg');
+            @unlink($tempFile);
+            if (!empty($cloudinaryUrl)) {
                 return $cloudinaryUrl;
             }
+        }
+
+        // Local fallback if temp/Cloudinary fails
+        $targetDir = rtrim(BOOK_COVER_PATH, '/\\') . DIRECTORY_SEPARATOR;
+        if (!is_dir($targetDir)) {
+            @mkdir($targetDir, 0777, true);
+        }
+        $filename = 'cover_remote_' . time() . '_' . substr(md5(uniqid()), 0, 8) . '.jpg';
+        $savePath = $targetDir . $filename;
+        if (@file_put_contents($savePath, $imageData)) {
+            @optimizeAndResizeBookCover($savePath, 600, 900);
             return $filename;
         }
     }

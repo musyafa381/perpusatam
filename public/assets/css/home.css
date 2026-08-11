@@ -675,8 +675,8 @@ body:not(.public-kiosk-mode) .page-wrapper {
   display: flex;
   gap: 16px;
   width: 100%;
-  height: 230px;
-  max-height: 230px;
+  height: 100%;
+  flex: 1;
   padding: 12px;
   box-sizing: border-box;
   overflow: hidden;
@@ -697,7 +697,6 @@ body:not(.public-kiosk-mode) .page-wrapper {
 .hero-book-slot {
   flex: 1.4;
   height: 100%;
-  max-height: 206px;
   background: linear-gradient(135deg, #ffffff 0%, #fcf8f2 100%);
   border: 1.5px solid #ebd9bc;
   border-radius: 14px;
@@ -722,9 +721,7 @@ body:not(.public-kiosk-mode) .page-wrapper {
 
 .hero-cover-container {
   height: 100%;
-  max-height: 178px;
-  width: 118px;
-  max-width: 118px;
+  max-height: 100%;
   aspect-ratio: 2/3;
   flex-shrink: 0;
   display: flex;
@@ -735,9 +732,9 @@ body:not(.public-kiosk-mode) .page-wrapper {
 }
 
 .hero-book-img {
-  width: 100%;
   height: 100%;
   max-height: 100%;
+  width: auto;
   max-width: 100%;
   aspect-ratio: 2/3;
   object-fit: cover;
@@ -752,9 +749,9 @@ body:not(.public-kiosk-mode) .page-wrapper {
 }
 
 .hero-mock-cover {
-  width: 100%;
   height: 100%;
   max-height: 100%;
+  width: auto;
   max-width: 100%;
   aspect-ratio: 2/3;
   border-radius: 10px;
@@ -838,14 +835,12 @@ body:not(.public-kiosk-mode) .page-wrapper {
   flex-direction: column;
   gap: 10px;
   height: 100%;
-  max-height: 206px;
   overflow: hidden;
 }
 
 .queue-card-slot {
   flex: 1;
   height: calc(50% - 5px);
-  max-height: 98px;
   background: #ffffff;
   border: 1.5px solid #f0e6d6;
   border-radius: 12px;
@@ -876,9 +871,7 @@ body:not(.public-kiosk-mode) .page-wrapper {
 
 .queue-cover-container {
   height: 100%;
-  max-height: 82px;
-  width: 55px;
-  max-width: 55px;
+  max-height: 100%;
   aspect-ratio: 2/3;
   flex-shrink: 0;
   display: flex;
@@ -889,9 +882,9 @@ body:not(.public-kiosk-mode) .page-wrapper {
 }
 
 .queue-book-img {
-  width: 100%;
   height: 100%;
   max-height: 100%;
+  width: auto;
   max-width: 100%;
   aspect-ratio: 2/3;
   object-fit: cover;
@@ -901,9 +894,9 @@ body:not(.public-kiosk-mode) .page-wrapper {
 }
 
 .queue-mock-cover {
-  width: 100%;
   height: 100%;
   max-height: 100%;
+  width: auto;
   max-width: 100%;
   aspect-ratio: 2/3;
   border-radius: 6px;

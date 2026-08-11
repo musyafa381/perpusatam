@@ -24,7 +24,11 @@ if (!function_exists('saveTvBanners')) {
     function saveTvBanners(array $banners): bool
     {
         $file = getTvBannersFile();
-        return (bool) file_put_contents($file, json_encode(array_values($banners), JSON_PRETTY_PRINT));
+        $dir = dirname($file);
+        if (!is_dir($dir)) {
+            @mkdir($dir, 0777, true);
+        }
+        return (bool) @file_put_contents($file, json_encode(array_values($banners), JSON_PRETTY_PRINT));
     }
 }
 

@@ -26,25 +26,31 @@ class TvContentController extends BaseController
         $file = $this->request->getFile('poster');
         $finalUrl = null;
 
-        if ($file && $file->isValid() && !$file->hasMoved()) {
-            $targetDir = FCPATH . 'uploads/tv';
-            if (!is_dir($targetDir)) {
-                @mkdir($targetDir, 0777, true);
-            }
-            $newName = $file->getRandomName();
-            $file->move($targetDir, $newName);
-            $localPath = $targetDir . DIRECTORY_SEPARATOR . $newName;
+        try {
+            if ($file && $file->isValid() && !$file->hasMoved()) {
+                // Try direct upload from temp path to Cloudinary first
+                $tempPath = $file->getTempName();
+                if (!empty($tempPath) && file_exists($tempPath)) {
+                    $cloudUrl = uploadToCloudinary($tempPath, 'perpustakaan/tv');
+                    if (!empty($cloudUrl)) {
+                        $finalUrl = $cloudUrl;
+                    }
+                }
 
-            // Try Cloudinary upload first
-            $cloudUrl = uploadToCloudinary($localPath, 'perpustakaan/tv');
-
-            if (!empty($cloudUrl)) {
-                @unlink($localPath);
-                $finalUrl = $cloudUrl;
-            } else {
-                // Fallback to local uploads if Cloudinary returns null
-                $finalUrl = base_url('uploads/tv/' . $newName);
+                // If Cloudinary didn't return a URL, fallback to local uploads directory
+                if (empty($finalUrl)) {
+                    $targetDir = FCPATH . 'uploads/tv';
+                    if (!is_dir($targetDir)) {
+                        @mkdir($targetDir, 0777, true);
+                    }
+                    $newName = $file->getRandomName();
+                    if (@$file->move($targetDir, $newName)) {
+                        $finalUrl = base_url('uploads/tv/' . $newName);
+                    }
+                }
             }
+        } catch (\Throwable $e) {
+            log_message('error', 'TvContentController store file error: ' . $e->getMessage());
         }
 
         // Check if URL field provided instead
@@ -56,8 +62,13 @@ class TvContentController extends BaseController
         }
 
         if (!empty($finalUrl)) {
-            addTvBanner($finalUrl, $titleInput);
-            return redirect()->to(base_url('admin/tv-content'))->with('message', 'Banner TV Perpus berhasil ditambahkan!');
+            try {
+                addTvBanner($finalUrl, $titleInput);
+                return redirect()->to(base_url('admin/tv-content'))->with('message', 'Banner TV Perpus berhasil ditambahkan!');
+            } catch (\Throwable $e) {
+                log_message('error', 'addTvBanner error: ' . $e->getMessage());
+                return redirect()->to(base_url('admin/tv-content'))->with('error', 'Gagal menyimpan banner: ' . $e->getMessage());
+            }
         }
 
         return redirect()->to(base_url('admin/tv-content'))->with('error', 'Silakan pilih file gambar banner atau tempelkan URL gambar terlebih dahulu.');
