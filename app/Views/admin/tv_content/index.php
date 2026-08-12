@@ -159,4 +159,79 @@
   </div>
 
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.querySelector('form[action*="tv-content/store"]');
+  const fileInput = form ? form.querySelector('input[name="poster"]') : null;
+
+  if (form && fileInput) {
+    form.addEventListener('submit', function(e) {
+      if (!fileInput.files || !fileInput.files[0]) return;
+      const file = fileInput.files[0];
+
+      // If file > 1.5MB and not yet compressed, auto-compress using canvas
+      if (file.size > 1.5 * 1024 * 1024 && !form.dataset.compressed) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (typeof Swal !== 'undefined') {
+          Swal.fire({
+            title: 'Mengompres Gambar...',
+            text: 'Mengoptimalkan ukuran gambar banner agar tidak melebihi kapasitas server.',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+          });
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+
+            const maxWidth = 1920;
+            if (width > maxWidth) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            canvas.toBlob(function(blob) {
+              if (blob) {
+                const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
+                  type: 'image/jpeg',
+                  lastModified: Date.now()
+                });
+
+                const container = new DataTransfer();
+                container.items.add(compressedFile);
+                fileInput.files = container.files;
+              }
+
+              form.dataset.compressed = "true";
+              if (typeof Swal !== 'undefined') Swal.close();
+
+              if (window.spaSubmitForm) {
+                window.spaSubmitForm(form);
+              } else {
+                form.submit();
+              }
+            }, 'image/jpeg', 0.82);
+          };
+          img.src = evt.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+});
+</script>
 <?= $this->endSection() ?>
