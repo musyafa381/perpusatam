@@ -370,13 +370,13 @@
         <!-- 3 Action Pills (Themed Warm Brown & Gold) -->
         <div class="d-flex align-items-center flex-wrap gap-2 mt-auto pt-2">
           <button type="button" class="btn btn-sm rounded-pill px-3 py-2 fw-bold d-inline-flex align-items-center gap-1.5 shadow-xs" data-bs-toggle="modal" data-bs-target="#modalVisiMisi" style="background: #fdf6ea; color: #6e4727; border: 1.5px solid #f3e5c8; font-size: 0.78rem;">
-            <i class="ti ti-target-arrow" style="color: #c59b27 !important;"></i> Vision & Mission
+            Vision & Mission
           </button>
           <button type="button" class="btn btn-sm rounded-pill px-3 py-2 fw-bold d-inline-flex align-items-center gap-1.5 shadow-xs" data-bs-toggle="modal" data-bs-target="#modalJamLayanan" style="background: #fff8eb; color: #b48316; border: 1.5px solid #f9e2b0; font-size: 0.78rem;">
-            <i class="ti ti-clock" style="color: #b48316 !important;"></i> Service Hours
+            Service Hours
           </button>
           <button type="button" class="btn btn-sm rounded-pill px-3 py-2 fw-bold d-inline-flex align-items-center gap-1.5 shadow-xs" data-bs-toggle="modal" data-bs-target="#modalFasilitas" style="background: #f4eae0; color: #59391f; border: 1.5px solid #e2d5c3; font-size: 0.78rem;">
-            <i class="ti ti-building" style="color: #59391f !important;"></i> Facilities
+           Facilities
           </button>
         </div>
       </div>
