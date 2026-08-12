@@ -10,20 +10,29 @@
 
 <div class="container py-4">
 
-  <!-- UNIDA Style Breadcrumb Navigation with Back Button -->
-  <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mb-4">
-    <nav aria-label="breadcrumb" class="mb-0">
-      <ol class="breadcrumb bg-white px-3.5 py-2.5 rounded-pill shadow-xs border mb-0" style="border: 1.5px solid #e2d5c3 !important;">
-        <li class="breadcrumb-item"><a href="<?= base_url(); ?>" class="text-decoration-none fw-bold" style="color: #6e4727;"><i class="ti ti-home me-1"></i>Beranda</a></li>
-        <li class="breadcrumb-item"><a href="<?= base_url('book'); ?>" class="text-decoration-none fw-bold" style="color: #6e4727;"><i class="ti ti-books me-1"></i>Katalog Buku</a></li>
-        <li class="breadcrumb-item active fw-semibold text-truncate" style="color: #8b5e3c; max-width: 280px;" aria-current="page"><?= esc($book['title']); ?></li>
-      </ol>
-    </nav>
+  <!-- Premium UNIDA Header Ribbon Bar (Breadcrumb + Back Button Integrated) -->
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 p-2 ps-3.5 pe-2.5 rounded-pill mb-4 shadow-sm" style="background: rgba(255, 255, 255, 0.92); border: 1.5px solid #e2d5c3; backdrop-filter: blur(12px);">
+    
+    <!-- Left Side: Custom Breadcrumb Links -->
+    <div class="d-flex align-items-center flex-wrap gap-1.5 fs-7">
+      <a href="<?= base_url(); ?>" class="text-decoration-none fw-extrabold d-inline-flex align-items-center" style="color: #59391f;">
+        <i class="ti ti-home me-1" style="color: #c59b27;"></i> Beranda
+      </a>
+      <i class="ti ti-chevron-right text-muted fs-8"></i>
+      <a href="<?= base_url('book'); ?>" class="text-decoration-none fw-extrabold d-inline-flex align-items-center" style="color: #59391f;">
+        <i class="ti ti-books me-1" style="color: #c59b27;"></i> Katalog Buku
+      </a>
+      <i class="ti ti-chevron-right text-muted fs-8"></i>
+      <span class="badge rounded-pill px-3 py-1.5 fw-bold text-truncate" style="background: #fdf6ea; color: #6e4727; border: 1px solid #f3e5c8; font-size: 0.725rem; max-width: 280px;">
+        <i class="ti ti-book me-1" style="color: #c59b27;"></i><?= esc($book['title']); ?>
+      </span>
+    </div>
 
-    <!-- Tombol Kembali UNIDA Style -->
-    <a href="javascript:history.back()" onclick="if(document.referrer.indexOf(window.location.host)!==-1){history.back(); return false;}else{window.location.href='<?= base_url('book'); ?>'; return false;}" class="btn rounded-pill px-3.5 py-2 fw-extrabold shadow-sm d-inline-flex align-items-center gap-1.5 flex-shrink-0" style="background: linear-gradient(135deg, #59391f 0%, #7c522f 100%); color: #ffffff; border: none; font-size: 0.82rem; transition: transform 0.2s ease;">
+    <!-- Right Side: Back Button -->
+    <a href="javascript:history.back()" onclick="if(document.referrer.indexOf(window.location.host)!==-1){history.back(); return false;}else{window.location.href='<?= base_url('book'); ?>'; return false;}" class="btn rounded-pill px-3.5 py-1.5 fw-extrabold shadow-sm d-inline-flex align-items-center gap-1.5 flex-shrink-0" style="background: linear-gradient(135deg, #59391f 0%, #7c522f 100%); color: #ffffff; border: none; font-size: 0.8rem; transition: all 0.25s ease;">
       <i class="ti ti-arrow-left fs-5" style="color: #f0c968;"></i> Kembali ke Katalog
     </a>
+
   </div>
 
   <?php
