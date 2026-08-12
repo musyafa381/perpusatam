@@ -100,37 +100,17 @@
                 <?php endif; ?>
               </div>
 
-              <!-- Content Details Card UNIDA Theme -->
+              <!-- Content Details Card (Compact: Judul, Penulis, Kategori & Rak Only) -->
               <div class="card-body p-2.5 d-flex flex-column justify-content-between">
-                <div>
+                <div class="mb-2">
                   <!-- Judul Utama Buku -->
-                  <h6 class="fw-bold mb-1 text-truncate-2" title="<?= esc($book['title']); ?>" style="color: #2d1e18 !important; font-size: 0.83rem; line-height: 1.25; font-family: 'Georgia', serif; font-weight: 700; min-height: 2.5em;">
+                  <h6 class="fw-bold mb-1 text-truncate-2" title="<?= esc($book['title']); ?>" style="color: #2d1e18 !important; font-size: 0.82rem; line-height: 1.25; font-family: 'Georgia', serif; font-weight: 700; min-height: 2.4em;">
                     <?= esc($book['title']); ?>
                   </h6>
 
                   <!-- Nama Penulis Subtext -->
-                  <div class="fw-semibold mb-1 text-truncate" style="color: #8b5e3c !important; font-size: 0.72rem;">
+                  <div class="fw-semibold text-truncate" style="color: #8b5e3c !important; font-size: 0.72rem;">
                     <i class="ti ti-user me-0.5" style="color: #c59b27;"></i><?= esc($book['author'] ?: 'Penulis tak diketahui'); ?>
-                  </div>
-
-                  <!-- ISBN Sub-info Ringkas -->
-                  <?php if (!empty($book['isbn'])): ?>
-                    <div class="text-truncate mb-1.5" style="color: #6e4727; font-size: 0.68rem;" title="ISBN Buku">
-                      <i class="ti ti-barcode me-0.5" style="color: #c59b27;"></i><span class="fw-semibold">ISBN:</span> <span class="fw-bold text-dark" style="font-family: 'Courier New', monospace;"><?= esc($book['isbn']); ?></span>
-                    </div>
-                  <?php endif; ?>
-
-                  <!-- Badge Status Stok -->
-                  <div class="mb-2">
-                    <?php if ($stockCount > 0): ?>
-                      <span class="badge rounded-pill px-2 py-0.5 fw-bold" style="background: #e6f4ea; color: #137333; border: 1px solid #ceead6; font-size: 0.62rem;">
-                        <i class="ti ti-circle-check me-0.5" style="font-size: 0.65rem;"></i>Tersedia (<?= $stockCount ?>)
-                      </span>
-                    <?php else: ?>
-                      <span class="badge rounded-pill px-2 py-0.5 fw-bold" style="background: #fce8e6; color: #c5221f; border: 1px solid #fad2cf; font-size: 0.62rem;">
-                        <i class="ti ti-circle-x me-0.5" style="font-size: 0.65rem;"></i>Dipinjam
-                      </span>
-                    <?php endif; ?>
                   </div>
                 </div>
 
