@@ -10,14 +10,21 @@
 
 <div class="container py-4">
 
-  <!-- UNIDA Style Breadcrumb Navigation -->
-  <nav aria-label="breadcrumb" class="mb-4">
-    <ol class="breadcrumb bg-white px-3.5 py-2.5 rounded-pill shadow-xs border" style="border: 1.5px solid #e2d5c3 !important;">
-      <li class="breadcrumb-item"><a href="<?= base_url(); ?>" class="text-decoration-none fw-bold" style="color: #6e4727;"><i class="ti ti-home me-1"></i>Beranda</a></li>
-      <li class="breadcrumb-item"><a href="<?= base_url('book'); ?>" class="text-decoration-none fw-bold" style="color: #6e4727;"><i class="ti ti-books me-1"></i>Katalog Buku</a></li>
-      <li class="breadcrumb-item active fw-semibold text-truncate" style="color: #8b5e3c; max-width: 280px;" aria-current="page"><?= esc($book['title']); ?></li>
-    </ol>
-  </nav>
+  <!-- UNIDA Style Breadcrumb Navigation with Back Button -->
+  <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mb-4">
+    <nav aria-label="breadcrumb" class="mb-0">
+      <ol class="breadcrumb bg-white px-3.5 py-2.5 rounded-pill shadow-xs border mb-0" style="border: 1.5px solid #e2d5c3 !important;">
+        <li class="breadcrumb-item"><a href="<?= base_url(); ?>" class="text-decoration-none fw-bold" style="color: #6e4727;"><i class="ti ti-home me-1"></i>Beranda</a></li>
+        <li class="breadcrumb-item"><a href="<?= base_url('book'); ?>" class="text-decoration-none fw-bold" style="color: #6e4727;"><i class="ti ti-books me-1"></i>Katalog Buku</a></li>
+        <li class="breadcrumb-item active fw-semibold text-truncate" style="color: #8b5e3c; max-width: 280px;" aria-current="page"><?= esc($book['title']); ?></li>
+      </ol>
+    </nav>
+
+    <!-- Tombol Kembali UNIDA Style -->
+    <a href="javascript:history.back()" onclick="if(document.referrer.indexOf(window.location.host)!==-1){history.back(); return false;}else{window.location.href='<?= base_url('book'); ?>'; return false;}" class="btn rounded-pill px-3.5 py-2 fw-extrabold shadow-sm d-inline-flex align-items-center gap-1.5 flex-shrink-0" style="background: linear-gradient(135deg, #59391f 0%, #7c522f 100%); color: #ffffff; border: none; font-size: 0.82rem; transition: transform 0.2s ease;">
+      <i class="ti ti-arrow-left fs-5" style="color: #f0c968;"></i> Kembali ke Katalog
+    </a>
+  </div>
 
   <?php
     $rawCover = $book['book_cover'] ?? '';

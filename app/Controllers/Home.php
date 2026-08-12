@@ -407,7 +407,7 @@ class Home extends BaseController
             ->where('books.deleted_at', null)
             ->where('books.id !=', $book['id'])
             ->where('books.category_id', $book['category_id'])
-            ->findAll(5);
+            ->findAll(7);
 
         foreach ($relatedBooks as &$rb) {
             $rBorrowed = $loanModel
