@@ -63,12 +63,16 @@ $isTvPage   = (uri_string() === 'tv' || uri_string() === 'tv-display');
       color: #f0c968;
     }
 
-    /* Tier 2: Main Header Navbar */
+    /* Tier 2: Main Header Navbar (Sticky Top) */
     .unida-main-navbar {
-      background: #59391f;
+      position: sticky;
+      top: 0;
+      z-index: 1030;
+      background: rgba(89, 57, 31, 0.96);
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.12);
       padding: 10px 0;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
     }
 
     /* Center Pill Capsule Nav Container (Exact UNIDA Style) */

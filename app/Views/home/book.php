@@ -63,237 +63,79 @@
 
 <div class="container py-4">
 
-  <!-- Active Filter Bar (If any filter is applied) -->
-  <?php if (!empty($selectedCategory) || !empty($selectedAuthor) || !empty($selectedPublisher) || !empty($yearFrom) || !empty($yearTo) || !empty($search)): ?>
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 p-3 rounded-4 mb-4 shadow-sm" style="background: rgba(255, 255, 255, 0.95); border: 1.5px solid #e2d5c3; backdrop-filter: blur(10px);">
-      <div class="d-flex align-items-center flex-wrap gap-2">
-        <span class="fw-extrabold fs-7 me-1 d-inline-flex align-items-center gap-1" style="color: #59391f;">
-          <i class="ti ti-filter fs-5" style="color: #c59b27;"></i> Filter Aktif:
-        </span>
-
-        <?php if (!empty($search)): ?>
-          <span class="badge rounded-pill px-3 py-1.5 fw-bold" style="background: #fdf6ea; color: #6e4727; border: 1px solid #f3e5c8;">
-            Pencarian: "<?= esc($search); ?>"
-          </span>
-        <?php endif; ?>
-
-        <?php if (!empty($selectedCategory)): ?>
-          <?php 
-            $catName = 'Kategori';
-            foreach ($allCategories as $ac) {
-              if ((string)$ac['id'] === (string)$selectedCategory) { $catName = $ac['name']; break; }
-            }
-          ?>
-          <span class="badge rounded-pill px-3 py-1.5 fw-bold" style="background: #fdf6ea; color: #6e4727; border: 1px solid #f3e5c8;">
-            Kategori: <?= esc($catName); ?>
-          </span>
-        <?php endif; ?>
-
-        <?php if (!empty($selectedAuthor)): ?>
-          <span class="badge rounded-pill px-3 py-1.5 fw-bold" style="background: #fdf6ea; color: #6e4727; border: 1px solid #f3e5c8;">
-            Penulis: <?= esc($selectedAuthor); ?>
-          </span>
-        <?php endif; ?>
-
-        <?php if (!empty($selectedPublisher)): ?>
-          <span class="badge rounded-pill px-3 py-1.5 fw-bold" style="background: #fdf6ea; color: #6e4727; border: 1px solid #f3e5c8;">
-            Penerbit: <?= esc($selectedPublisher); ?>
-          </span>
-        <?php endif; ?>
-
-        <?php if (!empty($yearFrom) || !empty($yearTo)): ?>
-          <span class="badge rounded-pill px-3 py-1.5 fw-bold" style="background: #fdf6ea; color: #6e4727; border: 1px solid #f3e5c8;">
-            Tahun: <?= esc($yearFrom ?: '...'); ?> - <?= esc($yearTo ?: '...'); ?>
-          </span>
-        <?php endif; ?>
+  <!-- Book Grid Section (6 Cards per Row on Desktop) -->
+  <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3 mb-4">
+    <?php if (empty($books)) : ?>
+      <div class="col-12 text-center py-5 bg-white rounded-4 border shadow-sm" style="border: 1.5px solid #e2d5c3 !important;">
+        <div class="py-4">
+          <i class="ti ti-search-off text-muted mb-3" style="font-size: 4rem; opacity: 0.5;"></i>
+          <h4 class="fw-bold text-dark mb-2">Buku Tidak Ditemukan</h4>
+          <p class="text-muted fs-7 mb-4">Maaf, koleksi buku yang Anda cari tidak tersedia dalam katalog saat ini.</p>
+          <a href="<?= base_url('book'); ?>" class="btn text-white rounded-pill px-4 py-2 fw-bold shadow-sm" style="background: linear-gradient(135deg, #59391f 0%, #7c522f 100%);">
+            <i class="ti ti-rotate-clockwise me-1"></i> Tampilkan Semua Koleksi
+          </a>
+        </div>
       </div>
+    <?php else : ?>
+      <?php foreach ($books as $index => $book) : ?>
+        <?php
+        $rawCover = $book['book_cover'] ?? '';
+        $coverUrl = getBookCoverUrl($rawCover);
+        $hasCover = !empty($rawCover) && ($coverUrl !== base_url(BOOK_COVER_URI . DEFAULT_BOOK_COVER));
+        $stockCount = (int)($book['quantity'] ?? 0);
+        ?>
+        <div class="col">
+          <a href="<?= base_url('book/' . ($book['slug'] ?: $book['id'])); ?>" class="text-decoration-none d-block">
+            <div class="unida-cover-hover-card">
+              
+              <!-- Clean Cover Image Display (Default State) -->
+              <?php if ($hasCover): ?>
+                <img src="<?= $coverUrl; ?>" alt="<?= esc($book['title']); ?>" loading="lazy" class="unida-cover-img">
+              <?php else: ?>
+                <div class="d-flex flex-column align-items-center justify-content-center text-center p-3 h-100 w-100" style="background: linear-gradient(135deg, #59391f 0%, #7c522f 100%); color: #ffffff;">
+                  <i class="ti ti-book fs-1 mb-2" style="color: #f0c968;"></i>
+                  <span class="fw-bold fs-7 text-white text-truncate-3 px-1" style="line-height: 1.25; font-family: 'Georgia', serif;"><?= esc($book['title']); ?></span>
+                </div>
+              <?php endif; ?>
 
-      <a href="<?= base_url('book'); ?>" class="btn btn-sm rounded-pill px-3 py-1.5 fw-extrabold" style="background: #fce8e6; color: #c5221f; border: 1px solid #fad2cf; font-size: 0.75rem;">
-        <i class="ti ti-x me-1"></i> Reset Semua Filter
-      </a>
+              <!-- Hover Title & Details Overlay (Clean UNIDA Layout) -->
+              <div class="unida-cover-overlay text-white">
+                <!-- Category Top Capsule Tag -->
+                <div class="mb-1">
+                  <span class="badge rounded-pill text-truncate fw-bold shadow-sm" style="background: #c59b27; color: #2d1e18; font-size: 0.61rem; padding: 3px 8px; max-width: 95%;">
+                    <i class="ti ti-bookmark me-0.5"></i><?= esc($book['category'] ?: 'Umum'); ?>
+                  </span>
+                </div>
+
+                <!-- Judul Utama Buku -->
+                <h6 class="fw-bold text-white mb-1 text-truncate-2" title="<?= esc($book['title']); ?>" style="font-size: 0.88rem; line-height: 1.25; font-family: 'Georgia', serif; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">
+                  <?= esc($book['title']); ?>
+                </h6>
+
+                <!-- Penulis & Rak Bottom Row -->
+                <div class="d-flex align-items-center justify-content-between gap-1 mt-1 pt-1.5 border-top" style="border-color: rgba(255, 255, 255, 0.2) !important;">
+                  <span class="fw-semibold text-truncate" style="color: #f3d382; font-size: 0.72rem;">
+                    <i class="ti ti-user me-0.5" style="color: #c59b27;"></i><?= esc($book['author'] ?: 'Penulis tak diketahui'); ?>
+                  </span>
+                  <span class="badge rounded-pill px-2 py-0.5 fw-extrabold flex-shrink-0" style="background: rgba(255, 255, 255, 0.18); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.3); font-size: 0.62rem;">
+                    <i class="ti ti-columns me-0.5" style="color: #f3d382;"></i>Rak <?= esc($book['rack'] ?: '-'); ?>
+                  </span>
+                </div>
+              </div>
+
+            </div>
+          </a>
+        </div>
+      <?php endforeach; ?>
+    <?php endif; ?>
+  </div>
+
+  <!-- Pagination Bar -->
+  <?php if (!empty($books)): ?>
+    <div class="d-flex justify-content-center mt-4">
+      <?= $pager->links('books', 'my_pager'); ?>
     </div>
   <?php endif; ?>
-
-  <div class="row g-4">
-    
-    <!-- Left Column: UNIDA OPAC Filter Card (3 Columns - Exact Reference Design) -->
-    <div class="col-12 col-lg-3">
-      <div class="card border-0 shadow-sm rounded-4 p-3.5 sticky-top overflow-hidden" style="top: 85px; background: #ffffff; border: 1px solid #e5e7eb !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;">
-        
-        <!-- Header Ribbon matching reference image -->
-        <div class="d-flex align-items-center justify-content-between pb-3 mb-3 border-bottom" style="border-color: #f3f4f6 !important;">
-          <div class="d-flex align-items-center gap-2.5">
-            <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: #eff6ff; color: #2563eb;">
-              <i class="ti ti-filter-filled fs-5"></i>
-            </div>
-            <h5 class="fw-bold text-dark mb-0" style="font-size: 1.15rem; font-weight: 700;">
-              Filters
-            </h5>
-          </div>
-          <?php if (!empty($selectedCategory) || !empty($selectedAuthor) || !empty($selectedPublisher) || !empty($yearFrom) || !empty($yearTo) || !empty($search)): ?>
-            <a href="<?= base_url('book'); ?>" class="btn btn-xs rounded-pill px-2.5 py-1 fw-bold text-danger text-decoration-none" style="background: #fef2f2; border: 1px solid #fecaca; font-size: 0.72rem;" title="Reset filter">
-              <i class="ti ti-rotate-clockwise me-1"></i>Reset
-            </a>
-          <?php else: ?>
-            <i class="ti ti-chevron-down text-muted fs-5"></i>
-          <?php endif; ?>
-        </div>
-
-        <form action="<?= base_url('book'); ?>" method="get">
-          
-          <?php if (!empty($search)): ?>
-            <input type="hidden" name="search" value="<?= esc($search); ?>">
-          <?php endif; ?>
-
-          <!-- Field 1: Kategori Buku / Collection Type -->
-          <div class="mb-3.5">
-            <label class="form-label fw-bold fs-7 mb-1.5 d-flex align-items-center" style="color: #4b5563;">
-              <i class="ti ti-tag-filled me-1.5" style="color: #f59e0b; font-size: 0.95rem;"></i> Kategori Buku
-            </label>
-            <select name="category" class="form-select form-select-sm fw-semibold ps-3 pe-4 py-2" style="border-radius: 10px; border: 1px solid #d1d5db; color: #1f2937; background-color: #ffffff; font-size: 0.85rem;">
-              <option value="">Semua Kategori</option>
-              <?php foreach ($allCategories as $cat): ?>
-                <option value="<?= esc($cat['id']); ?>" <?= (string)$selectedCategory === (string)$cat['id'] ? 'selected' : ''; ?>>
-                  <?= esc($cat['name']); ?> (<?= (int)($cat['total_books'] ?? 0); ?>)
-                </option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-
-          <!-- Field 2: Penulis / Author -->
-          <div class="mb-3.5">
-            <label class="form-label fw-bold fs-7 mb-1.5 d-flex align-items-center" style="color: #4b5563;">
-              <i class="ti ti-user-filled me-1.5" style="color: #3b82f6; font-size: 0.95rem;"></i> Penulis / Pengarang
-            </label>
-            <select name="author" class="form-select form-select-sm fw-semibold ps-3 pe-4 py-2" style="border-radius: 10px; border: 1px solid #d1d5db; color: #1f2937; background-color: #ffffff; font-size: 0.85rem;">
-              <option value="">Semua Penulis</option>
-              <?php foreach ($authors as $aut): ?>
-                <option value="<?= esc($aut['author']); ?>" <?= (string)$selectedAuthor === (string)$aut['author'] ? 'selected' : ''; ?>>
-                  <?= esc($aut['author']); ?> (<?= (int)$aut['total_books']; ?>)
-                </option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-
-          <!-- Field 3: Penerbit / Publisher -->
-          <div class="mb-3.5">
-            <label class="form-label fw-bold fs-7 mb-1.5 d-flex align-items-center" style="color: #4b5563;">
-              <i class="ti ti-building-filled me-1.5" style="color: #ef4444; font-size: 0.95rem;"></i> Penerbit
-            </label>
-            <select name="publisher" class="form-select form-select-sm fw-semibold ps-3 pe-4 py-2" style="border-radius: 10px; border: 1px solid #d1d5db; color: #1f2937; background-color: #ffffff; font-size: 0.85rem;">
-              <option value="">Semua Penerbit</option>
-              <?php foreach ($publishers as $pub): ?>
-                <option value="<?= esc($pub['publisher']); ?>" <?= (string)$selectedPublisher === (string)$pub['publisher'] ? 'selected' : ''; ?>>
-                  <?= esc($pub['publisher']); ?> (<?= (int)$pub['total_books']; ?>)
-                </option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-
-          <!-- Field 4: Tahun Terbit / Year Published (From & To) -->
-          <div class="mb-4">
-            <label class="form-label fw-bold fs-7 mb-1.5 d-flex align-items-center" style="color: #4b5563;">
-              <i class="ti ti-calendar-event me-1.5" style="color: #10b981; font-size: 0.95rem;"></i> Tahun Terbit
-            </label>
-            <div class="row g-2">
-              <div class="col-6">
-                <input type="number" name="year_from" class="form-control form-control-sm fw-semibold" placeholder="Dari (Thn)" value="<?= esc($yearFrom ?? ''); ?>" style="border-radius: 10px; border: 1px solid #d1d5db; font-size: 0.825rem;">
-              </div>
-              <div class="col-6">
-                <input type="number" name="year_to" class="form-control form-control-sm fw-semibold" placeholder="Sampai (Thn)" value="<?= esc($yearTo ?? ''); ?>" style="border-radius: 10px; border: 1px solid #d1d5db; font-size: 0.825rem;">
-              </div>
-            </div>
-          </div>
-
-          <!-- Submit Filter Button -->
-          <button type="submit" class="btn w-100 py-2.5 fw-bold text-white shadow-sm d-flex align-items-center justify-content-center gap-2" style="border-radius: 12px; background: linear-gradient(135deg, #59391f 0%, #7c522f 100%); border: none; font-size: 0.875rem;">
-            <i class="ti ti-filter me-1" style="color: #f0c968;"></i> Terapkan Filter
-          </button>
-          
-        </form>
-
-      </div>
-    </div>
-
-    <!-- Right Column: Catalog Book Grid (9 Columns) -->
-    <div class="col-12 col-lg-9">
-      
-      <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-5 g-3 mb-4">
-        <?php if (empty($books)) : ?>
-          <div class="col-12 text-center py-5 bg-white rounded-4 border shadow-sm" style="border: 1.5px solid #e2d5c3 !important;">
-            <div class="py-4">
-              <i class="ti ti-search-off text-muted mb-3" style="font-size: 4rem; opacity: 0.5;"></i>
-              <h4 class="fw-bold text-dark mb-2">Buku Tidak Ditemukan</h4>
-              <p class="text-muted fs-7 mb-4">Maaf, koleksi buku yang Anda cari tidak tersedia dalam katalog saat ini.</p>
-              <a href="<?= base_url('book'); ?>" class="btn text-white rounded-pill px-4 py-2 fw-bold shadow-sm" style="background: linear-gradient(135deg, #59391f 0%, #7c522f 100%);">
-                <i class="ti ti-rotate-clockwise me-1"></i> Tampilkan Semua Koleksi
-              </a>
-            </div>
-          </div>
-        <?php else : ?>
-          <?php foreach ($books as $index => $book) : ?>
-            <?php
-            $rawCover = $book['book_cover'] ?? '';
-            $coverUrl = getBookCoverUrl($rawCover);
-            $hasCover = !empty($rawCover) && ($coverUrl !== base_url(BOOK_COVER_URI . DEFAULT_BOOK_COVER));
-            $stockCount = (int)($book['quantity'] ?? 0);
-            ?>
-            <div class="col">
-              <a href="<?= base_url('book/' . ($book['slug'] ?: $book['id'])); ?>" class="text-decoration-none d-block">
-                <div class="unida-cover-hover-card">
-                  
-                  <!-- Clean Cover Image Display (Default State) -->
-                  <?php if ($hasCover): ?>
-                    <img src="<?= $coverUrl; ?>" alt="<?= esc($book['title']); ?>" loading="lazy" class="unida-cover-img">
-                  <?php else: ?>
-                    <div class="d-flex flex-column align-items-center justify-content-center text-center p-3 h-100 w-100" style="background: linear-gradient(135deg, #59391f 0%, #7c522f 100%); color: #ffffff;">
-                      <i class="ti ti-book fs-1 mb-2" style="color: #f0c968;"></i>
-                      <span class="fw-bold fs-7 text-white text-truncate-3 px-1" style="line-height: 1.25; font-family: 'Georgia', serif;"><?= esc($book['title']); ?></span>
-                    </div>
-                  <?php endif; ?>
-
-                  <!-- Hover Title & Details Overlay (Clean UNIDA Layout) -->
-                  <div class="unida-cover-overlay text-white">
-                    <!-- Category Top Capsule Tag -->
-                    <div class="mb-1">
-                      <span class="badge rounded-pill text-truncate fw-bold shadow-sm" style="background: #c59b27; color: #2d1e18; font-size: 0.61rem; padding: 3px 8px; max-width: 95%;">
-                        <i class="ti ti-bookmark me-0.5"></i><?= esc($book['category'] ?: 'Umum'); ?>
-                      </span>
-                    </div>
-
-                    <!-- Judul Utama Buku -->
-                    <h6 class="fw-bold text-white mb-1 text-truncate-2" title="<?= esc($book['title']); ?>" style="font-size: 0.88rem; line-height: 1.25; font-family: 'Georgia', serif; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">
-                      <?= esc($book['title']); ?>
-                    </h6>
-
-                    <!-- Penulis & Rak Bottom Row -->
-                    <div class="d-flex align-items-center justify-content-between gap-1 mt-1 pt-1.5 border-top" style="border-color: rgba(255, 255, 255, 0.2) !important;">
-                      <span class="fw-semibold text-truncate" style="color: #f3d382; font-size: 0.72rem;">
-                        <i class="ti ti-user me-0.5" style="color: #c59b27;"></i><?= esc($book['author'] ?: 'Penulis tak diketahui'); ?>
-                      </span>
-                      <span class="badge rounded-pill px-2 py-0.5 fw-extrabold flex-shrink-0" style="background: rgba(255, 255, 255, 0.18); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.3); font-size: 0.62rem;">
-                        <i class="ti ti-columns me-0.5" style="color: #f3d382;"></i>Rak <?= esc($book['rack'] ?: '-'); ?>
-                      </span>
-                    </div>
-                  </div>
-
-                </div>
-              </a>
-            </div>
-          <?php endforeach; ?>
-        <?php endif; ?>
-      </div>
-
-      <!-- Pagination Bar -->
-      <?php if (!empty($books)): ?>
-        <div class="d-flex justify-content-center mt-4">
-          <?= $pager->links('books', 'my_pager'); ?>
-        </div>
-      <?php endif; ?>
-
-    </div>
-
-  </div>
 
 </div>
 <?= $this->endSection() ?>
