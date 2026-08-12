@@ -1,5 +1,6 @@
 <?php 
 $isHomePage = (uri_string() === '' || uri_string() === '/' || uri_string() === 'home');
+$isTvPage   = (uri_string() === 'tv' || uri_string() === 'tv-display');
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -284,15 +285,16 @@ $isHomePage = (uri_string() === '' || uri_string() === '/' || uri_string() === '
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.20) !important;
     }
     .unida-main-body-wrapper {
-      padding-top: 95px;
+      padding-top: <?= $isTvPage ? '0px' : '95px'; ?>;
     }
     @media (max-width: 767.98px) {
       .unida-main-body-wrapper {
-        padding-top: 65px;
+        padding-top: <?= $isTvPage ? '0px' : '65px'; ?>;
       }
     }
   </style>
 
+  <?php if (!$isTvPage) : ?>
   <div class="unida-fixed-header-wrapper">
     
     <!-- TIER 1: DARK UTILITY RIBBON BAR (UNIDA Gontor Style) -->
@@ -379,6 +381,7 @@ $isHomePage = (uri_string() === '' || uri_string() === '/' || uri_string() === '
     </header>
 
   </div>
+  <?php endif; ?>
 
   <div class="page-wrapper unida-main-body-wrapper" id="main-wrapper">
     <div class="body-wrapper">
@@ -388,6 +391,7 @@ $isHomePage = (uri_string() === '' || uri_string() === '/' || uri_string() === '
         <?= $this->renderSection('content') ?>
       </div>
 
+      <?php if (!$isTvPage) : ?>
       <!-- Footer UNIDA Style with Theme Colors -->
       <footer class="mt-5 py-4" style="background: #3d230e; color: rgba(255, 255, 255, 0.8); border-top: 3px solid #c59b27;">
         <div class="container text-center text-md-start">
@@ -403,6 +407,7 @@ $isHomePage = (uri_string() === '' || uri_string() === '/' || uri_string() === '
           </div>
         </div>
       </footer>
+      <?php endif; ?>
     </div>
   </div>
 
