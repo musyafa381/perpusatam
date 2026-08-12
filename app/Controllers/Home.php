@@ -295,7 +295,9 @@ class Home extends BaseController
     {
         $itemPerPage = 24;
         $selectedCategory = $this->request->getGet('category');
-        $keyword = $this->request->getGet('search');
+        $selectedAuthor   = $this->request->getGet('author');
+        $selectedPublisher= $this->request->getGet('publisher');
+        $keyword          = $this->request->getGet('search');
 
         $query = $this->bookModel
             ->select('books.*, book_stock.quantity, categories.name as category, racks.name as rack, racks.floor')
@@ -306,6 +308,14 @@ class Home extends BaseController
 
         if ($selectedCategory) {
             $query->where('books.category_id', $selectedCategory);
+        }
+
+        if ($selectedAuthor) {
+            $query->where('books.author', $selectedAuthor);
+        }
+
+        if ($selectedPublisher) {
+            $query->where('books.publisher', $selectedPublisher);
         }
 
         if ($keyword) {
@@ -349,17 +359,47 @@ class Home extends BaseController
             ->orderBy('total_books', 'DESC')
             ->findAll(7);
 
+        $allCategories = $this->categoryModel
+            ->select('categories.*, COUNT(books.id) as total_books')
+            ->join('books', 'books.category_id = categories.id AND books.deleted_at IS NULL', 'LEFT')
+            ->groupBy('categories.id')
+            ->orderBy('name', 'ASC')
+            ->findAll();
+
+        $authors = $this->bookModel
+            ->select('author, COUNT(id) as total_books')
+            ->where('deleted_at', null)
+            ->where('author IS NOT NULL')
+            ->where('author !=', '')
+            ->groupBy('author')
+            ->orderBy('total_books', 'DESC')
+            ->findAll(30);
+
+        $publishers = $this->bookModel
+            ->select('publisher, COUNT(id) as total_books')
+            ->where('deleted_at', null)
+            ->where('publisher IS NOT NULL')
+            ->where('publisher !=', '')
+            ->groupBy('publisher')
+            ->orderBy('total_books', 'DESC')
+            ->findAll(30);
+
         $totalBooksCount = $this->bookModel->where('deleted_at', null)->countAllResults();
 
         $data = [
-            'books'            => $books,
-            'categories'       => $categories,
-            'selectedCategory' => $selectedCategory,
-            'totalBooksCount'  => $totalBooksCount,
-            'pager'            => $this->bookModel->pager,
-            'currentPage'      => $this->request->getVar('page_books') ?? 1,
-            'itemPerPage'      => $itemPerPage,
-            'search'           => $keyword
+            'books'             => $books,
+            'categories'        => $categories,
+            'allCategories'     => $allCategories,
+            'authors'           => $authors,
+            'publishers'        => $publishers,
+            'selectedCategory'  => $selectedCategory,
+            'selectedAuthor'    => $selectedAuthor,
+            'selectedPublisher' => $selectedPublisher,
+            'totalBooksCount'   => $totalBooksCount,
+            'pager'             => $this->bookModel->pager,
+            'currentPage'       => $this->request->getVar('page_books') ?? 1,
+            'itemPerPage'       => $itemPerPage,
+            'search'            => $keyword
         ];
 
         return view('home/book', $data);
