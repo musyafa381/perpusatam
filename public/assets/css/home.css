@@ -46,7 +46,7 @@ html, body {
   padding: 45px 20px 55px 20px;
   color: #ffffff;
   overflow: hidden;
-  border-radius: 24px;
+  border-radius: 0 0 24px 24px;
 }
 .unida-hero-banner::after {
   content: '';
