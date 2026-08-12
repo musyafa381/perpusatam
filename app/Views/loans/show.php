@@ -163,7 +163,18 @@ if (session()->getFlashdata('msg')) : ?>
         <?php if ($now->isBefore($dueDate) && !$isDueDate) : ?>
           <span class="badge bg-success rounded-pill px-4 py-2 fs-3 shadow-sm"><i class="ti ti-circle-check me-1"></i> Normal (Aktif)</span>
         <?php elseif ($isDueDate) : ?>
-          <span class="badge bg-warning text-dark rounded-pill px-4 py-2 fs-3 shadow-sm"><i class="ti ti-clock-exclamation me-1"></i> Jatuh Tempo Hari Ini</span>
+          <span class="badge bg-warning text-dark rounded-pill px-4 py-2 fs-3 shadow-sm mb-3 d-inline-block"><i class="ti ti-clock-exclamation me-1"></i> Jatuh Tempo Hari Ini</span>
+          <div class="p-3 bg-warning-subtle rounded-3 border border-warning-subtle text-start">
+            <small class="text-warning-emphasis fw-bold d-block text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+              <i class="ti ti-info-circle me-1"></i> Peringatan Jatuh Tempo
+            </small>
+            <p class="text-dark fs-2 mb-2">
+              Transaksi peminjaman ini jatuh tempo hari ini! Harap segera lakukan pengembalian.
+            </p>
+            <button type="button" onclick="downloadLateEvidenceImage()" class="btn btn-warning text-dark btn-sm w-100 fw-bold shadow-xs">
+              <i class="ti ti-photo-down me-1"></i> Unduh Gambar Bukti Jatuh Tempo (PNG)
+            </button>
+          </div>
         <?php else : ?>
           <span class="badge bg-danger rounded-pill px-4 py-2 fs-3 shadow-sm mb-3 d-inline-block"><i class="ti ti-alert-triangle me-1"></i> Terlambat Kembalikan</span>
           <div class="p-3 bg-danger-subtle rounded-3 border border-danger-subtle text-start">
@@ -453,15 +464,23 @@ if (session()->getFlashdata('msg')) : ?>
         </div>
       </div>
       <div style="text-align: right;">
-        <span style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: #ffffff; font-size: 0.75rem; font-weight: 800; padding: 6px 14px; border-radius: 50px; letter-spacing: 0.5px; display: inline-block; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);">
-          ⚠️ SURAT PERINGATAN
-        </span>
+        <?php if ($isDueDate) : ?>
+          <span style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #ffffff; font-size: 0.75rem; font-weight: 800; padding: 6px 14px; border-radius: 50px; letter-spacing: 0.5px; display: inline-block; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);">
+            ⏰ JATUH TEMPO HARI INI
+          </span>
+        <?php else : ?>
+          <span style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: #ffffff; font-size: 0.75rem; font-weight: 800; padding: 6px 14px; border-radius: 50px; letter-spacing: 0.5px; display: inline-block; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);">
+            ⚠️ SURAT PERINGATAN
+          </span>
+        <?php endif; ?>
       </div>
     </div>
 
     <!-- Document Title -->
-    <div style="text-align: center; margin-bottom: 22px; background: #fff8f5; padding: 12px; border-radius: 12px; border: 1px solid #fecdd3;">
-      <h3 style="margin: 0 0 4px 0; font-size: 1.2rem; font-weight: 800; color: #9f1239;">BUKTI RESMI KETERLAMBATAN PENGEMBALIAN</h3>
+    <div style="text-align: center; margin-bottom: 22px; background: <?= $isDueDate ? '#fffdf5' : '#fff8f5'; ?>; padding: 12px; border-radius: 12px; border: 1px solid <?= $isDueDate ? '#fef08a' : '#fecdd3'; ?>;">
+      <h3 style="margin: 0 0 4px 0; font-size: 1.2rem; font-weight: 800; color: <?= $isDueDate ? '#b45309' : '#9f1239'; ?>;">
+        <?= $isDueDate ? 'BUKTI PEMBERITAHUAN JATUH TEMPO HARI INI' : 'BUKTI RESMI KETERLAMBATAN PENGEMBALIAN'; ?>
+      </h3>
       <p style="margin: 0; font-size: 0.8rem; color: #786c62; font-weight: 600;">Sistem Informasi Perpustakaan • Dokumen Bukti Transaksi Resmi</p>
     </div>
 
@@ -485,17 +504,17 @@ if (session()->getFlashdata('msg')) : ?>
         <small style="font-size: 0.68rem; font-weight: 700; color: #786c62; text-transform: uppercase; display: block; margin-bottom: 2px;">TANGGAL PINJAM</small>
         <strong style="font-size: 0.95rem; font-weight: 800; color: #2d241e;"><?= $loanDate->toLocalizedString('dd MMMM Y'); ?></strong>
       </div>
-      <div style="background: #fff1f2; border: 1.5px solid #fecdd3; border-radius: 12px; padding: 12px 14px;">
-        <small style="font-size: 0.68rem; font-weight: 800; color: #be123c; text-transform: uppercase; display: block; margin-bottom: 2px;">TENGGAT JATUH TEMPO</small>
-        <strong style="font-size: 0.95rem; font-weight: 800; color: #be123c;"><?= $dueDate->toLocalizedString('dd MMMM Y'); ?></strong>
+      <div style="background: <?= $isDueDate ? '#fffdf5' : '#fff1f2'; ?>; border: 1.5px solid <?= $isDueDate ? '#fef08a' : '#fecdd3'; ?>; border-radius: 12px; padding: 12px 14px;">
+        <small style="font-size: 0.68rem; font-weight: 800; color: <?= $isDueDate ? '#b45309' : '#be123c'; ?>; text-transform: uppercase; display: block; margin-bottom: 2px;">TENGGAT JATUH TEMPO</small>
+        <strong style="font-size: 0.95rem; font-weight: 800; color: <?= $isDueDate ? '#b45309' : '#be123c'; ?>;"><?= $dueDate->toLocalizedString('dd MMMM Y'); ?></strong>
       </div>
       <div style="background: #ffffff; border: 1px solid #e8decb; border-radius: 12px; padding: 12px 14px;">
         <small style="font-size: 0.68rem; font-weight: 700; color: #786c62; text-transform: uppercase; display: block; margin-bottom: 2px;">TOTAL PEMINJAMAN BUKU</small>
         <strong style="font-size: 0.95rem; font-weight: 800; color: #2d241e;"><?= count($allSessionLoans); ?> Eksemplar Buku</strong>
       </div>
-      <div style="background: #fffdf5; border: 1.5px solid #fef08a; border-radius: 12px; padding: 12px 14px;">
-        <small style="font-size: 0.68rem; font-weight: 800; color: #a16207; text-transform: uppercase; display: block; margin-bottom: 2px;">STATUS TENGGAT</small>
-        <strong style="font-size: 0.95rem; font-weight: 900; color: #be123c;">Terlambat Mengembalikan</strong>
+      <div style="background: <?= $isDueDate ? '#fffdf5' : '#fffdf5'; ?>; border: 1.5px solid <?= $isDueDate ? '#fef08a' : '#fecdd3'; ?>; border-radius: 12px; padding: 12px 14px;">
+        <small style="font-size: 0.68rem; font-weight: 800; color: <?= $isDueDate ? '#a16207' : '#a16207'; ?>; text-transform: uppercase; display: block; margin-bottom: 2px;">STATUS TENGGAT</small>
+        <strong style="font-size: 0.95rem; font-weight: 900; color: <?= $isDueDate ? '#d97706' : '#be123c'; ?>;"><?= $isDueDate ? 'Jatuh Tempo Hari Ini' : 'Terlambat Mengembalikan'; ?></strong>
       </div>
     </div>
 
@@ -568,14 +587,15 @@ function downloadLateEvidenceImage() {
     Swal.close();
     const link = document.createElement('a');
     const memberName = '<?= url_title($loan['first_name'] . '-' . $loan['last_name'], '-', true); ?>';
-    link.download = `Bukti_Keterlambatan_<?= esc($loan['uid']); ?>_${memberName}.png`;
+    const filenamePrefix = '<?= $isDueDate ? 'Bukti_JatuhTempo' : 'Bukti_Keterlambatan'; ?>';
+    link.download = `${filenamePrefix}_<?= esc($loan['uid']); ?>_${memberName}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
 
     Swal.fire({
       icon: 'success',
       title: 'Gambar Berhasil Diunduh!',
-      text: 'File bukti keterlambatan telah tersimpan dalam format PNG HD.',
+      text: 'File bukti telah tersimpan dalam format PNG HD.',
       timer: 2500,
       showConfirmButton: false
     });
