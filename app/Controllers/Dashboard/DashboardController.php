@@ -135,25 +135,31 @@ class DashboardController extends ResourceController
     protected function getMonthlyOverview(): array
     {
         $now = Time::now(locale: 'id');
-        $lastMonthDateStringRange = [];
+        $weeklyDateRange = [];
 
         $newMembersOverview = [];
         $loansOverview = [];
         $returnsOverview = [];
 
-        for ($i = 29; $i >= 0; $i--) {
-            $t = $now->today()->subDays($i);
+        // 4 Weeks Overview (7 days per week for the last 28 days)
+        for ($w = 3; $w >= 0; $w--) {
+            $startOfWeek = $now->today()->subDays(($w * 7) + 6);
+            $endOfWeek = $now->today()->subDays($w * 7);
 
-            $todayDateTimeString = $now->today()->subDays($i)->toDateTimeString();
-            $tomorrowDateTimeString = $now->tomorrow()->subDays($i)->toDateTimeString();
+            $startStr = $startOfWeek->toDateTimeString();
+            $endStr = $endOfWeek->tomorrow()->subSeconds(1)->toDateTimeString();
 
-            array_push($lastMonthDateStringRange, "{$t->getDay()}/" . ($t->getMonth() <= 9 ? '0' : '') . $t->getMonth());
+            $startLabel = $startOfWeek->toLocalizedString('dd/MM');
+            $endLabel = $endOfWeek->toLocalizedString('dd/MM');
+            $weekNum = 4 - $w;
+
+            array_push($weeklyDateRange, "Minggu {$weekNum} ({$startLabel}-{$endLabel})");
 
             array_push(
                 $newMembersOverview,
                 count(
                     $this->memberModel
-                        ->where("created_at BETWEEN '{$todayDateTimeString}' AND '{$tomorrowDateTimeString}'")
+                        ->where("created_at BETWEEN '{$startStr}' AND '{$endStr}'")
                         ->findAll()
                 )
             );
@@ -161,7 +167,7 @@ class DashboardController extends ResourceController
                 $loansOverview,
                 count(
                     $this->loanModel
-                        ->where("created_at BETWEEN '{$todayDateTimeString}' AND '{$tomorrowDateTimeString}'")
+                        ->where("created_at BETWEEN '{$startStr}' AND '{$endStr}'")
                         ->findAll()
                 )
             );
@@ -169,7 +175,7 @@ class DashboardController extends ResourceController
                 $returnsOverview,
                 count(
                     $this->loanModel
-                        ->where("return_date BETWEEN '{$todayDateTimeString}' AND '{$tomorrowDateTimeString}'")
+                        ->where("return_date BETWEEN '{$startStr}' AND '{$endStr}'")
                         ->findAll()
                 )
             );
@@ -177,7 +183,7 @@ class DashboardController extends ResourceController
 
         return [
             'dateNow'                   => $now,
-            'lastMonthDateStringRange'  => $lastMonthDateStringRange,
+            'lastMonthDateStringRange'  => $weeklyDateRange,
             'newMembersOverview'        => $newMembersOverview,
             'loansOverview'             => $loansOverview,
             'returnsOverview'           => $returnsOverview,

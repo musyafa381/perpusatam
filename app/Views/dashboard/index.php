@@ -232,8 +232,8 @@
       <div class="card-body p-4">
         <div class="d-sm-flex d-block align-items-center justify-content-between mb-3">
           <div>
-            <h5 class="fw-bold text-dark mb-0"><i class="ti ti-chart-bar text-primary me-2"></i> Grafik Ikhtisar 1 Bulan Terakhir (30 Hari)</h5>
-            <small class="text-muted">Tren statistik aktivitas transaksi bulanan perpustakaan</small>
+            <h5 class="fw-bold text-dark mb-0"><i class="ti ti-chart-bar text-primary me-2"></i> Grafik Ikhtisar Per Minggu (4 Minggu Terakhir)</h5>
+            <small class="text-muted">Tren statistik akumulasi transaksi per minggu perpustakaan</small>
           </div>
         </div>
         <div id="chart"></div>
@@ -372,8 +372,8 @@
       },
       plotOptions: {
         bar: {
-          columnWidth: '55%',
-          borderRadius: 4,
+          columnWidth: '45%',
+          borderRadius: 6,
           dataLabels: {
             position: 'top',
           }
