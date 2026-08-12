@@ -120,24 +120,22 @@ $isTvPage   = (uri_string() === 'tv' || uri_string() === 'tv-display');
       gap: 6px;
     }
 
-    .unida-search-pill-btn {
-      background: rgba(255, 255, 255, 0.18);
+    .unida-search-circle-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
       color: #ffffff;
-      font-weight: 700;
-      font-size: 0.8rem;
-      border-radius: 50px;
-      padding: 7px 18px;
-      border: none;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      justify-content: center;
+      text-decoration: none;
       transition: all 0.2s ease;
-      cursor: pointer;
+      border: none;
     }
-    .unida-search-pill-btn:hover {
-      background: rgba(255, 255, 255, 0.32);
-      color: #ffffff;
-      transform: translateY(-1px);
+    .unida-search-circle-btn:hover {
+      background: #c59b27;
+      color: #2d1e18;
     }
 
     .unida-login-pill-btn {
@@ -386,12 +384,12 @@ $isTvPage   = (uri_string() === 'tv' || uri_string() === 'tv-display');
             </div>
           </div>
 
-          <!-- Right: Dual Capsule Action Group (Search Pill + Login White Pill) -->
+          <!-- Right: Dual Capsule Action Group (Search Circle + Login White Pill) -->
           <div class="d-flex align-items-center gap-2">
             <div class="unida-action-capsule">
-              <button type="button" class="unida-search-pill-btn" data-bs-toggle="modal" data-bs-target="#globalSearchModal" title="Buka Pencarian Global (Ctrl+K)">
-                <i class="ti ti-search fs-5"></i> <span>Search</span>
-              </button>
+              <a href="<?= base_url('book'); ?>" class="unida-search-circle-btn" title="Cari Pustaka">
+                <i class="ti ti-search fs-5"></i>
+              </a>
               <a href="<?= base_url('login'); ?>" class="unida-login-pill-btn">
                 <i class="ti ti-login"></i> Login
               </a>
@@ -401,67 +399,6 @@ $isTvPage   = (uri_string() === 'tv' || uri_string() === 'tv-display');
         </div>
       </div>
     </header>
-  <?php endif; ?>
-
-  <!-- UNIDA Global Search Modal Overlay -->
-  <?php if (!$isTvPage) : ?>
-  <div class="modal fade unida-global-search-modal" id="globalSearchModal" tabindex="-1" aria-labelledby="globalSearchModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content border-0 bg-transparent">
-        <div class="modal-body p-4 p-md-5 position-relative rounded-5 shadow-lg" style="background: rgba(35, 20, 10, 0.94); backdrop-filter: blur(20px); border: 1.5px solid rgba(240, 201, 104, 0.35);">
-          
-          <!-- Close Button -->
-          <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-4 rounded-circle p-2" data-bs-dismiss="modal" aria-label="Close" style="background-color: rgba(255, 255, 255, 0.15); opacity: 0.9;"></button>
-
-          <div class="text-center text-white mb-4">
-            <h3 class="fw-extrabold text-white mb-1" id="globalSearchModalLabel" style="font-family: 'Georgia', serif; font-size: 2.1rem; text-shadow: 0 2px 8px rgba(0,0,0,0.4);">
-              Global Search
-            </h3>
-            <p class="text-white-50 fs-7 mb-0">Search books, e-books, thesis, news, & library catalog...</p>
-          </div>
-
-          <!-- Search Form -->
-          <form action="<?= base_url('book'); ?>" method="get" class="mb-4">
-            <div class="unida-search-wrapper shadow-lg" style="background: #ffffff; border-radius: 50px; padding: 6px 8px 6px 20px;">
-              <i class="ti ti-search fs-4 text-muted me-2"></i>
-              <input type="text" id="globalSearchModalInput" name="search" class="form-control unida-search-input border-0 shadow-none text-dark fw-semibold" placeholder="Ketik judul, pengarang, ISBN, atau kata kunci..." style="font-size: 1rem;">
-              <button class="btn unida-search-btn rounded-pill px-4 py-2 fw-extrabold" type="submit" style="background: linear-gradient(135deg, #c59b27 0%, #d4af37 100%); color: #2d1e18; border: none;">
-                Search <i class="ti ti-arrow-right ms-1"></i>
-              </button>
-            </div>
-          </form>
-
-          <!-- Quick Category Filters -->
-          <div class="d-flex align-items-center justify-content-center flex-wrap gap-2 mb-3 fs-7" style="color: rgba(255, 255, 255, 0.75);">
-            <span class="fw-bold me-1 text-uppercase fs-8" style="color: #f0c968;">Filter:</span>
-            <a href="<?= base_url('book'); ?>" class="badge rounded-pill px-3 py-2 text-decoration-none fw-semibold" style="background: rgba(255, 255, 255, 0.12); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.2);"><i class="ti ti-books me-1"></i> Books</a>
-            <a href="<?= base_url('book?search=E-Book'); ?>" class="badge rounded-pill px-3 py-2 text-decoration-none fw-semibold" style="background: rgba(255, 255, 255, 0.12); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.2);"><i class="ti ti-file-text me-1"></i> E-Book</a>
-            <a href="<?= base_url('book?search=Thesis'); ?>" class="badge rounded-pill px-3 py-2 text-decoration-none fw-semibold" style="background: rgba(255, 255, 255, 0.12); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.2);"><i class="ti ti-certificate me-1"></i> E-Thesis</a>
-            <a href="<?= base_url('book?search=Jurnal'); ?>" class="badge rounded-pill px-3 py-2 text-decoration-none fw-semibold" style="background: rgba(255, 255, 255, 0.12); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.2);"><i class="ti ti-notebook me-1"></i> Journals</a>
-            <a href="<?= base_url('book?search=News'); ?>" class="badge rounded-pill px-3 py-2 text-decoration-none fw-semibold" style="background: rgba(255, 255, 255, 0.12); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.2);"><i class="ti ti-news me-1"></i> NEWS</a>
-          </div>
-
-          <!-- Popular Topics Tag Line -->
-          <div class="d-flex align-items-center justify-content-center flex-wrap gap-2 mb-4 fs-7" style="color: rgba(255, 255, 255, 0.65);">
-            <span class="fw-bold me-1 text-uppercase fs-8" style="color: #f0c968;">Popular:</span>
-            <a href="<?= base_url('book?search=Islam'); ?>" class="text-white-50 text-decoration-none" style="transition: color 0.2s ease;">Islam</a>
-            <span>•</span>
-            <a href="<?= base_url('book?search=Ekonomi'); ?>" class="text-white-50 text-decoration-none" style="transition: color 0.2s ease;">Ekonomi</a>
-            <span>•</span>
-            <a href="<?= base_url('book?search=Pendidikan'); ?>" class="text-white-50 text-decoration-none" style="transition: color 0.2s ease;">Pendidikan</a>
-            <span>•</span>
-            <a href="<?= base_url('book?search=Sejarah'); ?>" class="text-white-50 text-decoration-none" style="transition: color 0.2s ease;">Sejarah</a>
-          </div>
-
-          <!-- Escape Hint -->
-          <div class="text-center text-white-50 fs-8">
-            Tekan <kbd class="bg-dark text-warning border border-secondary px-2 py-1 rounded">Esc</kbd> atau klik di luar untuk menutup
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </div>
   <?php endif; ?>
 
   <div class="page-wrapper unida-main-body-wrapper" id="main-wrapper">
@@ -513,26 +450,6 @@ $isTvPage   = (uri_string() === 'tv' || uri_string() === 'tv-display');
         checkStickyNav();
       }
 
-      // Focus input when Global Search Modal is opened
-      const globalSearchModalEl = document.getElementById('globalSearchModal');
-      if (globalSearchModalEl) {
-        globalSearchModalEl.addEventListener('shown.bs.modal', function () {
-          const searchInput = document.getElementById('globalSearchModalInput');
-          if (searchInput) searchInput.focus();
-        });
-      }
-
-      // Keyboard Shortcut Ctrl+K or Cmd+K to open Global Search Modal
-      document.addEventListener('keydown', function(e) {
-        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-          e.preventDefault();
-          if (globalSearchModalEl) {
-            const modalInstance = bootstrap.Modal.getOrCreateInstance(globalSearchModalEl);
-            modalInstance.toggle();
-          }
-        }
-      });
-
       // Smooth Full-Screen Search Loading Animation Handler
       const searchForms = document.querySelectorAll('form');
       const loader = document.getElementById('unidaSearchLoader');
@@ -552,12 +469,6 @@ $isTvPage   = (uri_string() === 'tv' || uri_string() === 'tv-display');
             keywordEl.textContent = '"' + val + '"';
           } else {
             keywordEl.textContent = '"Memuat Katalog..."';
-          }
-
-          // Close global search modal if open
-          if (globalSearchModalEl) {
-            const modalInstance = bootstrap.Modal.getInstance(globalSearchModalEl);
-            if (modalInstance) modalInstance.hide();
           }
 
           if (loader) {
