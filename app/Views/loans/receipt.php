@@ -382,11 +382,19 @@ $footerNote = $settings['struk_footer_note'] ?? 'Simpan & bawa struk ini saat pe
 
 <?php if ((request()->getGet('print') ?? null) === 'true' || isset($_GET['print'])) : ?>
   <script>
-    window.addEventListener('DOMContentLoaded', (event) => {
-      setTimeout(() => {
-        window.print();
-      }, 400);
-    });
+    (function() {
+      function triggerAutoPrint() {
+        setTimeout(function() {
+          window.print();
+        }, 350);
+      }
+
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        triggerAutoPrint();
+      } else {
+        document.addEventListener('DOMContentLoaded', triggerAutoPrint);
+      }
+    })();
   </script>
 <?php endif; ?>
 <?= $this->endSection() ?>

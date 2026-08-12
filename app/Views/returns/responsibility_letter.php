@@ -300,11 +300,19 @@
 
   <?php if (service('request')->getGet('print') === 'true') : ?>
     <script>
-      window.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-          window.print();
-        }, 500);
-      });
+      (function() {
+        function triggerAutoPrint() {
+          setTimeout(function() {
+            window.print();
+          }, 350);
+        }
+
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+          triggerAutoPrint();
+        } else {
+          document.addEventListener('DOMContentLoaded', triggerAutoPrint);
+        }
+      })();
     </script>
   <?php endif; ?>
 
