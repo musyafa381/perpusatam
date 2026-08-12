@@ -88,10 +88,10 @@
           <a href="<?= base_url('book/' . ($book['slug'] ?: $book['id'])); ?>" class="text-decoration-none text-dark d-block h-100">
             <div class="card h-100 border-0 rounded-4 overflow-hidden explore-cover-card position-relative shadow-sm" style="background: #ffffff;">
               
-              <!-- Frame Cover Buku (170px Compact Fit) -->
-              <div class="position-relative overflow-hidden d-flex align-items-center justify-content-center p-2" style="height: 170px; background: linear-gradient(135deg, #faf5ee 0%, #eee4d5 100%);">
+              <!-- Frame Cover Buku (155px Compact Height) -->
+              <div class="position-relative overflow-hidden d-flex align-items-center justify-content-center p-2" style="height: 155px; background: linear-gradient(135deg, #faf5ee 0%, #eee4d5 100%);">
                 <?php if ($hasCover): ?>
-                  <img src="<?= $coverUrl; ?>" alt="<?= esc($book['title']); ?>" loading="lazy" class="h-100 w-auto shadow-sm rounded-2" style="object-fit: contain; max-width: 100%; max-height: 100%; filter: drop-shadow(0 4px 10px rgba(89, 57, 31, 0.2)); transition: transform 0.35s ease;">
+                  <img src="<?= $coverUrl; ?>" alt="<?= esc($book['title']); ?>" loading="lazy" class="h-100 w-auto shadow-sm rounded-2" style="object-fit: contain; max-width: 100%; max-height: 100%; filter: drop-shadow(0 4px 8px rgba(89, 57, 31, 0.2)); transition: transform 0.35s ease;">
                 <?php else: ?>
                   <div class="d-flex flex-column align-items-center justify-content-center text-center p-2 h-100 w-100 rounded-3" style="background: linear-gradient(135deg, #59391f 0%, #7c522f 100%); color: #ffffff;">
                     <i class="ti ti-book fs-2 mb-1" style="color: #f0c968;"></i>
@@ -100,23 +100,23 @@
                 <?php endif; ?>
               </div>
 
-              <!-- Content Details Card (Compact: Judul, Penulis, Kategori & Rak Only) -->
-              <div class="card-body p-2.5 d-flex flex-column justify-content-between">
-                <div class="mb-2">
+              <!-- Content Details Card (Compact Spacing) -->
+              <div class="card-body p-2 d-flex flex-column justify-content-between">
+                <div class="mb-1.5">
                   <!-- Judul Utama Buku -->
-                  <h6 class="fw-bold mb-1 text-truncate-2" title="<?= esc($book['title']); ?>" style="color: #2d1e18 !important; font-size: 0.82rem; line-height: 1.25; font-family: 'Georgia', serif; font-weight: 700; min-height: 2.4em;">
+                  <h6 class="fw-bold mb-1 text-truncate-2" title="<?= esc($book['title']); ?>" style="color: #2d1e18 !important; font-size: 0.81rem; line-height: 1.25; font-family: 'Georgia', serif; font-weight: 700;">
                     <?= esc($book['title']); ?>
                   </h6>
 
                   <!-- Nama Penulis Subtext -->
-                  <div class="fw-semibold text-truncate" style="color: #8b5e3c !important; font-size: 0.72rem;">
+                  <div class="fw-semibold text-truncate" style="color: #8b5e3c !important; font-size: 0.71rem;">
                     <i class="ti ti-user me-0.5" style="color: #c59b27;"></i><?= esc($book['author'] ?: 'Penulis tak diketahui'); ?>
                   </div>
                 </div>
 
                 <!-- Footer Metadata: Kategori & Lokasi Rak -->
-                <div class="pt-2 border-top d-flex align-items-center justify-content-between" style="border-color: #f0e6d6 !important;">
-                  <span class="badge rounded-pill px-2 py-0.5 fw-bold text-truncate" style="background: #fdf6ea; color: #6e4727; border: 1px solid #f3e5c8; font-size: 0.6rem; max-width: 80px;">
+                <div class="pt-1.5 border-top d-flex align-items-center justify-content-between" style="border-color: #f0e6d6 !important;">
+                  <span class="badge rounded-pill px-2 py-0.5 fw-bold text-truncate" style="background: #fdf6ea; color: #6e4727; border: 1px solid #f3e5c8; font-size: 0.6rem; max-width: 75px;">
                     <?= esc($book['category'] ?: 'Umum'); ?>
                   </span>
                   <span class="badge rounded-pill px-2 py-0.5 fw-extrabold text-truncate" style="background: #fff8eb; color: #b48316; border: 1px solid #f9e2b0; font-size: 0.6rem;">
