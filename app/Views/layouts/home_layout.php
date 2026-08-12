@@ -21,19 +21,12 @@ $isTvPage   = (uri_string() === 'tv' || uri_string() === 'tv-display');
 
   <link rel="stylesheet" href="<?= base_url('assets/css/home.css?v=' . time()); ?>">
   <style>
-    html, body, .page-wrapper, .body-wrapper, #main-wrapper {
+    html, body, .page-wrapper, .body-wrapper, #main-wrapper, .unida-main-body-wrapper {
       background-color: #faf7f2 !important;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%236e4727' stroke-width='1.6' stroke-opacity='0.28'%3E%3Cellipse cx='40' cy='20' rx='16' ry='20'/%3E%3Cellipse cx='40' cy='60' rx='16' ry='20'/%3E%3Cellipse cx='20' cy='40' rx='20' ry='16'/%3E%3Cellipse cx='60' cy='40' rx='20' ry='16'/%3E%3Ccircle cx='40' cy='40' r='7' fill='%23c59b27' fill-opacity='0.30' stroke='%2359391f' stroke-width='1.2' stroke-opacity='0.35'/%3E%3Ccircle cx='0' cy='0' r='6' fill='%23c59b27' fill-opacity='0.25'/%3E%3Ccircle cx='80' cy='0' r='6' fill='%23c59b27' fill-opacity='0.25'/%3E%3Ccircle cx='0' cy='80' r='6' fill='%23c59b27' fill-opacity='0.25'/%3E%3Ccircle cx='80' cy='80' r='6' fill='%23c59b27' fill-opacity='0.25'/%3E%3Cpath d='M40 28 C34 28 34 52 40 52 C46 52 46 28 40 28 Z' fill='%236e4727' fill-opacity='0.12'/%3E%3Cpath d='M28 40 C28 34 52 34 52 40 C52 46 28 46 28 40 Z' fill='%236e4727' fill-opacity='0.12'/%3E%3C/g%3E%3C/svg%3E") !important;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='70' viewBox='0 0 70 70'%3E%3Cg fill='none' stroke='%236e4727' stroke-width='1.3' stroke-opacity='0.16'%3E%3Cellipse cx='35' cy='17.5' rx='14' ry='17.5'/%3E%3Cellipse cx='35' cy='52.5' rx='14' ry='17.5'/%3E%3Cellipse cx='17.5' cy='35' rx='17.5' ry='14'/%3E%3Cellipse cx='52.5' cy='35' rx='17.5' ry='14'/%3E%3Ccircle cx='35' cy='35' r='5' fill='%23c59b27' fill-opacity='0.18' stroke='%2359391f' stroke-width='1' stroke-opacity='0.20'/%3E%3Ccircle cx='0' cy='0' r='4' fill='%23c59b27' fill-opacity='0.15'/%3E%3Ccircle cx='70' cy='0' r='4' fill='%23c59b27' fill-opacity='0.15'/%3E%3Ccircle cx='0' cy='70' r='4' fill='%23c59b27' fill-opacity='0.15'/%3E%3Ccircle cx='70' cy='70' r='4' fill='%23c59b27' fill-opacity='0.15'/%3E%3C/g%3E%3C/svg%3E") !important;
       background-repeat: repeat !important;
       background-attachment: fixed !important;
       font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-
-    /* Reusable Batik Motif Layer for Cream Container Cards */
-    .batik-container-bg {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%236e4727' stroke-width='1.6' stroke-opacity='0.28'%3E%3Cellipse cx='40' cy='20' rx='16' ry='20'/%3E%3Cellipse cx='40' cy='60' rx='16' ry='20'/%3E%3Cellipse cx='20' cy='40' rx='20' ry='16'/%3E%3Cellipse cx='60' cy='40' rx='20' ry='16'/%3E%3Ccircle cx='40' cy='40' r='7' fill='%23c59b27' fill-opacity='0.30' stroke='%2359391f' stroke-width='1.2' stroke-opacity='0.35'/%3E%3Ccircle cx='0' cy='0' r='6' fill='%23c59b27' fill-opacity='0.25'/%3E%3Ccircle cx='80' cy='0' r='6' fill='%23c59b27' fill-opacity='0.25'/%3E%3Ccircle cx='0' cy='80' r='6' fill='%23c59b27' fill-opacity='0.25'/%3E%3Ccircle cx='80' cy='80' r='6' fill='%23c59b27' fill-opacity='0.25'/%3E%3Cpath d='M40 28 C34 28 34 52 40 52 C46 52 46 28 40 28 Z' fill='%236e4727' fill-opacity='0.12'/%3E%3Cpath d='M28 40 C28 34 52 34 52 40 C52 46 28 46 28 40 Z' fill='%236e4727' fill-opacity='0.12'/%3E%3C/g%3E%3C/svg%3E"), linear-gradient(135deg, #fcf8f2 0%, #f4eae0 100%) !important;
-      background-repeat: repeat, no-repeat !important;
-      background-size: 80px 80px, cover !important;
     }
     
     /* -------------------------------------------------------------
