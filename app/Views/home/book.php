@@ -112,15 +112,16 @@
     
     <!-- Left Column: UNIDA Sidebar Filter Card (3 Columns) -->
     <div class="col-12 col-lg-3">
-      <div class="card border-0 shadow-sm rounded-4 p-3 sticky-top" style="top: 85px; background: rgba(255, 255, 255, 0.95); border: 1.5px solid #e2d5c3 !important; backdrop-filter: blur(10px);">
+      <div class="card border-0 shadow-sm rounded-4 p-3 sticky-top" style="top: 85px; background: rgba(255, 255, 255, 0.96); border: 1.5px solid #e2d5c3 !important; backdrop-filter: blur(12px); box-shadow: 0 10px 28px rgba(89, 57, 31, 0.08) !important;">
         
-        <div class="d-flex align-items-center justify-content-between pb-3 mb-3 border-bottom" style="border-color: #e2d5c3 !important;">
-          <h5 class="fw-extrabold mb-0 d-flex align-items-center gap-2" style="color: #2d1e18; font-family: 'Georgia', serif; font-size: 1.05rem;">
-            <i class="ti ti-adjustments-horizontal fs-4" style="color: #c59b27 !important;"></i> Filter Pustaka
+        <!-- Header Banner Bar inside Card -->
+        <div class="d-flex align-items-center justify-content-between p-3 rounded-3 mb-3 shadow-xs" style="background: linear-gradient(135deg, #59391f 0%, #7c522f 100%); color: #ffffff;">
+          <h5 class="fw-extrabold text-white mb-0 d-flex align-items-center gap-2" style="font-family: 'Georgia', serif; font-size: 1.05rem;">
+            <i class="ti ti-adjustments-horizontal fs-4" style="color: #f0c968 !important;"></i> Filter Pustaka
           </h5>
           <?php if (!empty($selectedCategory) || !empty($selectedAuthor) || !empty($selectedPublisher) || !empty($search)): ?>
-            <a href="<?= base_url('book'); ?>" class="text-decoration-none fw-bold text-danger fs-8" title="Reset filter">
-              Reset
+            <a href="<?= base_url('book'); ?>" class="badge rounded-pill px-2.5 py-1 text-decoration-none fw-bold shadow-xs" style="background: rgba(255, 255, 255, 0.2); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.3); font-size: 0.65rem;" title="Reset filter">
+              <i class="ti ti-rotate-clockwise me-0.5"></i> Reset
             </a>
           <?php endif; ?>
         </div>
@@ -131,54 +132,60 @@
             <input type="hidden" name="search" value="<?= esc($search); ?>">
           <?php endif; ?>
 
-          <!-- Filter Kategori -->
-          <div class="mb-3">
-            <label class="form-label fw-bold fs-7 mb-1.5 d-flex align-items-center gap-1.5" style="color: #59391f;">
+          <!-- Filter Item 1: Kategori Buku -->
+          <div class="p-2.5 rounded-3 mb-3" style="background: #faf6f0; border: 1.5px solid #e8decb;">
+            <label class="form-label fw-extrabold fs-7 mb-1.5 d-flex align-items-center gap-1.5" style="color: #59391f;">
               <i class="ti ti-bookmark" style="color: #c59b27;"></i> Kategori Buku
             </label>
-            <select name="category" class="form-select form-select-sm rounded-3 fw-semibold" style="border-color: #e2d5c3; color: #2d1e18; background-color: #fdfbf7;">
-              <option value="">-- Semua Kategori --</option>
-              <?php foreach ($allCategories as $cat): ?>
-                <option value="<?= esc($cat['id']); ?>" <?= (string)$selectedCategory === (string)$cat['id'] ? 'selected' : ''; ?>>
-                  <?= esc($cat['name']); ?> (<?= (int)($cat['total_books'] ?? 0); ?>)
-                </option>
-              <?php endforeach; ?>
-            </select>
+            <div class="position-relative">
+              <select name="category" class="form-select form-select-sm rounded-pill fw-bold" style="border: 1.5px solid #e2d5c3; color: #2d1e18; background-color: #ffffff; padding-left: 14px; font-size: 0.82rem;">
+                <option value="">-- Semua Kategori --</option>
+                <?php foreach ($allCategories as $cat): ?>
+                  <option value="<?= esc($cat['id']); ?>" <?= (string)$selectedCategory === (string)$cat['id'] ? 'selected' : ''; ?>>
+                    <?= esc($cat['name']); ?> (<?= (int)($cat['total_books'] ?? 0); ?>)
+                  </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
           </div>
 
-          <!-- Filter Penulis -->
-          <div class="mb-3">
-            <label class="form-label fw-bold fs-7 mb-1.5 d-flex align-items-center gap-1.5" style="color: #59391f;">
+          <!-- Filter Item 2: Penulis / Pengarang -->
+          <div class="p-2.5 rounded-3 mb-3" style="background: #faf6f0; border: 1.5px solid #e8decb;">
+            <label class="form-label fw-extrabold fs-7 mb-1.5 d-flex align-items-center gap-1.5" style="color: #59391f;">
               <i class="ti ti-user" style="color: #c59b27;"></i> Penulis / Pengarang
             </label>
-            <select name="author" class="form-select form-select-sm rounded-3 fw-semibold" style="border-color: #e2d5c3; color: #2d1e18; background-color: #fdfbf7;">
-              <option value="">-- Semua Penulis --</option>
-              <?php foreach ($authors as $aut): ?>
-                <option value="<?= esc($aut['author']); ?>" <?= (string)$selectedAuthor === (string)$aut['author'] ? 'selected' : ''; ?>>
-                  <?= esc($aut['author']); ?> (<?= (int)$aut['total_books']; ?>)
-                </option>
-              <?php endforeach; ?>
-            </select>
+            <div class="position-relative">
+              <select name="author" class="form-select form-select-sm rounded-pill fw-bold" style="border: 1.5px solid #e2d5c3; color: #2d1e18; background-color: #ffffff; padding-left: 14px; font-size: 0.82rem;">
+                <option value="">-- Semua Penulis --</option>
+                <?php foreach ($authors as $aut): ?>
+                  <option value="<?= esc($aut['author']); ?>" <?= (string)$selectedAuthor === (string)$aut['author'] ? 'selected' : ''; ?>>
+                    <?= esc($aut['author']); ?> (<?= (int)$aut['total_books']; ?>)
+                  </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
           </div>
 
-          <!-- Filter Penerbit -->
-          <div class="mb-4">
-            <label class="form-label fw-bold fs-7 mb-1.5 d-flex align-items-center gap-1.5" style="color: #59391f;">
-              <i class="ti ti-building" style="color: #c59b27;"></i> Penerbit
+          <!-- Filter Item 3: Penerbit -->
+          <div class="p-2.5 rounded-3 mb-3.5" style="background: #faf6f0; border: 1.5px solid #e8decb;">
+            <label class="form-label fw-extrabold fs-7 mb-1.5 d-flex align-items-center gap-1.5" style="color: #59391f;">
+              <i class="ti ti-building" style="color: #c59b27;"></i> Penerbit Pustaka
             </label>
-            <select name="publisher" class="form-select form-select-sm rounded-3 fw-semibold" style="border-color: #e2d5c3; color: #2d1e18; background-color: #fdfbf7;">
-              <option value="">-- Semua Penerbit --</option>
-              <?php foreach ($publishers as $pub): ?>
-                <option value="<?= esc($pub['publisher']); ?>" <?= (string)$selectedPublisher === (string)$pub['publisher'] ? 'selected' : ''; ?>>
-                  <?= esc($pub['publisher']); ?> (<?= (int)$pub['total_books']; ?>)
-                </option>
-              <?php endforeach; ?>
-            </select>
+            <div class="position-relative">
+              <select name="publisher" class="form-select form-select-sm rounded-pill fw-bold" style="border: 1.5px solid #e2d5c3; color: #2d1e18; background-color: #ffffff; padding-left: 14px; font-size: 0.82rem;">
+                <option value="">-- Semua Penerbit --</option>
+                <?php foreach ($publishers as $pub): ?>
+                  <option value="<?= esc($pub['publisher']); ?>" <?= (string)$selectedPublisher === (string)$pub['publisher'] ? 'selected' : ''; ?>>
+                    <?= esc($pub['publisher']); ?> (<?= (int)$pub['total_books']; ?>)
+                  </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
           </div>
 
-          <!-- Submit Filter Button -->
-          <button type="submit" class="btn w-100 rounded-pill py-2 fw-extrabold text-white shadow-sm d-flex align-items-center justify-content-center gap-1.5" style="background: linear-gradient(135deg, #59391f 0%, #7c522f 100%); border: none; font-size: 0.85rem;">
-            <i class="ti ti-filter me-1" style="color: #f0c968;"></i> Terapkan Filter
+          <!-- Submit Filter Button UNIDA Style -->
+          <button type="submit" class="btn w-100 rounded-pill py-2.5 fw-extrabold text-white shadow-sm d-flex align-items-center justify-content-center gap-1.5" style="background: linear-gradient(135deg, #59391f 0%, #7c522f 50%, #c59b27 100%); border: none; font-size: 0.88rem; letter-spacing: 0.3px; transition: transform 0.2s ease;">
+            <i class="ti ti-filter-check me-1" style="color: #f0c968; font-size: 1.1rem;"></i> Terapkan Filter
           </button>
           
         </form>
