@@ -292,14 +292,24 @@ $isTvPage   = (uri_string() === 'tv' || uri_string() === 'tv-display');
        STICKY MAIN HEADER NAVBAR (Tier 1 Scrollable, Tier 2 Paten Di Atas)
        ========================================================= -->
   <style>
-    .unida-main-navbar-sticky {
-      position: sticky;
-      top: 0;
-      z-index: 1040;
-      background: rgba(89, 57, 31, 0.96) !important;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.20) !important;
+    .unida-main-navbar {
+      transition: background-color 0.25s ease, box-shadow 0.25s ease;
+      background: #59391f;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 10px 0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+    .unida-main-navbar.is-fixed-top {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      width: 100% !important;
+      z-index: 1040 !important;
+      background: rgba(89, 57, 31, 0.98) !important;
+      backdrop-filter: blur(12px) !important;
+      -webkit-backdrop-filter: blur(12px) !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25) !important;
     }
     .unida-main-body-wrapper {
       padding-top: 0px;
@@ -338,7 +348,7 @@ $isTvPage   = (uri_string() === 'tv' || uri_string() === 'tv-display');
     </div>
 
     <!-- TIER 2: MAIN HEADER NAVBAR (Sticky Paten Di Atas Saat Di-scroll) -->
-    <header class="unida-main-navbar unida-main-navbar-sticky">
+    <header class="unida-main-navbar">
       <div class="container-fluid px-3 px-md-4">
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
           
@@ -405,12 +415,11 @@ $isTvPage   = (uri_string() === 'tv' || uri_string() === 'tv-display');
         <div class="container text-center text-md-start">
           <div class="row align-items-center g-3">
             <div class="col-md-6">
-              <span class="fw-bold text-white fs-4 d-block" style="font-family: 'Georgia', serif;">Perpustakaan Pusat Assalafiyyah Mlangi</span>
-              <small style="color: rgba(255, 255, 255, 0.65);">&copy; <?= date('Y') ?>. Katalog Pustaka & Repositori Keilmuan Pesantren.</small>
+              <h6 class="fw-extrabold text-white mb-1" style="font-family: 'Georgia', serif;">PERPUSTAKAAN PUSAT ASSALAFIYYAH MLANGI</h6>
+              <small class="d-block" style="color: rgba(255, 255, 255, 0.65);">Pondok Pesantren Assalafiyyah Mlangi Sleman Yogyakarta</small>
             </div>
             <div class="col-md-6 text-md-end">
-              <small class="d-block mb-1" style="color: #f0c968;"><i class="ti ti-map-pin me-1"></i> Pondok Pesantren Assalafiyyah Malngi Yogyakarta</small>
-              <small style="color: rgba(255, 255, 255, 0.7);"><i class="ti ti-mail me-1"></i> perpusatku@gmail.com</small>
+              <small style="color: rgba(255, 255, 255, 0.55);">&copy; <?= date('Y'); ?> Perpustakaan Assalafiyyah Mlangi. All rights reserved.</small>
             </div>
           </div>
         </div>
@@ -419,14 +428,29 @@ $isTvPage   = (uri_string() === 'tv' || uri_string() === 'tv-display');
     </div>
   </div>
 
-  <!-- Scripts -->
-  <?= $this->include('imports/scripts/basic_scripts') ?>
-
-  <!-- Extra scripts -->
-  <?= $this->renderSection('scripts') ?>
-
+  <!-- JavaScript Libraries & UNIDA Loader -->
+  <script src="<?= base_url('assets/libs/jquery/dist/jquery.min.min.js') ?>"></script>
+  <script src="<?= base_url('assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js') ?>"></script>
+  
   <script>
     document.addEventListener('DOMContentLoaded', function () {
+      // Sticky Paten Main Header Navbar Scroll Listener
+      const mainNavbar = document.querySelector('.unida-main-navbar');
+      const utilityBar = document.querySelector('.unida-utility-bar');
+      if (mainNavbar) {
+        function checkStickyNav() {
+          const threshold = utilityBar ? utilityBar.offsetHeight : 32;
+          if (window.scrollY >= threshold) {
+            mainNavbar.classList.add('is-fixed-top');
+          } else {
+            mainNavbar.classList.remove('is-fixed-top');
+          }
+        }
+        window.addEventListener('scroll', checkStickyNav, { passive: true });
+        checkStickyNav();
+      }
+
+      // Smooth Full-Screen Search Loading Animation Handler
       const searchForms = document.querySelectorAll('form');
       const loader = document.getElementById('unidaSearchLoader');
       const keywordEl = document.getElementById('unidaSearchKeywordText');
