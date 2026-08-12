@@ -85,42 +85,34 @@
         $stockCount = (int)($book['quantity'] ?? 0);
         ?>
         <div class="col">
-          <a href="<?= base_url('book/' . ($book['slug'] ?: $book['id'])); ?>" class="text-decoration-none text-dark d-block h-100">
-            <div class="card h-100 border-0 rounded-4 overflow-hidden explore-cover-card position-relative shadow-sm" style="background: #ffffff;">
+          <a href="<?= base_url('book/' . ($book['slug'] ?: $book['id'])); ?>" class="text-decoration-none d-block">
+            <div class="unida-cover-hover-card">
               
-              <!-- Frame Cover Buku (155px Compact Height) -->
-              <div class="position-relative overflow-hidden d-flex align-items-center justify-content-center p-2" style="height: 155px; background: linear-gradient(135deg, #faf5ee 0%, #eee4d5 100%);">
-                <?php if ($hasCover): ?>
-                  <img src="<?= $coverUrl; ?>" alt="<?= esc($book['title']); ?>" loading="lazy" class="h-100 w-auto shadow-sm rounded-2" style="object-fit: contain; max-width: 100%; max-height: 100%; filter: drop-shadow(0 4px 8px rgba(89, 57, 31, 0.2)); transition: transform 0.35s ease;">
-                <?php else: ?>
-                  <div class="d-flex flex-column align-items-center justify-content-center text-center p-2 h-100 w-100 rounded-3" style="background: linear-gradient(135deg, #59391f 0%, #7c522f 100%); color: #ffffff;">
-                    <i class="ti ti-book fs-2 mb-1" style="color: #f0c968;"></i>
-                    <span class="fw-bold fs-8 text-white text-truncate-2 px-1" style="line-height: 1.2; font-family: 'Georgia', serif;"><?= esc($book['title']); ?></span>
-                  </div>
-                <?php endif; ?>
-              </div>
+              <!-- Clean Cover Image Display (Default State) -->
+              <?php if ($hasCover): ?>
+                <img src="<?= $coverUrl; ?>" alt="<?= esc($book['title']); ?>" loading="lazy" class="unida-cover-img">
+              <?php else: ?>
+                <div class="d-flex flex-column align-items-center justify-content-center text-center p-3 h-100 w-100" style="background: linear-gradient(135deg, #59391f 0%, #7c522f 100%); color: #ffffff;">
+                  <i class="ti ti-book fs-1 mb-2" style="color: #f0c968;"></i>
+                  <span class="fw-bold fs-7 text-white text-truncate-3 px-1" style="line-height: 1.25; font-family: 'Georgia', serif;"><?= esc($book['title']); ?></span>
+                </div>
+              <?php endif; ?>
 
-              <!-- Content Details Card (Compact Spacing) -->
-              <div class="card-body p-2 d-flex flex-column justify-content-between">
-                <div class="mb-1.5">
-                  <!-- Judul Utama Buku -->
-                  <h6 class="fw-bold mb-1 text-truncate-2" title="<?= esc($book['title']); ?>" style="color: #2d1e18 !important; font-size: 0.81rem; line-height: 1.25; font-family: 'Georgia', serif; font-weight: 700;">
-                    <?= esc($book['title']); ?>
-                  </h6>
-
-                  <!-- Nama Penulis Subtext -->
-                  <div class="fw-semibold text-truncate" style="color: #8b5e3c !important; font-size: 0.71rem;">
-                    <i class="ti ti-user me-0.5" style="color: #c59b27;"></i><?= esc($book['author'] ?: 'Penulis tak diketahui'); ?>
-                  </div>
+              <!-- Hover Title & Details Overlay (Revealed on Cursor Hover) -->
+              <div class="unida-cover-overlay text-white">
+                <h6 class="fw-bold text-white mb-1 text-truncate-2" title="<?= esc($book['title']); ?>" style="font-size: 0.84rem; line-height: 1.25; font-family: 'Georgia', serif;">
+                  <?= esc($book['title']); ?>
+                </h6>
+                <div class="fw-semibold text-truncate mb-2" style="color: #f0c968; font-size: 0.72rem;">
+                  <i class="ti ti-user me-0.5"></i><?= esc($book['author'] ?: 'Penulis tak diketahui'); ?>
                 </div>
 
-                <!-- Footer Metadata: Kategori & Lokasi Rak -->
-                <div class="pt-1.5 border-top d-flex align-items-center justify-content-between" style="border-color: #f0e6d6 !important;">
-                  <span class="badge rounded-pill px-2 py-0.5 fw-bold text-truncate" style="background: #fdf6ea; color: #6e4727; border: 1px solid #f3e5c8; font-size: 0.6rem; max-width: 75px;">
+                <div class="d-flex align-items-center justify-content-between gap-1 pt-1.5 border-top" style="border-color: rgba(255, 255, 255, 0.2) !important;">
+                  <span class="badge rounded-pill px-2 py-0.5 fw-bold text-truncate" style="background: rgba(255, 255, 255, 0.2); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.3); font-size: 0.6rem; max-width: 75px;">
                     <?= esc($book['category'] ?: 'Umum'); ?>
                   </span>
-                  <span class="badge rounded-pill px-2 py-0.5 fw-extrabold text-truncate" style="background: #fff8eb; color: #b48316; border: 1px solid #f9e2b0; font-size: 0.6rem;">
-                    <i class="ti ti-columns me-0.5" style="color: #c59b27;"></i>Rak <?= esc($book['rack'] ?: '-'); ?>
+                  <span class="badge rounded-pill px-2 py-0.5 fw-extrabold text-truncate" style="background: rgba(197, 155, 39, 0.35); color: #f0c968; border: 1px solid rgba(197, 155, 39, 0.5); font-size: 0.6rem;">
+                    <i class="ti ti-columns me-0.5"></i>Rak <?= esc($book['rack'] ?: '-'); ?>
                   </span>
                 </div>
               </div>
