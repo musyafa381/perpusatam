@@ -23,6 +23,9 @@ $isTvPage   = (uri_string() === 'tv' || uri_string() === 'tv-display');
   <style>
     body {
       background-color: #faf7f2;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%236e4727' stroke-width='1.2' stroke-opacity='0.08'%3E%3Cellipse cx='30' cy='15' rx='12' ry='15'/%3E%3Cellipse cx='30' cy='45' rx='12' ry='15'/%3E%3Cellipse cx='15' cy='30' rx='15' ry='12'/%3E%3Cellipse cx='45' cy='30' rx='15' ry='12'/%3E%3Ccircle cx='30' cy='30' r='4' fill='%236e4727' fill-opacity='0.07'/%3E%3Ccircle cx='0' cy='0' r='3' fill='%236e4727' fill-opacity='0.07'/%3E%3Ccircle cx='60' cy='0' r='3' fill='%236e4727' fill-opacity='0.07'/%3E%3Ccircle cx='0' cy='60' r='3' fill='%236e4727' fill-opacity='0.07'/%3E%3Ccircle cx='60' cy='60' r='3' fill='%236e4727' fill-opacity='0.07'/%3E%3C/g%3E%3C/svg%3E") !important;
+      background-repeat: repeat !important;
+      background-attachment: fixed !important;
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
     
