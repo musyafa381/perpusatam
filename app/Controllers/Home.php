@@ -297,6 +297,8 @@ class Home extends BaseController
         $selectedCategory = $this->request->getGet('category');
         $selectedAuthor   = $this->request->getGet('author');
         $selectedPublisher= $this->request->getGet('publisher');
+        $yearFrom         = $this->request->getGet('year_from');
+        $yearTo           = $this->request->getGet('year_to');
         $keyword          = $this->request->getGet('search');
 
         $query = $this->bookModel
@@ -316,6 +318,14 @@ class Home extends BaseController
 
         if ($selectedPublisher) {
             $query->where('books.publisher', $selectedPublisher);
+        }
+
+        if ($yearFrom) {
+            $query->where('books.year >=', (int)$yearFrom);
+        }
+
+        if ($yearTo) {
+            $query->where('books.year <=', (int)$yearTo);
         }
 
         if ($keyword) {
@@ -395,6 +405,8 @@ class Home extends BaseController
             'selectedCategory'  => $selectedCategory,
             'selectedAuthor'    => $selectedAuthor,
             'selectedPublisher' => $selectedPublisher,
+            'yearFrom'          => $yearFrom,
+            'yearTo'            => $yearTo,
             'totalBooksCount'   => $totalBooksCount,
             'pager'             => $this->bookModel->pager,
             'currentPage'       => $this->request->getVar('page_books') ?? 1,
