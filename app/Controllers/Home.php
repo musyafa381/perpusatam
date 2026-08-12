@@ -293,7 +293,7 @@ class Home extends BaseController
 
     public function book(): string
     {
-        $itemPerPage = 20;
+        $itemPerPage = 24;
         $selectedCategory = $this->request->getGet('category');
         $keyword = $this->request->getGet('search');
 
