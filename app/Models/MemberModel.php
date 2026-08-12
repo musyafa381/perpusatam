@@ -199,12 +199,27 @@ class MemberModel extends Model
 
     // Callbacks
     protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
+    protected $beforeInsert   = ['makeUppercase'];
     protected $afterInsert    = [];
-    protected $beforeUpdate   = [];
+    protected $beforeUpdate   = ['makeUppercase'];
     protected $afterUpdate    = [];
     protected $beforeFind     = [];
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    /**
+     * Converts member name fields to UPPERCASE before saving
+     */
+    protected function makeUppercase(array $data): array
+    {
+        if (isset($data['data']['first_name'])) {
+            $data['data']['first_name'] = mb_strtoupper($data['data']['first_name'], 'UTF-8');
+        }
+        if (isset($data['data']['last_name'])) {
+            $data['data']['last_name'] = mb_strtoupper($data['data']['last_name'], 'UTF-8');
+        }
+
+        return $data;
+    }
 }
