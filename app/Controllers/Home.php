@@ -86,6 +86,8 @@ class Home extends BaseController
 
         $totalMembersCount = $memberModel->where('deleted_at', null)->countAllResults();
         $totalVisitorsCount = $visitorLogModel->countAllResults();
+        $totalLoansCount = $loanModel->countAllResults();
+
         helper(['upload_helper', 'tv_helper']);
         $tvBanners = function_exists('getTvBanners') ? getTvBanners() : [];
 
