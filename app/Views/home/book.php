@@ -9,66 +9,59 @@
 
 <div class="container py-4">
 
-  <!-- Header Banner & Search Status (UNIDA Gontor Style) -->
-  <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden" style="background: linear-gradient(135deg, #59391f 0%, #6e4727 40%, #8b5e3c 100%); border: 1.5px solid #e2d5c3 !important; color: #ffffff;">
-    <div class="card-body p-4 p-md-4">
-      <div class="row align-items-center gy-3">
-        <div class="col-md-7">
-          <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
-            <span class="badge px-3 py-1.5 rounded-pill fw-bold text-dark shadow-sm flex-shrink-0" style="background: #c59b27; font-size: 0.75rem; letter-spacing: 0.5px;">
-              <i class="ti ti-books me-1"></i> KATALOG BUKU
-            </span>
-            <span class="fw-semibold small text-white-50">• Perpustakaan Assalafiyyah Mlangi</span>
-          </div>
-          <h2 class="fw-extrabold text-white mb-1" style="font-family: 'Georgia', serif; font-size: 1.75rem;">Pencarian & Katalog Pustaka</h2>
-          <p class="fs-7 mb-0 text-white-50" style="font-weight: 500;">
-            <?= !empty($search) ? 'Menampilkan hasil pencarian kata kunci: <strong class="text-warning">"' . esc($search) . '"</strong>' : 'Jelajahi perbendaharaan kitab turats, karya ilmiah, dan koleksi referensi pustaka.'; ?>
-          </p>
-        </div>
+  <!-- UNIDA Hero Banner with Library Theme Colors -->
+  <section class="unida-hero-banner text-center shadow-sm mb-4">
+    <div class="container px-3 position-relative" style="z-index: 2;">
+      
+      <h1 class="fw-extrabold text-white mb-2" style="font-family: 'Georgia', serif; font-size: 2.2rem; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);">
+        Perpustakaan Assalafiyyah Mlangi
+      </h1>
+      <p class="text-white-50 mx-auto mb-4" style="max-width: 650px; font-size: 0.95rem; line-height: 1.5;">
+        <?= !empty($search) ? 'Menampilkan hasil pencarian kata kunci: <strong class="text-warning">"' . esc($search) . '"</strong>' : 'Pondok Pesantren Assalafiyyah Mlangi Sleman Yogyakarta'; ?>
+      </p>
 
-        <div class="col-md-5 text-md-end">
-          <form action="<?= base_url('book'); ?>" method="get" class="d-flex gap-2 justify-content-md-end">
-            <?php if (!empty($selectedCategory)): ?>
-              <input type="hidden" name="category" value="<?= esc($selectedCategory); ?>">
-            <?php endif; ?>
-            <div class="input-group shadow-sm rounded-pill overflow-hidden bg-white" style="border: 2px solid #c59b27 !important;">
-              <span class="input-group-text bg-white border-0 ps-3" style="color: #6e4727;">
-                <i class="ti ti-search fs-5"></i>
-              </span>
-              <input type="text" name="search" class="form-control border-0 shadow-none fs-7 py-2" value="<?= esc($search ?? ''); ?>" placeholder="Cari judul, pengarang, ISBN..." style="color: #2d241e;" />
-              <?php if (!empty($search)): ?>
-                <a href="<?= base_url('book' . ($selectedCategory ? '?category=' . $selectedCategory : '')); ?>" class="input-group-text bg-white border-0 pe-2 text-decoration-none" style="color: #8b5e3c;">
-                  <i class="ti ti-x fs-6"></i>
-                </a>
-              <?php endif; ?>
-              <button type="submit" class="btn fw-extrabold px-4 text-dark shadow-sm" style="background: linear-gradient(135deg, #c59b27 0%, #d4af37 100%); border: none;">Cari</button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      <!-- Category Filter Pills UNIDA Style (Top 7) -->
-      <?php if (!empty($categories)): ?>
-        <div class="mt-4 pt-3 border-top" style="border-color: rgba(255, 255, 255, 0.15) !important;">
-          <span class="fw-bold small d-block mb-2 text-white-50"><i class="ti ti-filter me-1" style="color: #c59b27;"></i> Filter Kategori Utama (Top 7):</span>
-          <div class="d-flex align-items-center gap-2 pb-1" style="overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap; scrollbar-width: none;">
-            <a href="<?= base_url('book' . ($search ? '?search=' . urlencode($search) : '')); ?>" 
-               class="unida-cat-pill <?= empty($selectedCategory) ? 'active' : 'inactive'; ?>">
-              <i class="ti ti-books"></i>
-              <span>Semua Kategori</span>
+      <!-- Mega Search Bar Form -->
+      <form action="<?= base_url('book'); ?>" method="get" class="mb-4">
+        <?php if (!empty($selectedCategory)): ?>
+          <input type="hidden" name="category" value="<?= esc($selectedCategory); ?>">
+        <?php endif; ?>
+        <div class="unida-search-wrapper">
+          <i class="ti ti-search fs-5 text-muted me-2 ms-1"></i>
+          <input type="text" name="search" class="form-control unida-search-input" value="<?= esc($search ?? ''); ?>" placeholder="Cari buku, e-books, pengarang, penerbit, nomor ISBN..." aria-label="Cari Pustaka">
+          <?php if (!empty($search)): ?>
+            <a href="<?= base_url('book' . ($selectedCategory ? '?category=' . $selectedCategory : '')); ?>" class="text-muted text-decoration-none me-2" title="Hapus pencarian">
+              <i class="ti ti-x fs-5"></i>
             </a>
-            <?php foreach ($categories as $cat): ?>
-              <a href="<?= base_url('book?category=' . $cat['id'] . ($search ? '&search=' . urlencode($search) : '')); ?>" 
-                 class="unida-cat-pill <?= ($selectedCategory == $cat['id']) ? 'active' : 'inactive'; ?>">
-                <span><?= esc($cat['name']); ?></span>
-                <span class="unida-cat-count-badge"><?= (int)($cat['total_books'] ?? 0); ?></span>
-              </a>
-            <?php endforeach; ?>
-          </div>
+          <?php endif; ?>
+          <button class="btn unida-search-btn" type="submit">
+            <i class="ti ti-search me-1"></i> Cari Pustaka
+          </button>
+        </div>
+      </form>
+
+      <!-- UNIDA Gontor Category Pills with Book Counts (Top 7) -->
+      <?php if (!empty($categories)): ?>
+        <div class="d-flex align-items-center justify-content-center flex-wrap gap-2 fs-7" style="color: rgba(255, 255, 255, 0.8);">
+          
+          <!-- 'Semua' Category Pill -->
+          <a href="<?= base_url('book' . (!empty($search) ? '?search=' . urlencode($search) : '')); ?>" class="unida-cat-pill <?= empty($selectedCategory) ? 'active' : 'inactive'; ?>">
+            <i class="ti ti-books"></i>
+            <span>Semua</span>
+            <span class="unida-cat-count-badge"><?= $totalBooksCount ?? count($books); ?></span>
+          </a>
+
+          <!-- Top 7 Category Pills with Count Badges -->
+          <?php foreach ($categories as $cat) : ?>
+            <a href="<?= base_url('book?category=' . $cat['id'] . (!empty($search) ? '&search=' . urlencode($search) : '')); ?>" class="unida-cat-pill <?= (string)$selectedCategory === (string)$cat['id'] ? 'active' : 'inactive'; ?>">
+              <span><?= esc($cat['name']); ?></span>
+              <span class="unida-cat-count-badge"><?= (int)($cat['total_books'] ?? 0); ?></span>
+            </a>
+          <?php endforeach; ?>
         </div>
       <?php endif; ?>
+
     </div>
-  </div>
+  </section>
 
   <!-- Book Grid Section (5 Cards per Row on Desktop) -->
   <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3 mb-4">

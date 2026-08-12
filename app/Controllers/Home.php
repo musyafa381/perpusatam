@@ -349,10 +349,13 @@ class Home extends BaseController
             ->orderBy('total_books', 'DESC')
             ->findAll(7);
 
+        $totalBooksCount = $this->bookModel->where('deleted_at', null)->countAllResults();
+
         $data = [
             'books'            => $books,
             'categories'       => $categories,
             'selectedCategory' => $selectedCategory,
+            'totalBooksCount'  => $totalBooksCount,
             'pager'            => $this->bookModel->pager,
             'currentPage'      => $this->request->getVar('page_books') ?? 1,
             'itemPerPage'      => $itemPerPage,
