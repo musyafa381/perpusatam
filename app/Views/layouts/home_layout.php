@@ -63,16 +63,12 @@ $isTvPage   = (uri_string() === 'tv' || uri_string() === 'tv-display');
       color: #f0c968;
     }
 
-    /* Tier 2: Main Header Navbar (Sticky Top) */
+    /* Tier 2: Main Header Navbar */
     .unida-main-navbar {
-      position: sticky;
-      top: 0;
-      z-index: 1030;
-      background: rgba(89, 57, 31, 0.96);
-      backdrop-filter: blur(12px);
+      background: #59391f;
       border-bottom: 1px solid rgba(255, 255, 255, 0.12);
       padding: 10px 0;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     }
 
     /* Center Pill Capsule Nav Container (Exact UNIDA Style) */
@@ -293,31 +289,25 @@ $isTvPage   = (uri_string() === 'tv' || uri_string() === 'tv-display');
   </div>
 
   <!-- =========================================================
-       FIXED HEADER NAVBAR (Paten Di Atas, Seamless Tanpa Celah & Ber-Bayangan)
+       STICKY MAIN HEADER NAVBAR (Tier 1 Scrollable, Tier 2 Paten Di Atas)
        ========================================================= -->
   <style>
-    .unida-fixed-header-wrapper {
-      position: fixed;
+    .unida-main-navbar-sticky {
+      position: sticky;
       top: 0;
-      left: 0;
-      width: 100%;
       z-index: 1040;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.20) !important;
+      background: rgba(89, 57, 31, 0.96) !important;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.20) !important;
     }
     .unida-main-body-wrapper {
-      padding-top: <?= $isTvPage ? '0px' : '95px'; ?>;
-    }
-    @media (max-width: 767.98px) {
-      .unida-main-body-wrapper {
-        padding-top: <?= $isTvPage ? '0px' : '65px'; ?>;
-      }
+      padding-top: 0px;
     }
   </style>
 
   <?php if (!$isTvPage) : ?>
-  <div class="unida-fixed-header-wrapper">
-    
-    <!-- TIER 1: DARK UTILITY RIBBON BAR (UNIDA Gontor Style) -->
+    <!-- TIER 1: DARK UTILITY RIBBON BAR (Normal Flow - Bisa Di-scroll Ikut Halaman) -->
     <div class="unida-utility-bar d-none d-md-block">
       <div class="container-fluid px-3 px-md-4">
         <div class="d-flex align-items-center justify-content-between">
@@ -347,8 +337,8 @@ $isTvPage   = (uri_string() === 'tv' || uri_string() === 'tv-display');
       </div>
     </div>
 
-    <!-- TIER 2: MAIN HEADER NAVBAR (UNIDA Gontor 1-to-1 Style) -->
-    <header class="unida-main-navbar">
+    <!-- TIER 2: MAIN HEADER NAVBAR (Sticky Paten Di Atas Saat Di-scroll) -->
+    <header class="unida-main-navbar unida-main-navbar-sticky">
       <div class="container-fluid px-3 px-md-4">
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
           
@@ -399,8 +389,6 @@ $isTvPage   = (uri_string() === 'tv' || uri_string() === 'tv-display');
         </div>
       </div>
     </header>
-
-  </div>
   <?php endif; ?>
 
   <div class="page-wrapper unida-main-body-wrapper" id="main-wrapper">
