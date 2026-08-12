@@ -350,7 +350,7 @@
     
     <!-- Left Column (8 Columns): Welcome Card UNIDA Style -->
     <div class="col-12 col-lg-8">
-      <div class="card border-0 rounded-4 p-4 h-100 shadow-sm d-flex flex-column justify-content-between" style="background: #ffffff; border: 1.5px solid #e2d5c3 !important;">
+      <div class="card border-0 rounded-4 p-4 h-100 shadow-sm d-flex flex-column justify-content-between translucent-card-8" style="border: 1.5px solid #e2d5c3 !important;">
         <div>
           <div class="d-flex align-items-start gap-3 mb-3">
             <img src="<?= base_url('assets/images/logoku.jpg'); ?>" alt="Logo Perpustakaan" class="rounded-3 flex-shrink-0" style="width: 58px; height: 58px; object-fit: cover; border: 1.5px solid #c59b27;">
@@ -436,7 +436,7 @@
 
 <!-- 4. Explore Collection Section Container (With Warm Background Container Box) -->
 <div class="container px-3 mb-5">
-  <div class="p-4 p-md-5 rounded-5 shadow-sm" style="background: linear-gradient(135deg, #fcf8f2 0%, #f4eae0 100%); border: 1.5px solid #e2d5c3;">
+  <div class="p-4 p-md-5 rounded-5 shadow-sm translucent-container-8" style="border: 1.5px solid #e2d5c3;">
     
     <!-- Explore Collection Header & 4 Category Capsules -->
     <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-md-between gap-3 mb-4">
@@ -529,7 +529,7 @@
 
 <!-- 5. Informasi Perpustakaan Showcase Container (Warm Cream Theme, 2 Cards Side-by-Side) -->
 <div class="container px-3 mb-5">
-  <div class="p-4 p-md-5 rounded-5 shadow-sm overflow-hidden position-relative" style="background: linear-gradient(135deg, #fcf8f2 0%, #f4eae0 100%); border: 1.5px solid #e2d5c3;">
+  <div class="p-4 p-md-5 rounded-5 shadow-sm overflow-hidden position-relative translucent-container-8" style="border: 1.5px solid #e2d5c3;">
     
     <!-- Section Header (Without Buka Layar TV Button) -->
     <div class="mb-4 border-bottom pb-3" style="border-color: #e2d5c3 !important;">
@@ -653,7 +653,7 @@
 
 <!-- 6. Popular / Most Borrowed Books Showcase Container ("Buku Paling Laris Dipinjam") -->
 <div class="container px-3 mb-5">
-  <div class="p-4 p-md-5 rounded-5 shadow-sm" style="background: linear-gradient(135deg, #fcf8f2 0%, #f4eae0 100%); border: 1.5px solid #e2d5c3;">
+  <div class="p-4 p-md-5 rounded-5 shadow-sm translucent-container-8" style="border: 1.5px solid #e2d5c3;">
     
     <!-- Header -->
     <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-md-between gap-3 mb-4 border-bottom pb-3" style="border-color: #e2d5c3 !important;">

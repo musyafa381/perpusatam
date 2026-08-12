@@ -23,10 +23,23 @@ $isTvPage   = (uri_string() === 'tv' || uri_string() === 'tv-display');
   <style>
     html, body, .page-wrapper, .body-wrapper, #main-wrapper, .unida-main-body-wrapper {
       background-color: #faf7f2 !important;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='70' viewBox='0 0 70 70'%3E%3Cg fill='none' stroke='%236e4727' stroke-width='1.3' stroke-opacity='0.16'%3E%3Cellipse cx='35' cy='17.5' rx='14' ry='17.5'/%3E%3Cellipse cx='35' cy='52.5' rx='14' ry='17.5'/%3E%3Cellipse cx='17.5' cy='35' rx='17.5' ry='14'/%3E%3Cellipse cx='52.5' cy='35' rx='17.5' ry='14'/%3E%3Ccircle cx='35' cy='35' r='5' fill='%23c59b27' fill-opacity='0.18' stroke='%2359391f' stroke-width='1' stroke-opacity='0.20'/%3E%3Ccircle cx='0' cy='0' r='4' fill='%23c59b27' fill-opacity='0.15'/%3E%3Ccircle cx='70' cy='0' r='4' fill='%23c59b27' fill-opacity='0.15'/%3E%3Ccircle cx='0' cy='70' r='4' fill='%23c59b27' fill-opacity='0.15'/%3E%3Ccircle cx='70' cy='70' r='4' fill='%23c59b27' fill-opacity='0.15'/%3E%3C/g%3E%3C/svg%3E") !important;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='70' viewBox='0 0 70 70'%3E%3Cg fill='none' stroke='%236e4727' stroke-width='1.2' stroke-opacity='0.065'%3E%3Cellipse cx='35' cy='17.5' rx='14' ry='17.5'/%3E%3Cellipse cx='35' cy='52.5' rx='14' ry='17.5'/%3E%3Cellipse cx='17.5' cy='35' rx='17.5' ry='14'/%3E%3Cellipse cx='52.5' cy='35' rx='17.5' ry='14'/%3E%3Ccircle cx='35' cy='35' r='5' fill='%23c59b27' fill-opacity='0.08' stroke='%2359391f' stroke-width='0.8' stroke-opacity='0.08'/%3E%3Ccircle cx='0' cy='0' r='4' fill='%23c59b27' fill-opacity='0.06'/%3E%3Ccircle cx='70' cy='0' r='4' fill='%23c59b27' fill-opacity='0.06'/%3E%3Ccircle cx='0' cy='70' r='4' fill='%23c59b27' fill-opacity='0.06'/%3E%3Ccircle cx='70' cy='70' r='4' fill='%23c59b27' fill-opacity='0.06'/%3E%3C/g%3E%3C/svg%3E") !important;
       background-repeat: repeat !important;
       background-attachment: fixed !important;
       font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* 8% Translucent Container Cards with Backdrop Blur */
+    .translucent-container-8 {
+      background: linear-gradient(135deg, rgba(252, 248, 242, 0.92) 0%, rgba(244, 234, 224, 0.92) 100%) !important;
+      backdrop-filter: blur(12px) !important;
+      -webkit-backdrop-filter: blur(12px) !important;
+    }
+
+    .translucent-card-8 {
+      background: rgba(255, 255, 255, 0.92) !important;
+      backdrop-filter: blur(12px) !important;
+      -webkit-backdrop-filter: blur(12px) !important;
     }
     
     /* -------------------------------------------------------------
