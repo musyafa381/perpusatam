@@ -651,6 +651,91 @@
   </div>
 </div>
 
+<!-- 6. Popular / Most Borrowed Books Showcase Container ("Buku Paling Laris Dipinjam") -->
+<div class="container px-3 mb-5">
+  <div class="p-4 p-md-5 rounded-5 shadow-sm" style="background: linear-gradient(135deg, #fcf8f2 0%, #f4eae0 100%); border: 1.5px solid #e2d5c3;">
+    
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-md-between gap-3 mb-4 border-bottom pb-3" style="border-color: #e2d5c3 !important;">
+      <div>
+        <h3 class="fw-extrabold mb-1 d-flex align-items-center gap-2" style="color: #2d1e18; font-family: 'Georgia', serif; font-size: 1.65rem;">
+          <i class="ti ti-flame text-danger" style="color: #d97706 !important;"></i> Buku Paling Laris Dipinjam
+        </h3>
+        <p class="text-muted mb-0 fs-7">Koleksi pustaka terpopuler dengan frekuensi peminjaman tertinggi oleh santri</p>
+      </div>
+      <span class="badge rounded-pill px-3 py-2 fw-bold shadow-xs" style="background: #59391f; color: #ffffff; font-size: 0.8rem;">
+        🔥 Most Popular
+      </span>
+    </div>
+
+    <!-- Books Showcase Grid (6 Items) -->
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3 mb-4">
+      <?php if (!empty($popularBooks)) : ?>
+        <?php foreach ($popularBooks as $pb) : ?>
+          <?php
+            $rawCover = $pb['book_cover'] ?? '';
+            $coverUrl = getBookCoverUrl($rawCover);
+            $hasCover = !empty($rawCover) && ($coverUrl !== base_url(BOOK_COVER_URI . DEFAULT_BOOK_COVER));
+            $borrowCount = intval($pb['total_borrowed'] ?? 0);
+          ?>
+          <div class="col">
+            <a href="<?= base_url('book/' . ($pb['slug'] ?: $pb['id'])); ?>" class="d-block text-decoration-none h-100">
+              <div class="card h-100 border-0 rounded-4 overflow-hidden explore-cover-card position-relative shadow-sm" style="background: #ffffff;">
+                
+                <!-- Book Cover Image Box -->
+                <div class="position-relative overflow-hidden d-flex align-items-center justify-content-center p-2" style="height: 160px; background: linear-gradient(135deg, #faf5ee 0%, #eee4d5 100%);">
+                  <?php if ($hasCover) : ?>
+                    <img src="<?= $coverUrl; ?>" alt="<?= esc($pb['title']); ?>" loading="lazy" class="h-100 w-auto shadow-sm rounded-2" style="object-fit: contain; max-width: 100%; max-height: 100%; filter: drop-shadow(0 4px 10px rgba(89, 57, 31, 0.2));">
+                  <?php else : ?>
+                    <div class="d-flex flex-column align-items-center justify-content-center text-center p-2 h-100 w-100 rounded-3" style="background: linear-gradient(135deg, #59391f 0%, #7c522f 100%); color: #ffffff;">
+                      <i class="ti ti-flame fs-2 mb-1" style="color: #f0c968;"></i>
+                      <span class="fw-bold fs-8 text-white text-truncate-2 px-1" style="line-height: 1.2; font-family: 'Georgia', serif;"><?= esc($pb['title']); ?></span>
+                    </div>
+                  <?php endif; ?>
+                  
+                  <!-- Popular Fire Badge -->
+                  <span class="position-absolute top-0 start-0 m-1.5 badge rounded-pill fw-bold" style="background: linear-gradient(135deg, #d97706 0%, #b45309 100%); color: #ffffff; font-size: 0.58rem; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                    🔥 <?= $borrowCount; ?>x Dipinjam
+                  </span>
+                </div>
+
+                <!-- Title & Author Footer -->
+                <div class="p-2 text-center" style="background: #ffffff;">
+                  <h6 class="fw-bold text-truncate mb-1" title="<?= esc($pb['title']); ?>" style="color: #2d1e18 !important; font-size: 0.82rem; font-family: 'Georgia', serif;">
+                    <?= esc($pb['title']); ?>
+                  </h6>
+                  <div class="d-flex align-items-center justify-content-center gap-1 mb-1">
+                    <small class="text-truncate fw-semibold" style="color: #8b5e3c !important; font-size: 0.72rem;">
+                      <i class="ti ti-user me-0.5" style="color: #c59b27;"></i><?= esc($pb['author'] ?: 'Penulis tak diketahui'); ?>
+                    </small>
+                  </div>
+                  <span class="badge rounded-pill px-2 py-0.5 fw-bold text-truncate" style="background: #fdf6ea; color: #6e4727; border: 1px solid #f3e5c8; font-size: 0.6rem;">
+                    <?= esc($pb['category'] ?: 'Umum'); ?>
+                  </span>
+                </div>
+
+              </div>
+            </a>
+          </div>
+        <?php endforeach; ?>
+      <?php else : ?>
+        <div class="col-12 text-center py-4 text-muted">
+          <i class="ti ti-books-off fs-2 mb-2 d-block" style="color: #c59b27;"></i>
+          <span class="fw-bold fs-7">Belum ada statistik sirkulasi peminjaman</span>
+        </div>
+      <?php endif; ?>
+    </div>
+
+    <!-- Center Action Button -->
+    <div class="text-center">
+      <a href="<?= base_url('book'); ?>" class="btn rounded-pill px-4 py-2.5 fw-bold shadow-sm" style="background: linear-gradient(135deg, #59391f 0%, #7c522f 100%); color: #ffffff; border: none; font-size: 0.9rem;">
+        Lihat Semua Koleksi Pustaka <i class="ti ti-arrow-right ms-1"></i>
+      </a>
+    </div>
+
+  </div>
+</div>
+
 <!-- =========================================================
      MODALS UNTUK 3 ACTION PILLS (VISION, SERVICE HOURS, FACILITIES)
      ========================================================= -->

@@ -45,7 +45,7 @@ class Home extends BaseController
                 ->groupEnd();
         }
 
-        $latestBooks = $query->orderBy('books.id', 'DESC')->findAll(30);
+        $latestBooks = $query->orderBy('books.id', 'DESC')->findAll(200);
 
         // Calculate available stock
         $loanModel = new \App\Models\LoanModel();
@@ -88,11 +88,29 @@ class Home extends BaseController
         $totalVisitorsCount = $visitorLogModel->countAllResults();
         $totalLoansCount = $loanModel->countAllResults();
 
-        helper(['upload_helper', 'tv_helper']);
-        $tvBanners = function_exists('getTvBanners') ? getTvBanners() : [];
+        // Most borrowed / popular books (Top 6)
+        $popularBooks = $this->bookModel
+            ->select('books.*, book_stock.quantity, COUNT(loans.id) as total_borrowed, categories.name as category, racks.name as rack, racks.floor')
+            ->join('loans', 'loans.book_id = books.id AND loans.deleted_at IS NULL', 'LEFT')
+            ->join('book_stock', 'books.id = book_stock.book_id', 'LEFT')
+            ->join('categories', 'books.category_id = categories.id', 'LEFT')
+            ->join('racks', 'books.rack_id = racks.id', 'LEFT')
+            ->where('books.deleted_at', null)
+            ->groupBy('books.id')
+            ->orderBy('total_borrowed', 'DESC')
+            ->orderBy('books.id', 'DESC')
+            ->findAll(6);
+
+        foreach ($popularBooks as &$pb) {
+            $totalQty = (int)($pb['quantity'] ?? 0);
+            $borrowedQty = $borrowedMap[$pb['id']] ?? 0;
+            $pb['quantity'] = max(0, $totalQty - $borrowedQty);
+        }
+        unset($pb);
 
         $data = [
             'latestBooks'        => $latestBooks,
+            'popularBooks'       => $popularBooks,
             'categories'         => $categories,
             'search'             => $search,
             'categoryFilter'     => $categoryFilter,
