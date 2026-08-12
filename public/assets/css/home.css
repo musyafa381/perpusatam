@@ -145,11 +145,11 @@ html, body {
   border-radius: 16px;
   overflow: hidden;
   border: 1.5px solid #e2d5c3;
-  background: linear-gradient(135deg, #faf5ee 0%, #eee4d5 100%);
+  background: linear-gradient(135deg, #fdfbf7 0%, #f4eae0 100%);
   box-shadow: 0 4px 14px rgba(110, 71, 39, 0.08);
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
-  height: 235px;
+  height: 240px;
 }
 .unida-cover-hover-card:hover {
   transform: translateY(-5px);
@@ -172,7 +172,9 @@ html, body {
 .unida-cover-overlay {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(to top, rgba(28, 18, 13, 0.95) 0%, rgba(45, 30, 24, 0.82) 55%, rgba(45, 30, 24, 0.1) 100%);
+  background: linear-gradient(to top, rgba(38, 22, 14, 0.95) 0%, rgba(55, 34, 21, 0.85) 60%, rgba(55, 34, 21, 0.0) 100%);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   padding: 14px 12px;
   display: flex;
   flex-direction: column;

@@ -98,21 +98,27 @@
                 </div>
               <?php endif; ?>
 
-              <!-- Hover Title & Details Overlay (Revealed on Cursor Hover) -->
+              <!-- Hover Title & Details Overlay (Clean UNIDA Layout) -->
               <div class="unida-cover-overlay text-white">
-                <h6 class="fw-bold text-white mb-1 text-truncate-2" title="<?= esc($book['title']); ?>" style="font-size: 0.84rem; line-height: 1.25; font-family: 'Georgia', serif;">
-                  <?= esc($book['title']); ?>
-                </h6>
-                <div class="fw-semibold text-truncate mb-2" style="color: #f0c968; font-size: 0.72rem;">
-                  <i class="ti ti-user me-0.5"></i><?= esc($book['author'] ?: 'Penulis tak diketahui'); ?>
+                <!-- Category Top Capsule Tag -->
+                <div class="mb-1">
+                  <span class="badge rounded-pill text-truncate fw-bold shadow-sm" style="background: #c59b27; color: #2d1e18; font-size: 0.61rem; padding: 3px 8px; max-width: 95%;">
+                    <i class="ti ti-bookmark me-0.5"></i><?= esc($book['category'] ?: 'Umum'); ?>
+                  </span>
                 </div>
 
-                <div class="d-flex align-items-center justify-content-between gap-1 pt-1.5 border-top" style="border-color: rgba(255, 255, 255, 0.2) !important;">
-                  <span class="badge rounded-pill px-2 py-0.5 fw-bold text-truncate" style="background: rgba(255, 255, 255, 0.2); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.3); font-size: 0.6rem; max-width: 75px;">
-                    <?= esc($book['category'] ?: 'Umum'); ?>
+                <!-- Judul Utama Buku -->
+                <h6 class="fw-bold text-white mb-1 text-truncate-2" title="<?= esc($book['title']); ?>" style="font-size: 0.88rem; line-height: 1.25; font-family: 'Georgia', serif; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">
+                  <?= esc($book['title']); ?>
+                </h6>
+
+                <!-- Penulis & Rak Bottom Row -->
+                <div class="d-flex align-items-center justify-content-between gap-1 mt-1 pt-1.5 border-top" style="border-color: rgba(255, 255, 255, 0.2) !important;">
+                  <span class="fw-semibold text-truncate" style="color: #f3d382; font-size: 0.72rem;">
+                    <i class="ti ti-user me-0.5" style="color: #c59b27;"></i><?= esc($book['author'] ?: 'Penulis tak diketahui'); ?>
                   </span>
-                  <span class="badge rounded-pill px-2 py-0.5 fw-extrabold text-truncate" style="background: rgba(197, 155, 39, 0.35); color: #f0c968; border: 1px solid rgba(197, 155, 39, 0.5); font-size: 0.6rem;">
-                    <i class="ti ti-columns me-0.5"></i>Rak <?= esc($book['rack'] ?: '-'); ?>
+                  <span class="badge rounded-pill px-2 py-0.5 fw-extrabold flex-shrink-0" style="background: rgba(255, 255, 255, 0.18); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.3); font-size: 0.62rem;">
+                    <i class="ti ti-columns me-0.5" style="color: #f3d382;"></i>Rak <?= esc($book['rack'] ?: '-'); ?>
                   </span>
                 </div>
               </div>
