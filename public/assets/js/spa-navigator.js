@@ -553,6 +553,14 @@
     submitForm(form, submitter);
   });
 
+  // Expose global helper functions for basic_scripts.php and other components
+  window.spaSubmitForm = function (form, submitter) {
+    submitForm(form, submitter);
+  };
+  window.spaLoadPage = function (url, pushHistory = true) {
+    loadPage(url, pushHistory);
+  };
+
   // Handle browser back / forward
   window.addEventListener('popstate', function (e) {
     loadPage(window.location.href, false);

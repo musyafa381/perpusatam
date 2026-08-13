@@ -82,6 +82,20 @@ class MembersController extends ResourceController
         return view('members/index', $data);
     }
 
+    private function findMemberByIdOrUid($uid)
+    {
+        if (empty($uid)) return null;
+
+        $member = $this->memberModel->where('uid', $uid)->first();
+        if (!$member && is_numeric($uid)) {
+            $member = $this->memberModel->find((int)$uid);
+        }
+        if (!$member) {
+            $member = $this->memberModel->where('id', $uid)->first();
+        }
+        return $member;
+    }
+
     /**
      * Return the properties of a resource object
      *
@@ -89,7 +103,7 @@ class MembersController extends ResourceController
      */
     public function show($uid = null)
     {
-        $member = $this->memberModel->where('uid', $uid)->first();
+        $member = $this->findMemberByIdOrUid($uid);
 
         if (empty($member)) {
             throw new PageNotFoundException('Member not found');
@@ -330,7 +344,7 @@ class MembersController extends ResourceController
      */
     public function edit($uid = null)
     {
-        $member = $this->memberModel->where('uid', $uid)->first();
+        $member = $this->findMemberByIdOrUid($uid);
 
         if (empty($member)) {
             throw new PageNotFoundException('Member not found');
@@ -351,7 +365,7 @@ class MembersController extends ResourceController
      */
     public function update($uid = null)
     {
-        $member = $this->memberModel->where('uid', $uid)->first();
+        $member = $this->findMemberByIdOrUid($uid);
 
         if (empty($member)) {
             throw new PageNotFoundException('Member not found');
@@ -442,7 +456,7 @@ class MembersController extends ResourceController
      */
     public function delete($uid = null)
     {
-        $member = $this->memberModel->where('uid', $uid)->first();
+        $member = $this->findMemberByIdOrUid($uid);
 
         if (empty($member)) {
             if ($this->request->isAJAX() || $this->request->getHeaderLine('X-Requested-With') === 'XMLHttpRequest') {

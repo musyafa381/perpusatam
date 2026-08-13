@@ -97,7 +97,7 @@ if (!empty($member['date_of_birth']) && $member['date_of_birth'] !== '0000-00-00
         <a href="<?= base_url("admin/members/{$member['uid']}/edit"); ?>" class="btn btn-light text-primary fw-bold shadow-sm">
           <i class="ti ti-edit me-1"></i> Edit
         </a>
-        <form action="<?= base_url("admin/members/{$member['uid']}"); ?>" method="post" class="m-0">
+        <form action="<?= base_url("admin/members/" . ($member['uid'] ?: $member['id'])); ?>" method="post" class="m-0">
           <?= csrf_field(); ?>
           <input type="hidden" name="_method" value="DELETE">
           <button type="submit" class="btn btn-outline-light fw-bold shadow-sm" data-confirm="Apakah Anda yakin ingin menghapus anggota ini?">
