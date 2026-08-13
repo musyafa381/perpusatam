@@ -404,7 +404,21 @@
         return;
       }
 
-      const responseUrl = response.url || actionUrl;
+      let finalTargetUrl = response.url || actionUrl;
+
+      // Handle DELETE form redirects if response.url still points to deleted item URL
+      if ((spoofMethod === 'DELETE' || form.action.includes('/delete')) && (finalTargetUrl === actionUrl || response.redirected)) {
+        try {
+          const urlObj = new URL(finalTargetUrl);
+          const pathSegments = urlObj.pathname.split('/').filter(Boolean);
+          if (pathSegments.length > 2) {
+            pathSegments.pop(); // Remove the deleted UID/ID
+            urlObj.pathname = '/' + pathSegments.join('/');
+            finalTargetUrl = urlObj.href;
+          }
+        } catch (e) {}
+      }
+
       const html = await response.text();
 
       // Check if JSON response returned
@@ -453,13 +467,13 @@
 
         runContainerScripts(doc, container);
       } else {
-        window.location.href = responseUrl;
+        window.location.href = finalTargetUrl;
         return;
       }
 
-      window.history.pushState({ spa: true, url: responseUrl }, doc.title || '', responseUrl);
+      window.history.pushState({ spa: true, url: finalTargetUrl }, doc.title || '', finalTargetUrl);
 
-      updateSidebarActiveState(responseUrl);
+      updateSidebarActiveState(finalTargetUrl);
       reinitSidebar();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {

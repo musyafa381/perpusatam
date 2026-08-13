@@ -445,15 +445,38 @@ class MembersController extends ResourceController
         $member = $this->memberModel->where('uid', $uid)->first();
 
         if (empty($member)) {
+            if ($this->request->isAJAX() || $this->request->getHeaderLine('X-Requested-With') === 'XMLHttpRequest') {
+                return $this->response->setJSON([
+                    'error'    => true,
+                    'msg'      => 'Anggota tidak ditemukan',
+                    'redirect' => base_url('admin/members')
+                ]);
+            }
             throw new PageNotFoundException('Member not found');
         }
 
         if (!$this->memberModel->delete($member['id'])) {
+            if ($this->request->isAJAX() || $this->request->getHeaderLine('X-Requested-With') === 'XMLHttpRequest') {
+                return $this->response->setJSON([
+                    'error'    => true,
+                    'msg'      => 'Gagal menghapus anggota',
+                    'redirect' => base_url('admin/members')
+                ]);
+            }
             session()->setFlashdata(['msg' => 'Failed to delete member', 'error' => true]);
             return redirect()->back();
         }
 
         deleteMembersQRCode($member['qr_code']);
+
+        if ($this->request->isAJAX() || $this->request->getHeaderLine('X-Requested-With') === 'XMLHttpRequest') {
+            session()->setFlashdata(['msg' => 'Anggota berhasil dihapus']);
+            return $this->response->setJSON([
+                'status'   => true,
+                'msg'      => 'Anggota berhasil dihapus',
+                'redirect' => base_url('admin/members')
+            ]);
+        }
 
         session()->setFlashdata(['msg' => 'Member deleted successfully']);
         return redirect()->to('admin/members');

@@ -131,12 +131,35 @@ class UsersController extends ResourceController
         $user = $this->userModel->where('id', $id)->first();
 
         if (empty($user)) {
+            if ($this->request->isAJAX() || $this->request->getHeaderLine('X-Requested-With') === 'XMLHttpRequest') {
+                return $this->response->setJSON([
+                    'error'    => true,
+                    'msg'      => 'Pengguna tidak ditemukan',
+                    'redirect' => base_url('admin/users')
+                ]);
+            }
             throw new PageNotFoundException('User not found');
         }
 
         if (!$this->userModel->delete($id)) {
+            if ($this->request->isAJAX() || $this->request->getHeaderLine('X-Requested-With') === 'XMLHttpRequest') {
+                return $this->response->setJSON([
+                    'error'    => true,
+                    'msg'      => 'Gagal menghapus pengguna',
+                    'redirect' => base_url('admin/users')
+                ]);
+            }
             session()->setFlashdata(['msg' => 'Failed to delete user', 'error' => true]);
             return redirect()->back();
+        }
+
+        if ($this->request->isAJAX() || $this->request->getHeaderLine('X-Requested-With') === 'XMLHttpRequest') {
+            session()->setFlashdata(['msg' => 'Pengguna berhasil dihapus']);
+            return $this->response->setJSON([
+                'status'   => true,
+                'msg'      => 'Pengguna berhasil dihapus',
+                'redirect' => base_url('admin/users')
+            ]);
         }
 
         session()->setFlashdata(['msg' => 'User deleted successfully']);

@@ -506,6 +506,13 @@ class BooksController extends ResourceController
         $book = $this->bookModel->where('slug', $slug)->first();
 
         if (empty($book)) {
+            if ($this->request->isAJAX() || $this->request->getHeaderLine('X-Requested-With') === 'XMLHttpRequest') {
+                return $this->response->setJSON([
+                    'error'    => true,
+                    'msg'      => 'Buku tidak ditemukan',
+                    'redirect' => base_url('admin/books')
+                ]);
+            }
             throw new PageNotFoundException('Book with slug \'' . $slug . '\' not found');
         }
 
@@ -515,12 +522,28 @@ class BooksController extends ResourceController
         }
 
         if (!$this->bookModel->delete($book['id'])) {
+            if ($this->request->isAJAX() || $this->request->getHeaderLine('X-Requested-With') === 'XMLHttpRequest') {
+                return $this->response->setJSON([
+                    'error'    => true,
+                    'msg'      => 'Gagal menghapus data buku',
+                    'redirect' => base_url('admin/books')
+                ]);
+            }
             session()->setFlashdata(['msg' => 'Gagal menghapus data buku', 'error' => true]);
             return redirect()->back();
         }
 
         // delete former image file
         deleteBookCover($book['book_cover']);
+
+        if ($this->request->isAJAX() || $this->request->getHeaderLine('X-Requested-With') === 'XMLHttpRequest') {
+            session()->setFlashdata(['msg' => 'Buku berhasil dihapus']);
+            return $this->response->setJSON([
+                'status'   => true,
+                'msg'      => 'Buku berhasil dihapus',
+                'redirect' => base_url('admin/books')
+            ]);
+        }
 
         session()->setFlashdata(['msg' => 'Buku berhasil dihapus']);
         return redirect()->to('admin/books');
