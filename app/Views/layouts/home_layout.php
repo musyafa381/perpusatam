@@ -429,8 +429,8 @@ $isTvPage   = (uri_string() === 'tv' || uri_string() === 'tv-display');
   </div>
 
   <!-- JavaScript Libraries & UNIDA Loader -->
-  <script src="<?= base_url('assets/libs/jquery/dist/jquery.min.min.js') ?>"></script>
-  <script src="<?= base_url('assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js') ?>"></script>
+  <script src="<?= base_url('assets/libs/jquery/jquery.min.js') ?>"></script>
+  <script src="<?= base_url('assets/libs/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
   
   <script>
     document.addEventListener('DOMContentLoaded', function () {

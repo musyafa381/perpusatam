@@ -295,6 +295,9 @@
       const result = await res.json();
 
       if (result.status) {
+        // Clear Alert
+        alertDiv.classList.add('d-none');
+
         // Reset Input
         searchInput.value = '';
         autocompleteList.classList.add('d-none');
@@ -304,7 +307,8 @@
         document.getElementById('modalVisitorMeta').textContent = `${result.institution} ${result.class_level && result.class_level !== '-' ? '- ' + result.class_level : ''}`;
         document.getElementById('modalVisitorTime').textContent = result.time;
 
-        const welcomeModal = new bootstrap.Modal(document.getElementById('welcomeVisitorModal'));
+        const modalEl = document.getElementById('welcomeVisitorModal');
+        const welcomeModal = bootstrap.Modal.getOrCreateInstance(modalEl);
         welcomeModal.show();
 
         setTimeout(() => {
