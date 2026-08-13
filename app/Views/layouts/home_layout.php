@@ -486,6 +486,9 @@ $isTvPage   = (uri_string() === 'tv' || uri_string() === 'tv-display');
       });
     });
   </script>
+
+  <!-- Render Scripts Section from Child Views -->
+  <?= $this->renderSection('scripts') ?>
 </body>
 
 </html>

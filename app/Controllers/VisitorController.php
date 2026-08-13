@@ -53,6 +53,7 @@ class VisitorController extends Controller
                 ->orLike('last_name', $q, insensitiveSearch: true)
                 ->orLike('uid', $q, insensitiveSearch: true)
                 ->orLike('institution', $q, insensitiveSearch: true)
+                ->orLike("CONCAT(first_name, ' ', COALESCE(last_name, ''))", $q, insensitiveSearch: true)
             ->groupEnd()
             ->limit(10)
             ->findAll();
@@ -115,6 +116,7 @@ class VisitorController extends Controller
                 ->groupStart()
                     ->like('first_name', $input, insensitiveSearch: true)
                     ->orLike('last_name', $input, insensitiveSearch: true)
+                    ->orLike("CONCAT(first_name, ' ', COALESCE(last_name, ''))", $input, insensitiveSearch: true)
                 ->groupEnd()
                 ->first();
         }
